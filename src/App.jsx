@@ -1,9 +1,7 @@
-function App() {
-  return (
-    <div>
-      <h1>Mini-LMS Frontend</h1>
-    </div>
-  );
+import HomePage from "./pages/HomePage";
+
+function App(){
+  return <HomePage />;
 }
 
 export default App;
