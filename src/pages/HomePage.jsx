@@ -3,6 +3,7 @@ import axios from 'axios';
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CourseCard from "../components/CourseCard";
+import Hero from "../components/Hero";
 
 
 const HomePage = () => {
@@ -53,19 +54,21 @@ const HomePage = () => {
         );
     }
 
+    const featuredCourses=courses.slice(0,3);
 
     return (
 
         <div className="page-container">
 
             <Navbar />
+            <Hero />
 
             <main className="container">
 
-                <h1 className="page-title">Explore our Courses</h1>
+                <h2 className="section-title">Featured Courses</h2>
 
                 <div className="course-grid">
-                    {courses.map((course) => (
+                    {featuredCourses.map((course) => (
                         <CourseCard
                             key={course._id}
                             title={course.title}
