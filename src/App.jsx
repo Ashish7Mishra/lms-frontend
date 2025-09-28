@@ -1,7 +1,19 @@
+import { Routes, Route } from 'react-router-dom';
 import HomePage from "./pages/HomePage";
+import CoursesPage from './pages/CoursesPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
-function App(){
-  return <HomePage />;
+function App() {
+  return (
+    <Routes>
+      <Route path='/' element={<HomePage />}></Route>
+      <Route path="/courses" element={<CoursesPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+
+    </Routes>
+  )
 }
 
 export default App;
