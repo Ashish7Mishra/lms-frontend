@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import AuthContext from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -14,6 +15,8 @@ const LoginPage = () => {
 
     const navigate = useNavigate();
 
+    const { login } = useContext(AuthContext);
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -23,6 +26,7 @@ const LoginPage = () => {
 
             const response = await axios.post("http://localhost:5000/api/auth/login", { email, password });
             localStorage.setItem("userInfo", JSON.stringify(response.data));
+            login(response.data);
             setLoading(false);
             navigate('/');
 
