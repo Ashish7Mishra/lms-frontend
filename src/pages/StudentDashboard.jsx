@@ -76,6 +76,7 @@ const StudentDashboard = () => {
                         {enrollments.map((enrollment) => (
                             <CourseCard
                                 key={enrollment._id}
+                                id={enrollment.course._id}
                                 title={enrollment.course.title}
                                 description={enrollment.course.description}
                                 category={enrollment.course.category}

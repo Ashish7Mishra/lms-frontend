@@ -1,16 +1,14 @@
-
-const CourseCard = ({ title, description, category }) => {
+import { Link } from 'react-router-dom';
+const CourseCard = ({ id, title, description, category }) => {
 
     return (
-        <div className="course-card">
-
-            <h3>{title}</h3>
-            <p>{description}</p>
-            <div className="category-badge">Category: {category}</div>
-            <button className="view-course-btn">View Course</button>
-
-
-        </div>
+        <Link to={`/course/${id}`} className="course-card-link">
+            <div className="course-card">
+                <h3>{title}</h3>
+                <p>{description}</p>
+                <div className="category-badge">Category: {category}</div>
+            </div>
+        </Link>
     )
 
 }

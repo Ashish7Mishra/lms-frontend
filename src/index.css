@@ -104,6 +104,11 @@ main.container {
   gap: 25px;
 }
 
+.course-card-link {
+  text-decoration: none;
+  color: inherit; 
+}
+
 .course-card {
   background-color: #ffffff;
   border-radius: 8px;
@@ -220,7 +225,13 @@ main.container {
 }
 
 
-
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
 /* --- Footer --- */
 .footer {

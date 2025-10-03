@@ -6,12 +6,15 @@ import RegisterPage from './pages/RegisterPage';
 import StudentDashboard from './pages/StudentDashboard';
 import InstructorDashboard from './pages/InstructorDashboard';
 import ProtectedRoute from './utils/ProtectedRoute';
+import CreateCoursePage from './pages/CreateCoursePage';
+import CourseDetailPage from './pages/CourseDetailPage';
 
 function App() {
   return (
     <Routes>
       <Route path='/' element={<HomePage />}></Route>
       <Route path="/courses" element={<CoursesPage />} />
+      <Route path="/course/:courseId" element={<CourseDetailPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
@@ -29,6 +32,14 @@ function App() {
         element={
           <ProtectedRoute>
             <InstructorDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/instructor/create-course"
+        element={
+          <ProtectedRoute>
+            <CreateCoursePage />
           </ProtectedRoute>
         }
       />
