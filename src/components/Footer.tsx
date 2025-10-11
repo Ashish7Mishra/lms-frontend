@@ -1,4 +1,4 @@
- import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -8,11 +8,11 @@ const Footer = () => {
         {/* About Section */}
         <div>
           <h3 className="text-lg font-semibold mb-3 text-gray-900">
-            About Learnify
+            About LMS
           </h3>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Learnify helps you learn new skills, grow professionally, and
-            achieve your dreams with curated expert courses.
+            Learning Management System helps you learn new skills, grow
+            professionally, and achieve your dreams with curated expert courses.
           </p>
         </div>
 
@@ -54,7 +54,7 @@ const Footer = () => {
               href="mailto:support@learnify.com"
               className="hover:text-blue-600"
             >
-              support@learnify.com
+              support@lms.utkal.labs.com
             </a>
           </p>
           <p className="text-sm text-gray-600">Phone: +1 (555) 123-4567</p>
@@ -111,7 +111,7 @@ const Footer = () => {
 
       {/* Bottom Copyright */}
       <div className="border-t border-gray-200 text-center py-4 text-sm text-gray-500">
-        © {new Date().getFullYear()} Learnify. All rights reserved.
+        © {new Date().getFullYear()} LMS. All rights reserved.
       </div>
     </footer>
   );

@@ -1,10 +1,9 @@
-// src/pages/RegisterPage.tsx
-
-import React, { useState } from 'react';
+ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import { registerUser } from '../services/authService';
+import { User, Mail, Lock } from 'lucide-react';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -18,8 +17,6 @@ const RegisterPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  
-  // State to hold live form validation errors
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -30,29 +27,20 @@ const RegisterPage = () => {
     }));
 
     if (formErrors[name]) {
-        setFormErrors(prev => ({ ...prev, [name]: '' }));
+      setFormErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    // Name Validation
-    if (!formData.name.trim()) {
-      newErrors.name = "Full Name is required.";
-    }
-
-    // Email Validation
+    if (!formData.name.trim()) newErrors.name = 'Full Name is required.';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address.";
-    }
-
-    // Password Validation
+    if (!emailRegex.test(formData.email)) newErrors.email = 'Please enter a valid email address.';
     if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters long.";
+      newErrors.password = 'Password must be at least 8 characters long.';
     } else if (!/\d/.test(formData.password) || !/[a-zA-Z]/.test(formData.password)) {
-      newErrors.password = "Password must contain at least one letter and one number.";
+      newErrors.password = 'Password must contain at least one letter and one number.';
     }
 
     setFormErrors(newErrors);
@@ -61,11 +49,7 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return; 
-    }
-    
+    if (!validateForm()) return;
     setApiError(null);
     setIsLoading(true);
 
@@ -80,72 +64,121 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-900">Create your Account</h2>
+    <div className="flex items-center justify-center bg-gray-100 px-4 py-12 md:py-20">
+      <div className="flex w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl">
         
-        {apiError && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            <span>{apiError}</span>
-          </div>
-        )}
+        {/* Left Section - Form */}
+        <div className="flex w-full flex-col justify-center bg-gradient-to-br from-purple-500 to-pink-500 p-10 text-white md:w-1/2">
+          <h2 className="mb-6 text-3xl font-bold">Hello, friend!</h2>
 
-        <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-          <div>
-            <FormInput
-              label="Full Name" id="name" name="name" type="text"
-              required value={formData.name} onChange={handleChange}
-            />
-            {/* Display for name validation error */}
-            {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
-          </div>
+          {apiError && (
+            <div className="mb-4 rounded-md bg-red-100 px-4 py-2 text-sm text-red-800">
+              {apiError}
+            </div>
+          )}
 
-          <div>
-            <FormInput
-              label="Email Address" id="email" name="email" type="email"
-              required value={formData.email} onChange={handleChange}
-            />
-            {/* Display for email validation error */}
-            {formErrors.email && <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>}
-          </div>
+          <form onSubmit={handleSubmit} noValidate className="space-y-5">
+            {/* Name */}
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-700 bg-white rounded-full p-1 w-6 h-6" />
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Name"
+                required
+                disabled={isLoading}
+                className="w-full rounded-full px-12 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-300"
+              />
+              {formErrors.name && <p className="mt-1 text-xs text-red-100">{formErrors.name}</p>}
+            </div>
 
-          <div>
-            <FormInput
-              label="Password" id="password" name="password" type="password"
-              required value={formData.password} onChange={handleChange}
-              placeholder="8+ characters, with a number and a letter"
-            />
-            {/* Display for password validation error */}
-            {formErrors.password && <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>}
-          </div>
-          
-          <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-              I am a...
+            {/* Email */}
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-700 bg-white rounded-full p-1 w-6 h-6" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email Address"
+                required
+                disabled={isLoading}
+                className="w-full rounded-full px-12 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-300"
+              />
+              {formErrors.email && <p className="mt-1 text-xs text-red-100">{formErrors.email}</p>}
+            </div>
+
+            {/* Password */}
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-700 bg-white rounded-full p-1 w-6 h-6" />
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                required
+                disabled={isLoading}
+                className="w-full rounded-full px-12 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-300"
+              />
+              {formErrors.password && <p className="mt-1 text-xs text-red-100">{formErrors.password}</p>}
+            </div>
+
+            {/* Role */}
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-white">I am a...</label>
+              <select
+                id="role"
+                name="role"
+                required
+                value={formData.role}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-md bg-white/90 px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-300"
+              >
+                <option value="Student">Student</option>
+                <option value="Instructor">Instructor</option>
+              </select>
+            </div>
+
+            {/* Terms */}
+            <label className="flex items-center space-x-2 text-sm">
+              <input type="checkbox" required className="h-4 w-4 rounded border-white" />
+              <span>
+                I read and agree to{' '}
+                <a href="#" className="underline text-white font-medium hover:text-purple-200">
+                  Terms & Conditions
+                </a>
+              </span>
             </label>
-            <select
-              id="role" name="role" required value={formData.role}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-3 font-semibold text-white shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400"
             >
-              <option value="Student">Student</option>
-              <option value="Instructor">Instructor</option>
-            </select>
-          </div>
-
-          <div>
-            <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Creating Account...' : 'Create Account'}
-            </Button>
-          </div>
-        </form>
+            </button>
+          </form>
 
-        <p className="text-sm text-center text-gray-600">
-          Already have an account?{' '}
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Sign in
-          </Link>
-        </p>
+          <p className="mt-6 text-center text-sm">
+            Already have an account?{' '}
+            <Link to="/login" className="font-semibold text-white underline">
+              Sign in
+            </Link>
+          </p>
+        </div>
+
+        {/* Right Section - Info */}
+        <div className="hidden w-1/2 flex-col items-center justify-center p-10 md:flex">
+          <h3 className="text-2xl font-semibold text-gray-800">Glad to see you!</h3>
+          <p className="mt-4 text-center text-gray-600">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, turpis sed fermentum volutpat, 
+            nulla sapien tincidunt massa.
+          </p>
+        </div>
       </div>
     </div>
   );
