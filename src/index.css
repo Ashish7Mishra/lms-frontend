@@ -21,4 +21,28 @@
   .btn {
     @apply px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition;
   }
+}a:hover {
+  color: inherit;
+  background: none;
+}
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientMove 6s ease infinite;
+}
+
+@keyframes shine {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.card-shine {
+  background: linear-gradient(110deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.2) 100%);
+  background-size: 200% 100%;
+  animation: shine 4s linear infinite;
 }
