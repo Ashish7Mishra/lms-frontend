@@ -25,7 +25,9 @@ const CoursesListPage = () => {
         setIsLoading(true);
         setError(null);
         const response = await getAllCourses(token, currentPage);
-        setCourses(response.data);
+        const activeCourses = response.data.filter(course => course.isActive);
+
+        setCourses(activeCourses);
         setTotalPages(response.pagination.totalPages);
       } catch (err: any) {
         setError(err.message);
