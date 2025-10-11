@@ -18,7 +18,7 @@ export const enrollInCourse = async (courseId: string, token: string): Promise<a
         Authorization: `Bearer ${token}`,
       },
     };
-    // The API expects a POST request with the courseId in the body
+
     const response = await apiService.post('/enrollments', { courseId }, config);
     return response.data;
   } catch (error: any) {
@@ -36,7 +36,7 @@ export const markLessonAsComplete = async (lessonId: string, token: string): Pro
         Authorization: `Bearer ${token}`,
       },
     };
-    // The API expects a POST request with the lessonId in the body
+
     const response = await apiService.post('/enrollments/mark-complete', { lessonId }, config);
     return response.data;
   } catch (error: any) {

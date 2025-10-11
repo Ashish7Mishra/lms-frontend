@@ -5,7 +5,6 @@ const api = axios.create({
   baseURL: "https://lms-backend-main.onrender.com/api",
 });
 
-// Always attach token if exists
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {

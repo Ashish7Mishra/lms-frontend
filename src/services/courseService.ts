@@ -3,13 +3,32 @@
 import apiService from './apiService';
 import type { PaginatedCoursesResponse, Course, Lesson, Student } from '../types'; // Import our new type
 
+const COURSES_PER_PAGE = 9;
+
 
 // Function to get all courses. It can optionally accept a token.
-export const getAllCourses = async (token: string | null): Promise<PaginatedCoursesResponse> => {
+export const getAllCourses = async (
+  token: string | null,
+  page: number = 1,
+  searchQuery: string = '' // <-- Add new parameter
+): Promise<PaginatedCoursesResponse> => {
   try {
-    const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    const response = await apiService.get('/courses', config);
+    const params: { [key: string]: any } = {
+      page,
+      limit: COURSES_PER_PAGE,
+    };
 
+    // Only add the search parameter to the request if it's not an empty string
+    if (searchQuery) {
+      params.search = searchQuery;
+    }
+
+    const config = {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      params, // Axios will convert this to ?page=1&limit=9&search=...
+    };
+    
+    const response = await apiService.get('/courses', config);
     return response.data.data;
   } catch (error: any) {
     if (error.response && error.response.data) {
@@ -35,10 +54,17 @@ export const getCourseById = async (courseId: string, token: string | null): Pro
 
 export const getLessonsByCourseId = async (courseId: string, token: string | null): Promise<Lesson[]> => {
   try {
-    const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  
+    const params = {
+      limit: 100,
+    };
 
+    const config = {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      params, 
+    };
+    
     const response = await apiService.get(`/lessons/course/${courseId}`, config);
-
     return response.data.data.data;
   } catch (error: any) {
     if (error.response && error.response.data) {
@@ -47,7 +73,6 @@ export const getLessonsByCourseId = async (courseId: string, token: string | nul
     throw new Error('An unexpected error occurred while fetching lessons.');
   }
 };
-
 export const getMyCourses = async (token: string): Promise<Course[]> => {
   try {
     const config = {
@@ -112,5 +137,17 @@ export const getEnrolledStudents = async (courseId: string, token: string): Prom
     return response.data?.data?.data || response.data?.data || [];
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Failed to fetch enrolled students.');
+  }
+};
+
+export const toggleCourseStatus = async (courseId: string, token: string): Promise<Course> => {
+  try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+    const response = await apiService.delete(`/courses/${courseId}`, config);
+    return response.data.data; 
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to update course status.');
   }
 };

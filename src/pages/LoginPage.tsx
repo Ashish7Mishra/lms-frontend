@@ -2,14 +2,14 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // <-- Import useAuth hook
-import { loginUser } from '../services/authService'; // <-- Import login service
+import { useAuth } from '../contexts/AuthContext'; 
+import { loginUser } from '../services/authService'; 
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); // <-- Get the login function from context
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
@@ -26,13 +26,11 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      // The API returns an object with user details and the token
+
       const { token, ...userData } = await loginUser(formData);
       
-      // Use the login function from context to store session data
       login(userData, token);
 
-      // Redirect to a dashboard page (we will create this next)
       navigate('/dashboard');
 
     } catch (err: any) {

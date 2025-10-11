@@ -23,7 +23,6 @@ const EditCoursePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // --- Step 1: Fetch existing course data ---
   useEffect(() => {
     if (!courseId || !token) return;
 
@@ -53,7 +52,6 @@ const EditCoursePage = () => {
     }
   };
 
-  // --- Step 2: Handle the form submission ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token || !courseId) return;
@@ -65,7 +63,7 @@ const EditCoursePage = () => {
     formData.append('title', courseDetails.title);
     formData.append('description', courseDetails.description);
     formData.append('category', courseDetails.category);
-    // Only append the image if a new one was selected
+
     if (imageFile) {
       formData.append('image', imageFile);
     }
@@ -120,7 +118,7 @@ const EditCoursePage = () => {
                 </div>
             )}
             <input
-              id="image" name="image" type="file" // Not required
+              id="image" name="image" type="file" 
               accept="image/png, image/jpeg, image/jpg"
               onChange={handleFileChange}
               className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"

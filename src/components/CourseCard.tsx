@@ -22,7 +22,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         <p className="text-gray-700 text-sm mb-4 h-10 overflow-hidden">{course.description}</p>
          <Link
           to={`/courses/${course._id}`}
-          // We pass the enrollment status in the 'state' object
           state={{ isEnrolled: course.enrollment }} 
           className="w-full text-center block bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600"
         >

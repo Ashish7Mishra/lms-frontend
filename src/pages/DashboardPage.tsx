@@ -9,7 +9,6 @@ import ProgressCard from '../components/ProgressCard';
 const DashboardPage = () => {
   const { user, token } = useAuth();
 
-  // State for both roles
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [myCourses, setMyCourses] = useState<Course[]>([]);
   
@@ -18,7 +17,6 @@ const DashboardPage = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      // Exit if we don't have the necessary info
       if (!token || !user) {
         setIsLoading(false);
         return;
@@ -43,7 +41,7 @@ const DashboardPage = () => {
     };
 
     loadData();
-  }, [user, token]); // Re-run effect if user or token changes
+  }, [user, token]); 
 
   const renderStudentDashboard = () => {
     if (isLoading) {
@@ -104,7 +102,7 @@ const DashboardPage = () => {
           <h2 className="text-2xl font-bold mb-4">Recently Created Courses</h2>
           {myCourses.length > 0 ? (
             <div className="space-y-3">
-              {/* Display the 3 most recent courses, assuming the API returns them in descending order of creation */}
+
               {myCourses.slice(0, 3).map(course => (
                  <Link key={course._id} to={`/instructor/courses/${course._id}/manage`} className="block bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                     <p className="font-semibold">{course.title}</p>

@@ -27,7 +27,7 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => { // <-- Make it async
+  const handleSubmit = async (e: React.FormEvent) => { 
     e.preventDefault();
     setError(null); 
     setIsLoading(true); 
@@ -38,7 +38,7 @@ const RegisterPage = () => {
 
       setTimeout(() => {
         navigate('/login');
-      }, 1500); // 1.5 seconds
+      }, 1500); 
 
     } catch (err: any) {
       setError(err.message); 
@@ -53,7 +53,6 @@ const RegisterPage = () => {
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-900">Create your Account</h2>
         
-        {/* Error Message Display */}
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
             <span className="block sm:inline">{error}</span>

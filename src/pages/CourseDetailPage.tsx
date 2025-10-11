@@ -29,16 +29,16 @@ const CourseDetailPage = () => {
       try {
         setIsLoading(true);
         setError(null);
-
+        
         const courseDataFromApi = await getCourseById(courseId, token);
-        // Workaround: Manually add enrollment status from the previous page
+
         courseDataFromApi.enrollment = passedEnrollmentStatus;
-
+        
         const lessonsData = await getLessonsByCourseId(courseId, token);
-
+        
         setCourse(courseDataFromApi);
         setLessons(lessonsData);
-
+        
         if (lessonsData.length > 0) {
           setSelectedLesson(lessonsData[0]);
         }
@@ -58,25 +58,25 @@ const CourseDetailPage = () => {
     setEnrollmentError(null);
     try {
       await enrollInCourse(courseId, token);
-      setCourse(prevCourse => (prevCourse ? { ...prevCourse, enrollment: true } : null));
+      setCourse(prevCourse => prevCourse ? { ...prevCourse, enrollment: true } : null);
     } catch (err: any) {
       setEnrollmentError(err.message);
     } finally {
       setIsEnrolling(false);
     }
   };
-
+  
   const handleMarkComplete = async () => {
     if (!token || !selectedLesson) return;
     setIsMarking(true);
     try {
       await markLessonAsComplete(selectedLesson._id, token);
-      setLessons(prevLessons =>
-        prevLessons.map(lesson =>
+      setLessons(prevLessons => 
+        prevLessons.map(lesson => 
           lesson._id === selectedLesson._id ? { ...lesson, isCompleted: true } : lesson
         )
       );
-      setSelectedLesson(prev => (prev ? { ...prev, isCompleted: true } : null));
+      setSelectedLesson(prev => prev ? { ...prev, isCompleted: true } : null);
     } catch (err: any) {
       console.error("Failed to mark complete:", err);
       alert(err.message);
@@ -101,15 +101,12 @@ const CourseDetailPage = () => {
 
     if (!isAuthenticated) {
       return (
-        <Link
-          to="/login"
-          className="mt-4 w-full text-center block bg-blue-500 text-white font-bold py-3 px-4 rounded hover:bg-blue-600"
-        >
+        <Link to="/login" className="mt-4 w-full text-center block bg-blue-500 text-white font-bold py-3 px-4 rounded hover:bg-blue-600">
           Login to Enroll
         </Link>
       );
     }
-
+    
     if (course?.enrollment) {
       return (
         <div className="mt-4 p-3 bg-green-100 text-green-800 text-center rounded-md font-semibold">
@@ -117,7 +114,7 @@ const CourseDetailPage = () => {
         </div>
       );
     }
-
+    
     return (
       <button
         onClick={handleEnroll}
@@ -162,9 +159,9 @@ const CourseDetailPage = () => {
                     </video>
                   ) : (
                     <>
-                      <img
-                        src={course.imageUrl}
-                        alt={course.title}
+                      <img 
+                        src={course.imageUrl} 
+                        alt={course.title} 
                         className="w-full h-full object-cover opacity-30"
                       />
                       <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 bg-black bg-opacity-50">
@@ -173,35 +170,27 @@ const CourseDetailPage = () => {
                           Content Locked
                         </h3>
                         <p className="text-lg text-gray-200">
-                          {isAuthenticated
-                            ? 'Enroll in this course to watch the lessons.'
-                            : 'Please log in and enroll to access this content.'}
+                          {isAuthenticated ? 'Enroll in this course to watch the lessons.' : 'Please log in and enroll to access this content.'}
                         </p>
                       </div>
                     </>
                   )}
                 </div>
-
                 <div className="p-6">
                   <h2 className="text-2xl font-bold mb-3">{selectedLesson.title}</h2>
                   <p className="text-gray-700 mb-4">{selectedLesson.content}</p>
-
+                  
                   {isEnrolledStudent && (
                     <button
                       onClick={handleMarkComplete}
                       disabled={selectedLesson.isCompleted || isMarking}
-                      className="w-full font-semibold py-3 px-4 rounded-md transition-colors duration-200
-                        disabled:bg-gray-300 disabled:cursor-not-allowed
-                        ${selectedLesson.isCompleted
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-blue-600 text-white hover:bg-blue-700'
-                        }"
+                      className="w-full font-semibold py-3 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed ${selectedLesson.isCompleted ? 'bg-green-100 text-green-700' : 'bg-blue-600 text-white hover:bg-blue-700'}"
                     >
-                      {isMarking
-                        ? 'Marking...'
-                        : selectedLesson.isCompleted
-                        ? '✓ Completed'
-                        : 'Mark as Complete'}
+                      {isMarking 
+                        ? 'Marking...' 
+                        : selectedLesson.isCompleted 
+                          ? '✓ Completed' 
+                          : 'Mark as Complete'}
                     </button>
                   )}
                 </div>
@@ -211,43 +200,42 @@ const CourseDetailPage = () => {
             )}
           </div>
         </div>
-
+        
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-md p-4">
             {renderEnrollmentButton()}
             {enrollmentError && <p className="text-red-500 text-sm mt-2">{enrollmentError}</p>}
 
             <h3 className="text-xl font-bold my-4 border-b pb-2">Course Lessons</h3>
-            {lessons.length > 0 ? (
-              <ul className="space-y-2">
-                {lessons.map(lesson => (
-                  <li key={lesson._id}>
-                    <button
-                      onClick={() => setSelectedLesson(lesson)}
-                      className={`w-full text-left p-3 rounded-md flex items-center justify-between transition-colors duration-200 ${
-                        selectedLesson?._id === lesson._id
-                          ? 'bg-blue-100 border-l-4 border-blue-500'
-                          : 'hover:bg-gray-100'
-                      }`}
-                    >
-                      <div className="flex items-center">
-                        <PlayCircleIcon className="h-6 w-6 text-gray-400 mr-3" />
-                        <span className="font-medium">{lesson.title}</span>
-                      </div>
-                      {isAuthenticated && (
-                        lesson.isCompleted ? (
-                          <CheckCircleIcon className="h-6 w-6 text-green-500" title="Completed"/>
-                        ) : (
-                          <div className="h-6 w-6 border-2 border-gray-300 rounded-full" title="Not Completed"></div>
-                        )
-                      )}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-500">No lessons available.</p>
-            )}
+            
+            <div className="max-h-[600px] overflow-y-auto pr-2">
+              {lessons.length > 0 ? (
+                <ul className="space-y-2">
+                  {lessons.map(lesson => (
+                    <li key={lesson._id}>
+                      <button
+                        onClick={() => setSelectedLesson(lesson)}
+                        className={`w-full text-left p-3 rounded-md flex items-center justify-between transition-colors duration-200 ${selectedLesson?._id === lesson._id ? 'bg-blue-100 border-l-4 border-blue-500' : 'hover:bg-gray-100'}`}
+                      >
+                        <div className="flex items-center">
+                          <PlayCircleIcon className="h-6 w-6 text-gray-400 mr-3" />
+                          <span className="font-medium">{lesson.title}</span>
+                        </div>
+                        {isAuthenticated && (
+                          lesson.isCompleted ? (
+                            <CheckCircleIcon className="h-6 w-6 text-green-500" title="Completed"/>
+                          ) : (
+                            <div className="h-6 w-6 border-2 border-gray-300 rounded-full" title="Not Completed"></div>
+                          )
+                        )}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500">No lessons available.</p>
+              )}
+            </div>
           </div>
         </div>
       </div>

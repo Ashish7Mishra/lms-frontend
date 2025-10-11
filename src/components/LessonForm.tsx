@@ -9,7 +9,7 @@ interface LessonFormProps {
   onSubmit: (formData: FormData) => void;
   onCancel: () => void;
   isLoading: boolean;
-  initialData?: Lesson | null; // Pass existing data for editing
+  initialData?: Lesson | null; 
 }
 
 const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, initialData }) => {

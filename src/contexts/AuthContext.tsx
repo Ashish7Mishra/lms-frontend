@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useContext, useEffect, type ReactNode } from 'react';
 
-// Define the shape of the user data we'll store
+
 interface User {
   _id: string;
   name: string;
@@ -10,7 +10,6 @@ interface User {
   role: 'Student' | 'Instructor';
 }
 
-// Define the shape of the context state
 interface AuthContextType {
   user: User | null;
   token: string | null;
@@ -19,15 +18,12 @@ interface AuthContextType {
   logout: () => void;
 }
 
-// Create the context with a default undefined value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Create the AuthProvider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
 
-  // Use an effect to load user data from localStorage on initial load
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser && token) {
@@ -58,7 +54,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Create a custom hook for easy access to the context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import type { Enrollment } from '../services/enrollmentService'; // Import the new type
- // Import the new type
+import type { Enrollment } from '../services/enrollmentService'; 
 
 interface ProgressCardProps {
   enrollment: Enrollment;
@@ -38,7 +37,7 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ enrollment }) => {
 
         <Link
           to={`/courses/${course._id}`}
-          state={{ isEnrolled: true }} // Pass enrollment state to detail page
+          state={{ isEnrolled: true }} 
           className="w-full text-center block bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600"
         >
           Continue Learning

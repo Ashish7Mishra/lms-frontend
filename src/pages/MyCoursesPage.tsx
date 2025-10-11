@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getMyCourses } from '../services/courseService';
+import { getMyCourses, toggleCourseStatus } from '../services/courseService';
 import type { Course } from '../types';
 import InstructorCourseCard from '../components/InstructorCourseCard';
 
@@ -30,6 +30,24 @@ const MyCoursesPage = () => {
     }
   }, [token]);
 
+  const handleDeactivate = async (courseId: string) => {
+    if (!token || !window.confirm('Are you sure you want to deactivate this course? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const updatedCourse = await toggleCourseStatus(courseId, token);
+      
+      setCourses(currentCourses =>
+        currentCourses.map(course =>
+          course._id === courseId ? updatedCourse : course
+        )
+      );
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   if (isLoading) {
     return <p className="text-center text-gray-500">Loading your courses...</p>;
   }
@@ -43,7 +61,7 @@ const MyCoursesPage = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">My Courses</h1>
         <Link
-          to="/instructor/courses/create" // We will build this page next
+          to="/instructor/courses/create"
           className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600"
         >
           + Create New Course
@@ -52,7 +70,11 @@ const MyCoursesPage = () => {
       {courses.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {courses.map((course) => (
-            <InstructorCourseCard key={course._id} course={course} />
+            <InstructorCourseCard
+              key={course._id}
+              course={course}
+              onDeactivate={handleDeactivate} 
+            />
           ))}
         </div>
       ) : (
@@ -64,4 +86,4 @@ const MyCoursesPage = () => {
   );
 };
 
-export default MyCoursesPage;
+export  default MyCoursesPage;

@@ -19,11 +19,10 @@ export interface Course {
   imageUrl: string;
   instructor: Instructor;
   isActive: boolean;
-  enrollment: boolean; // Present if user is authenticated
-  progress: number;   // Present if user is authenticated
+  enrollment: boolean; 
+  progress: number;   
 }
 
-// The API returns a paginated response
 export interface PaginatedCoursesResponse {
   data: Course[];
   pagination: {
@@ -40,5 +39,5 @@ export interface Lesson {
   content: string;
   order: number;
   videoUrl: string; 
-  isCompleted?: boolean; // Present if user is authenticated and has completed it
+  isCompleted?: boolean; 
 }

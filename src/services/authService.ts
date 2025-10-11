@@ -16,7 +16,6 @@ interface LoginData {
 export const loginUser = async (credentials: LoginData) => {
   try {
     const response = await apiService.post('/auth/login', credentials);
-    // According to the API docs, the user data and token are in response.data.data
     return response.data.data; 
   } catch (error: any) {
     if (error.response && error.response.data) {
@@ -31,7 +30,6 @@ export const registerUser = async (userData: RegisterData) => {
 
     const response = await apiService.post('/auth/register', userData);
     
-    // The API documentation says the actual data is in response.data.data
     return response.data; 
   } catch (error: any) {
     

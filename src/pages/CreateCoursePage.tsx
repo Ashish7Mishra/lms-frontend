@@ -11,14 +11,12 @@ const CreateCoursePage = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
   
-  // State for text fields
   const [courseDetails, setCourseDetails] = useState({
     title: '',
     description: '',
     category: '',
   });
 
-  // Separate state for the image file
   const [imageFile, setImageFile] = useState<File | null>(null);
   
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +28,7 @@ const CreateCoursePage = () => {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // e.target.files is a FileList, we want the first file
+
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
     }
@@ -46,7 +44,6 @@ const CreateCoursePage = () => {
     setIsLoading(true);
     setError(null);
 
-    // Create a FormData object to send the file and text data
     const formData = new FormData();
     formData.append('title', courseDetails.title);
     formData.append('description', courseDetails.description);
@@ -55,7 +52,6 @@ const CreateCoursePage = () => {
 
     try {
       await createCourse(formData, token);
-      // On success, navigate back to the instructor's course list
       navigate('/instructor/my-courses');
     } catch (err: any) {
       setError(err.message);

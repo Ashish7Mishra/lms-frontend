@@ -1,10 +1,10 @@
 // src/pages/ManageCoursePage.tsx
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getCourseById } from '../services/courseService';
-import { getLessonsByCourseId } from '../services/courseService'; // Assuming this is still here
+import { getLessonsByCourseId } from '../services/courseService';
 import { createLesson, updateLesson, deleteLesson } from '../services/lessonService';
 import type { Course, Lesson } from '../types';
 import Modal from '../components/Modal';
@@ -13,7 +13,7 @@ import LessonForm from '../components/LessonForm';
 const ManageCoursePage = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const { token } = useAuth();
-  
+
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,7 +72,7 @@ const ManageCoursePage = () => {
       }
       closeModal();
     } catch (err: any) {
-      alert(err.message); // Simple error feedback
+      alert(err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -93,11 +93,21 @@ const ManageCoursePage = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
         <h1 className="text-3xl font-bold">Manage: {course?.title}</h1>
-        <button onClick={openAddModal} className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600">
-          + Add Lesson
-        </button>
+        <div className="flex items-center space-x-2">
+          <Link
+            to={`/courses/${course?._id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-purple-500 text-white font-bold py-2 px-4 rounded hover:bg-purple-600"
+          >
+            Preview Course
+          </Link>
+          <button onClick={openAddModal} className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600">
+            + Add Lesson
+          </button>
+        </div>
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md">
