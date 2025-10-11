@@ -12,6 +12,8 @@ import CreateCoursePage from './pages/CreateCoursePage';
 import EditCoursePage from './pages/EditCoursePage';
 import ManageCoursePage from './pages/ManageCoursePage';
 import EnrolledStudentsPage from './pages/EnrolledStudentsPage';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 
 function App() {
   return (
