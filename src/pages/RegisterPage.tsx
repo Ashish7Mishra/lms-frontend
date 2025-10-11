@@ -1,7 +1,5 @@
  import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
 import { registerUser } from '../services/authService';
 import { User, Mail, Lock } from 'lucide-react';
 

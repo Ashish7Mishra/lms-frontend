@@ -1,17 +1,19 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { getMyEnrollments, type Enrollment } from '../services/enrollmentService';
-import { getMyCourses } from '../services/courseService';
-import type { Course } from '../types';
-import ProgressCard from '../components/ProgressCard';
+ import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  getMyEnrollments,
+  type Enrollment,
+} from "../services/enrollmentService";
+import { getMyCourses } from "../services/courseService";
+import type { Course } from "../types";
+import ProgressCard from "../components/ProgressCard";
 
 const DashboardPage = () => {
   const { user, token } = useAuth();
 
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [myCourses, setMyCourses] = useState<Course[]>([]);
-  
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,11 +27,11 @@ const DashboardPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        if (user.role === 'Student') {
+        if (user.role === "Student") {
           const enrollmentData = await getMyEnrollments(token);
           setEnrollments(enrollmentData);
         }
-        if (user.role === 'Instructor') {
+        if (user.role === "Instructor") {
           const courseData = await getMyCourses(token);
           setMyCourses(courseData);
         }
@@ -41,28 +43,36 @@ const DashboardPage = () => {
     };
 
     loadData();
-  }, [user, token]); 
+  }, [user, token]);
 
+  // ===========================
+  // STUDENT DASHBOARD
+  // ===========================
   const renderStudentDashboard = () => {
-    if (isLoading) {
+    if (isLoading)
       return <p className="text-center text-gray-500">Loading your courses...</p>;
-    }
-    if (error) {
+    if (error)
       return <p className="text-center text-red-500">Error: {error}</p>;
-    }
+
     return (
-      <div>
-        <h2 className="text-2xl font-bold mb-4">My Learning</h2>
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-gray-800">My Learning</h2>
+
         {enrollments.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {enrollments.map((enrollment) => (
               <ProgressCard key={enrollment._id} enrollment={enrollment} />
             ))}
           </div>
         ) : (
-          <div className="text-center bg-gray-50 p-8 rounded-lg">
-            <p className="text-gray-600">You are not enrolled in any courses yet.</p>
-            <Link to="/courses" className="mt-4 inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600">
+          <div className="text-center bg-white border border-gray-100 shadow-sm p-10 rounded-xl">
+            <p className="text-gray-600 mb-4">
+              You are not enrolled in any courses yet.
+            </p>
+            <Link
+              to="/courses"
+              className="inline-block bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700 transition-all"
+            >
               Browse Courses
             </Link>
           </div>
@@ -71,48 +81,85 @@ const DashboardPage = () => {
     );
   };
 
+  // ===========================
+  // INSTRUCTOR DASHBOARD
+  // ===========================
   const renderInstructorDashboard = () => {
-    if (isLoading) {
-        return <p className="text-center text-gray-500">Loading dashboard...</p>;
-    }
-    if (error) {
-        return <p className="text-center text-red-500">Error: {error}</p>;
-    }
+    if (isLoading)
+      return <p className="text-center text-gray-500">Loading dashboard...</p>;
+    if (error)
+      return <p className="text-center text-red-500">Error: {error}</p>;
+
     return (
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold text-gray-700">Total Courses Created</h3>
-            <p className="text-4xl font-bold text-blue-600 mt-2">{myCourses.length}</p>
+      <div className="space-y-10">
+        {/* Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Total Courses */}
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6 rounded-2xl shadow-md flex flex-col justify-center">
+            <h3 className="text-lg font-medium opacity-90">
+              Total Courses Created
+            </h3>
+            <p className="text-5xl font-bold mt-2">{myCourses.length}</p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold text-gray-700">Quick Actions</h3>
-            <div className="mt-2 space-y-2">
-                <Link to="/instructor/my-courses" className="block text-blue-500 font-medium hover:underline">
-                  Manage All Courses &rarr;
-                </Link>
-                <Link to="/instructor/courses/create" className="block text-green-500 font-medium hover:underline">
-                  Create a New Course &rarr;
-                </Link>
+
+          {/* Quick Actions */}
+          <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex flex-col justify-center">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              Quick Actions
+            </h3>
+            <div className="flex flex-col space-y-2">
+              <Link
+                to="/instructor/my-courses"
+                className="flex items-center text-indigo-600 font-medium hover:text-indigo-700 transition-colors"
+              >
+                <span className="bg-indigo-50 text-indigo-700 text-sm px-2.5 py-1 rounded-lg mr-2">
+                  📚
+                </span>
+                Manage All Courses →
+              </Link>
+
+              <Link
+                to="/instructor/courses/create"
+                className="flex items-center text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
+              >
+                <span className="bg-emerald-50 text-emerald-700 text-sm px-2.5 py-1 rounded-lg mr-2">
+                  ➕
+                </span>
+                Create a New Course →
+              </Link>
             </div>
           </div>
         </div>
 
+        {/* Recently Created Courses */}
         <div>
-          <h2 className="text-2xl font-bold mb-4">Recently Created Courses</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Recently Created Courses
+          </h2>
           {myCourses.length > 0 ? (
-            <div className="space-y-3">
-
-              {myCourses.slice(0, 3).map(course => (
-                 <Link key={course._id} to={`/instructor/courses/${course._id}/manage`} className="block bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                    <p className="font-semibold">{course.title}</p>
-                    <p className="text-sm text-gray-500">{course.category}</p>
-                 </Link>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {myCourses.slice(0, 3).map((course) => (
+                <Link
+                  key={course._id}
+                  to={`/instructor/courses/${course._id}/manage`}
+                  className="group bg-white/80 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col overflow-hidden"
+                >
+                  <div className="p-5 flex flex-col flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 leading-snug mb-1 group-hover:text-indigo-600 transition-colors">
+                      {course.title}
+                    </h3>
+                    <p className="text-sm text-gray-500 mb-2">
+                      {course.category || "General"}
+                    </p>
+                  </div>
+                </Link>
               ))}
             </div>
           ) : (
-            <div className="text-center bg-gray-50 p-8 rounded-lg">
-                <p className="text-gray-600">You have not created any courses yet.</p>
+            <div className="text-center bg-white border border-gray-100 shadow-sm p-10 rounded-xl">
+              <p className="text-gray-600">
+                You haven’t created any courses yet.
+              </p>
             </div>
           )}
         </div>
@@ -121,9 +168,20 @@ const DashboardPage = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Welcome back, {user?.name}!</h1>
-      {user?.role === 'Student' ? renderStudentDashboard() : renderInstructorDashboard()}
+    <div className="min-h-screen bg-gray-50 py-10 px-6 sm:px-10">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-8">
+          Welcome back,{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500">
+            {user?.name}
+          </span>
+          !
+        </h1>
+
+        {user?.role === "Student"
+          ? renderStudentDashboard()
+          : renderInstructorDashboard()}
+      </div>
     </div>
   );
 };

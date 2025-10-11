@@ -2,8 +2,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { loginUser } from '../services/authService';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
 import { Mail, Lock } from 'lucide-react';
 
 const LoginPage = () => {
