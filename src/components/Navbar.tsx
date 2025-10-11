@@ -73,7 +73,7 @@
  
              {/* Avatar Menu */}
              {user && (
-               <li className="relative" ref={avatarRef}>
+                <li className="relative" ref={avatarRef}>(null);
                  <button
                    onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
                    className="flex items-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 px-4 py-2 rounded-full hover:from-blue-200 hover:to-purple-200 transition-all"

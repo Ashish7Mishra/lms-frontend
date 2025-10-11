@@ -19,9 +19,9 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ enrollment }) => {
   // ✅ Pick the correct image field (handles all naming styles)
   const course = enrollment.course || {};
   const thumbnail =
-    course.thumbnail ||
+    //course.thumbnail ||
     course.imageUrl ||
-    course.image ||
+   // course.image ||
     "https://images.unsplash.com/photo-1522204502584-007f50f6e6f9?auto=format&fit=crop&w=800&q=60"; // fallback image
 
   return (
