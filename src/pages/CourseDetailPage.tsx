@@ -1,23 +1,18 @@
-// src/pages/CourseDetailPage.tsx
-
-import { useState, useEffect } from 'react';
-// --- 1. Import useLocation ---
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { getCourseById, getLessonsByCourseId } from '../services/courseService';
 import { enrollInCourse, markLessonAsComplete } from '../services/enrollmentService';
 import { useAuth } from '../contexts/AuthContext';
 import type { Course, Lesson } from '../types';
-import { CheckCircleIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
+import { CheckCircleIcon, PlayCircleIcon, LockClosedIcon } from '@heroicons/react/24/solid';
 
 const CourseDetailPage = () => {
   const { courseId } = useParams<{ courseId: string }>();
-  // --- 2. Get the location object to access passed state ---
   const location = useLocation();
-
-  // --- 3. Read the enrollment status passed from the previous page ---
   const passedEnrollmentStatus = location.state?.isEnrolled || false;
 
-  const { token, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, token } = useAuth();
+
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
@@ -34,14 +29,12 @@ const CourseDetailPage = () => {
       try {
         setIsLoading(true);
         setError(null);
-        
-        const [courseDataFromApi, lessonsData] = await Promise.all([
-          getCourseById(courseId, token),
-          getLessonsByCourseId(courseId, token),
-        ]);
-        
-        // --- 4. Manually add the passed enrollment status to the fetched course data ---
+
+        const courseDataFromApi = await getCourseById(courseId, token);
+        // Workaround: Manually add enrollment status from the previous page
         courseDataFromApi.enrollment = passedEnrollmentStatus;
+
+        const lessonsData = await getLessonsByCourseId(courseId, token);
 
         setCourse(courseDataFromApi);
         setLessons(lessonsData);
@@ -57,7 +50,6 @@ const CourseDetailPage = () => {
     };
 
     fetchData();
-    // --- 5. Add dependency to re-run if the passed state changes ---
   }, [courseId, token, passedEnrollmentStatus]);
 
   const handleEnroll = async () => {
@@ -66,7 +58,7 @@ const CourseDetailPage = () => {
     setEnrollmentError(null);
     try {
       await enrollInCourse(courseId, token);
-      setCourse(prevCourse => prevCourse ? { ...prevCourse, enrollment: true } : null);
+      setCourse(prevCourse => (prevCourse ? { ...prevCourse, enrollment: true } : null));
     } catch (err: any) {
       setEnrollmentError(err.message);
     } finally {
@@ -84,7 +76,7 @@ const CourseDetailPage = () => {
           lesson._id === selectedLesson._id ? { ...lesson, isCompleted: true } : lesson
         )
       );
-      setSelectedLesson(prev => prev ? { ...prev, isCompleted: true } : null);
+      setSelectedLesson(prev => (prev ? { ...prev, isCompleted: true } : null));
     } catch (err: any) {
       console.error("Failed to mark complete:", err);
       alert(err.message);
@@ -94,9 +86,25 @@ const CourseDetailPage = () => {
   };
 
   const renderEnrollmentButton = () => {
+    const isInstructorOwner = user?.role === 'Instructor' && user?._id === course?.instructor._id;
+
+    if (isInstructorOwner) {
+      return (
+        <Link
+          to={`/instructor/courses/${course?._id}/students`}
+          className="mt-4 w-full text-center block bg-purple-600 text-white font-bold py-3 px-4 rounded hover:bg-purple-700"
+        >
+          View Enrolled Students
+        </Link>
+      );
+    }
+
     if (!isAuthenticated) {
       return (
-        <Link to="/login" className="mt-4 w-full text-center block bg-blue-500 text-white font-bold py-3 px-4 rounded hover:bg-blue-600">
+        <Link
+          to="/login"
+          className="mt-4 w-full text-center block bg-blue-500 text-white font-bold py-3 px-4 rounded hover:bg-blue-600"
+        >
           Login to Enroll
         </Link>
       );
@@ -121,79 +129,98 @@ const CourseDetailPage = () => {
     );
   };
 
-  if (isLoading) return <p className="text-center text-gray-500">Loading course details...</p>;
+  if (isLoading) return <p className="text-center">Loading course...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
-  if (!course) return <p className="text-center text-gray-500">Course not found.</p>;
+  if (!course) return <p className="text-center">Course not found.</p>;
+
+  const isInstructorOwner = user?.role === 'Instructor' && user?._id === course.instructor._id;
+  const isEnrolledStudent = user?.role === 'Student' && course.enrollment;
+  const canWatchVideo = isInstructorOwner || isEnrolledStudent;
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Course Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold">{course.title}</h1>
         <p className="text-gray-600 mt-2">{course.description}</p>
       </div>
 
-      {/* Two-column layout for player and playlist */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Column: Video Player & Lesson Content */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             {selectedLesson ? (
               <>
-                <div className="aspect-video bg-black">
-                  <video
-                    key={selectedLesson._id}
-                    className="w-full h-full"
-                    controls
-                    autoPlay
-                    src={selectedLesson.videoUrl}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
+                <div className="aspect-video bg-black relative">
+                  {canWatchVideo ? (
+                    <video
+                      key={selectedLesson._id}
+                      className="w-full h-full"
+                      controls
+                      autoPlay
+                      src={selectedLesson.videoUrl}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <>
+                      <img
+                        src={course.imageUrl}
+                        alt={course.title}
+                        className="w-full h-full object-cover opacity-30"
+                      />
+                      <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 bg-black bg-opacity-50">
+                        <LockClosedIcon className="w-16 h-16 text-white mb-4" />
+                        <h3 className="text-2xl font-bold text-white mb-2">
+                          Content Locked
+                        </h3>
+                        <p className="text-lg text-gray-200">
+                          {isAuthenticated
+                            ? 'Enroll in this course to watch the lessons.'
+                            : 'Please log in and enroll to access this content.'}
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </div>
+
                 <div className="p-6">
                   <h2 className="text-2xl font-bold mb-3">{selectedLesson.title}</h2>
                   <p className="text-gray-700 mb-4">{selectedLesson.content}</p>
-                  
-                  {course.enrollment && (
+
+                  {isEnrolledStudent && (
                     <button
                       onClick={handleMarkComplete}
                       disabled={selectedLesson.isCompleted || isMarking}
-                      className={`w-full font-semibold py-3 px-4 rounded-md transition-colors duration-200
+                      className="w-full font-semibold py-3 px-4 rounded-md transition-colors duration-200
                         disabled:bg-gray-300 disabled:cursor-not-allowed
                         ${selectedLesson.isCompleted
                           ? 'bg-green-100 text-green-700'
                           : 'bg-blue-600 text-white hover:bg-blue-700'
-                        }`}
+                        }"
                     >
-                      {isMarking 
-                        ? 'Marking...' 
-                        : selectedLesson.isCompleted 
-                          ? '✓ Completed' 
-                          : 'Mark as Complete'}
+                      {isMarking
+                        ? 'Marking...'
+                        : selectedLesson.isCompleted
+                        ? '✓ Completed'
+                        : 'Mark as Complete'}
                     </button>
                   )}
                 </div>
               </>
             ) : (
-              <div className="p-6 text-center text-gray-500">
-                <p>Select a lesson to begin learning.</p>
-              </div>
+              <p className="p-6 text-center text-gray-500">Select a lesson to begin.</p>
             )}
           </div>
         </div>
 
-        {/* Right Column: Lesson Playlist */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-md p-4">
             {renderEnrollmentButton()}
             {enrollmentError && <p className="text-red-500 text-sm mt-2">{enrollmentError}</p>}
-            
+
             <h3 className="text-xl font-bold my-4 border-b pb-2">Course Lessons</h3>
             {lessons.length > 0 ? (
               <ul className="space-y-2">
-                {lessons.map((lesson) => (
+                {lessons.map(lesson => (
                   <li key={lesson._id}>
                     <button
                       onClick={() => setSelectedLesson(lesson)}

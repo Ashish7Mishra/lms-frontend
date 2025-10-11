@@ -11,6 +11,7 @@ import MyCoursesPage from './pages/MyCoursesPage';
 import CreateCoursePage from './pages/CreateCoursePage';
 import EditCoursePage from './pages/EditCoursePage';
 import ManageCoursePage from './pages/ManageCoursePage';
+import EnrolledStudentsPage from './pages/EnrolledStudentsPage';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             <Route path="instructor/courses/create" element={<CreateCoursePage />} />
             <Route path="instructor/courses/:courseId/edit" element={<EditCoursePage />} />
             <Route path="instructor/courses/:courseId/manage" element={<ManageCoursePage />} />
+            <Route path="instructor/courses/:courseId/students" element={<EnrolledStudentsPage />} />
             {/* Add other protected routes here in the future */}
           </Route>
         </Route>

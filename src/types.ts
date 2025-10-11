@@ -4,6 +4,12 @@ export interface Instructor {
   name: string;
   email: string;
 }
+export interface Student {
+  _id: string;
+  name: string;
+  email: string;
+  createdAt: string; 
+}
 
 export interface Course {
   _id: string;

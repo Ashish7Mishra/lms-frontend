@@ -26,7 +26,15 @@ const Header = () => {
 
                     {isAuthenticated ? (
 
-<>
+                        <>
+                            {user?.role === 'Instructor' && (
+                                <Link
+                                    to="/instructor/my-courses"
+                                    className="text-gray-600 hover:text-blue-500 font-semibold"
+                                >
+                                    My Courses
+                                </Link>
+                            )}
                             <span className="text-gray-700">Hello, {user?.name}</span>
                             <Link to="/dashboard" className="text-gray-600 hover:text-blue-500">
                                 Dashboard

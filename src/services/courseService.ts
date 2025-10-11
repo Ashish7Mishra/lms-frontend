@@ -1,8 +1,8 @@
 // src/services/courseService.ts
 
 import apiService from './apiService';
-import type { PaginatedCoursesResponse, Course, Lesson } from '../types'; // Import our new type
- // Import our new type
+import type { PaginatedCoursesResponse, Course, Lesson, Student } from '../types'; // Import our new type
+
 
 // Function to get all courses. It can optionally accept a token.
 export const getAllCourses = async (token: string | null): Promise<PaginatedCoursesResponse> => {
@@ -10,7 +10,6 @@ export const getAllCourses = async (token: string | null): Promise<PaginatedCour
     const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
     const response = await apiService.get('/courses', config);
 
-    // The API doc says the paginated object is in response.data.data
     return response.data.data;
   } catch (error: any) {
     if (error.response && error.response.data) {
@@ -24,8 +23,8 @@ export const getCourseById = async (courseId: string, token: string | null): Pro
   try {
     const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
     const response = await apiService.get(`/courses/${courseId}`, config);
-    // Assuming the single course object is directly in response.data.data
-    return response.data.data; 
+
+    return response.data.data;
   } catch (error: any) {
     if (error.response && error.response.data) {
       throw new Error(error.response.data.message || 'Failed to fetch course details.');
@@ -37,10 +36,10 @@ export const getCourseById = async (courseId: string, token: string | null): Pro
 export const getLessonsByCourseId = async (courseId: string, token: string | null): Promise<Lesson[]> => {
   try {
     const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    // According to docs, the endpoint is /lessons/course/:courseId
+
     const response = await apiService.get(`/lessons/course/${courseId}`, config);
-    // And the lessons array is in response.data.data.data
-    return response.data.data.data; 
+
+    return response.data.data.data;
   } catch (error: any) {
     if (error.response && error.response.data) {
       throw new Error(error.response.data.message || 'Failed to fetch lessons.');
@@ -57,7 +56,7 @@ export const getMyCourses = async (token: string): Promise<Course[]> => {
       },
     };
     const response = await apiService.get('/courses/my-courses', config);
-    // The structure might be nested, so we'll check common patterns
+
     const courses = response.data?.data?.data || response.data?.data || [];
     return courses;
   } catch (error: any) {
@@ -72,13 +71,12 @@ export const createCourse = async (courseData: FormData, token: string): Promise
   try {
     const config = {
       headers: {
-        // We must set the Content-Type for file uploads
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
       },
     };
     const response = await apiService.post('/courses', courseData, config);
-    return response.data.data; // Assuming API returns the new course object in data.data
+    return response.data.data;
   } catch (error: any) {
     if (error.response && error.response.data) {
       throw new Error(error.response.data.message || 'Failed to create the course.');
@@ -102,5 +100,17 @@ export const updateCourse = async (courseId: string, courseData: FormData, token
       throw new Error(error.response.data.message || 'Failed to update the course.');
     }
     throw new Error('An unexpected error occurred while updating the course.');
+  }
+};
+
+export const getEnrolledStudents = async (courseId: string, token: string): Promise<Student[]> => {
+  try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+    const response = await apiService.get(`/courses/${courseId}/students`, config);
+    return response.data?.data?.data || response.data?.data || [];
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch enrolled students.');
   }
 };
