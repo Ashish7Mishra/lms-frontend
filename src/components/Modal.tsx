@@ -1,6 +1,8 @@
 // src/components/Modal.tsx
 
-import type { ReactNode } from "react";
+// ✅ Correct import
+import type {ReactNode } from "react";
+
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
