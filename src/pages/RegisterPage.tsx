@@ -1,152 +1,166 @@
-// src/pages/RegisterPage.tsx
-
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
-import { registerUser } from '../services/authService';
+ import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { registerUser } from "../services/authService";
+import { Mail, Lock, User, GraduationCap } from "lucide-react";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
+  const [showPopup, setShowPopup] = useState(true);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: 'Student' as 'Student' | 'Instructor',
+    name: "",
+    email: "",
+    password: "",
+    role: "student",
   });
-
   const [isLoading, setIsLoading] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
-  
-  // State to hold live form validation errors
-  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    if (formErrors[name]) {
-        setFormErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    // Name Validation
-    if (!formData.name.trim()) {
-      newErrors.name = "Full Name is required.";
-    }
-
-    // Email Validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address.";
-    }
-
-    // Password Validation
-    if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters long.";
-    } else if (!/\d/.test(formData.password) || !/[a-zA-Z]/.test(formData.password)) {
-      newErrors.password = "Password must contain at least one letter and one number.";
-    }
-
-    setFormErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return; 
-    }
-    
-    setApiError(null);
+    setError(null);
     setIsLoading(true);
 
     try {
-      await registerUser(formData);
-      navigate('/login');
+      const { token, ...userData } = await registerUser(formData);
+      login(userData, token);
+
+      // Redirect based on role
+      switch (userData.role) {
+        case "admin":
+          navigate("/admin/dashboard");
+          break;
+        case "instructor":
+          navigate("/instructor/dashboard");
+          break;
+        default:
+          navigate("/dashboard");
+          break;
+      }
     } catch (err: any) {
-      setApiError(err.message);
+      setError(err.message || "Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-900">Create your Account</h2>
-        
-        {apiError && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            <span>{apiError}</span>
-          </div>
-        )}
-
-        <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-          <div>
-            <FormInput
-              label="Full Name" id="name" name="name" type="text"
-              required value={formData.name} onChange={handleChange}
-            />
-            {/* Display for name validation error */}
-            {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
-          </div>
-
-          <div>
-            <FormInput
-              label="Email Address" id="email" name="email" type="email"
-              required value={formData.email} onChange={handleChange}
-            />
-            {/* Display for email validation error */}
-            {formErrors.email && <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>}
-          </div>
-
-          <div>
-            <FormInput
-              label="Password" id="password" name="password" type="password"
-              required value={formData.password} onChange={handleChange}
-              placeholder="8+ characters, with a number and a letter"
-            />
-            {/* Display for password validation error */}
-            {formErrors.password && <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>}
-          </div>
-          
-          <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-              I am a...
-            </label>
-            <select
-              id="role" name="role" required value={formData.role}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+    <div className="flex flex-col items-center justify-center min-h-screen bg-transparent text-center">
+      {/* Popup Modal */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-10 w-full max-w-sm text-center animate-fadeIn">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-3 right-4 text-gray-300 hover:text-white text-xl font-bold"
             >
-              <option value="Student">Student</option>
-              <option value="Instructor">Instructor</option>
-            </select>
-          </div>
+              ✕
+            </button>
 
-          <div>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Creating Account...' : 'Create Account'}
-            </Button>
-          </div>
-        </form>
+            <h2 className="text-3xl font-bold text-white mb-1">
+              Glass <span className="text-orange-400">Morphism</span>
+            </h2>
+            <p className="text-gray-300 mb-8 tracking-wide text-sm">Register</p>
 
-        <p className="text-sm text-center text-gray-600">
-          Already have an account?{' '}
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Sign in
-          </Link>
-        </p>
-      </div>
+            {error && (
+              <p className="text-red-400 text-sm font-medium mb-4">{error}</p>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Name */}
+              <div className="relative">
+                <User className="absolute left-3 top-3 text-gray-300 w-5 h-5" />
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="your name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  disabled={isLoading}
+                  className="w-full px-10 py-2 rounded-lg bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                />
+              </div>
+
+              {/* Email */}
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 text-gray-300 w-5 h-5" />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="your mail here"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  disabled={isLoading}
+                  className="w-full px-10 py-2 rounded-lg bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                />
+              </div>
+
+              {/* Password */}
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 text-gray-300 w-5 h-5" />
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="your password here"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  disabled={isLoading}
+                  className="w-full px-10 py-2 rounded-lg bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                />
+              </div>
+
+              {/* Role */}
+              <div className="relative">
+                <GraduationCap className="absolute left-3 top-3 text-gray-300 w-5 h-5" />
+                <select
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                  className="w-full px-10 py-2 rounded-lg bg-white/20 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400"
+                >
+                  <option value="student" className="text-gray-800">
+                    Student
+                  </option>
+                  <option value="instructor" className="text-gray-800">
+                    Instructor
+                  </option>
+                </select>
+              </div>
+
+              {/* Register Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-orange-400/90 text-gray-900 font-semibold py-2 rounded-lg hover:bg-orange-500 transition-all shadow-md"
+              >
+                {isLoading ? "Creating Account..." : "Register"}
+              </button>
+            </form>
+
+            {/* Login link */}
+            <p className="text-gray-400 text-sm mt-6">
+              Already have an account?{" "}
+              <Link to="/login" className="text-orange-400 hover:underline">
+                Login
+              </Link>
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,7 +3,7 @@
 import apiService from './apiService';
 import type { PaginatedCoursesResponse, Course, Lesson, Student } from '../types'; // Import our new type
 
-const COURSES_PER_PAGE = 9;
+const COURSES_PER_PAGE = 20;
 
 
 // Function to get all courses. It can optionally accept a token.

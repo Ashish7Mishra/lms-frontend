@@ -17,6 +17,8 @@ import AdminLayout from './layouts/AdminLayout';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminCoursesPage from './pages/AdminCoursesPage';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 
 function App() {
   return (

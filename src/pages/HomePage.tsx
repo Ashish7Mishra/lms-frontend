@@ -1,42 +1,63 @@
-// src/pages/HomePage.tsx
-
-import { Link } from 'react-router-dom';
+ import { Link } from "react-router-dom";
 
 const HomePage = () => {
-  
-  const bannerHeight = 'calc(100vh - 4rem)'; 
-
   return (
+    <div className="bg-[#F9FAFB] min-h-screen flex flex-col">
+      {/* ===== Hero Section ===== */}
+      <section className="relative flex flex-col md:flex-row items-center justify-between px-8 md:px-20 py-16 gap-10 overflow-hidden">
+        
+        {/* Background image only visible on mobile */}
+        <img
+          src="https://img.freepik.com/free-vector/online-education-illustration_1284-68476.jpg?w=1380"
+          alt="Online Learning"
+          className="absolute inset-0 w-full h-full object-cover opacity-10 md:hidden"
+        />
 
-    <div
-      className="relative -mt-8 -mx-6" 
-      style={{ height: bannerHeight }}
-    >
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop')",
-        }}
-      ></div>
+        {/* --- Left Side Text --- */}
+        <div className="relative z-10 flex-1 text-center md:text-left">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-snug">
+            Empower Your Learning Journey <br /> with{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+              Utkal Labs LMS
+            </span>
+          </h1>
+          <p className="text-gray-600 mb-8 text-base md:text-lg">
+            Discover expert-led online courses. Build your skills and achieve
+            your learning goals with our interactive platform.
+          </p>
+          <Link
+            to="/courses"
+            className="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition"
+          >
+            View Courses
+          </Link>
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+          {/* Social Links */}
+          <div className="flex justify-center md:justify-start space-x-5 mt-6 text-gray-600">
+            <a href="https://www.instagram.com/utkallabs/" target="_blank" rel="noreferrer" className="hover:text-pink-500 transition">
+              <i className="fab fa-instagram text-xl"></i>
+            </a>
+            <a href="https://www.facebook.com/utkallabsindia/" target="_blank" rel="noreferrer" className="hover:text-blue-600 transition">
+              <i className="fab fa-facebook text-xl"></i>
+            </a>
+            <a href="https://x.com/UtkalLabs" target="_blank" rel="noreferrer" className="hover:text-sky-500 transition">
+              <i className="fab fa-twitter text-xl"></i>
+            </a>
+            <a href="https://www.linkedin.com/company/utkal-labs/" target="_blank" rel="noreferrer" className="hover:text-blue-700 transition">
+              <i className="fab fa-linkedin text-xl"></i>
+            </a>
+          </div>
+        </div>
 
-      <div className="relative z-10 flex flex-col justify-center items-center h-full text-center text-white px-4">
-        <h1 className="text-5xl md:text-6xl font-extrabold mb-4">
-          Your Learning Journey Starts Here
-        </h1>
-        <p className="text-lg md:text-xl max-w-3xl mb-8">
-          Discover a world of knowledge on our lightweight learning platform. Find the perfect course to kickstart your skills and achieve your goals.
-        </p>
-        <Link
-          to="/courses"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 duration-300"
-        >
-          Explore Courses
-        </Link>
-      </div>
+        {/* --- Right Side Image (for desktop view) --- */}
+        <div className="flex-1 hidden md:flex justify-center">
+          <img
+            src="https://img.freepik.com/free-vector/online-education-illustration_1284-68476.jpg?w=1380"
+            alt="Learning Illustration"
+            className="w-full max-w-md rounded-xl shadow-md"
+          />
+        </div>
+      </section>
     </div>
   );
 };

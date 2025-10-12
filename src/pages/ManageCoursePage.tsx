@@ -1,14 +1,20 @@
-// src/pages/ManageCoursePage.tsx
+ // src/pages/ManageCoursePage.tsx
 
-import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { getCourseById } from '../services/courseService';
-import { getLessonsByCourseId } from '../services/courseService';
-import { createLesson, updateLesson, deleteLesson } from '../services/lessonService';
-import type { Course, Lesson } from '../types';
-import Modal from '../components/Modal';
-import LessonForm from '../components/LessonForm';
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  getCourseById,
+  getLessonsByCourseId,
+} from "../services/courseService";
+import {
+  createLesson,
+  updateLesson,
+  deleteLesson,
+} from "../services/lessonService";
+import type { Course, Lesson } from "../types";
+import Modal from "../components/Modal";
+import LessonForm from "../components/LessonForm";
 
 const ManageCoursePage = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -19,7 +25,6 @@ const ManageCoursePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Modal and Form State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,12 +68,18 @@ const ManageCoursePage = () => {
     if (!token || !courseId) return;
     setIsSubmitting(true);
     try {
-      if (editingLesson) { // UPDATE
-        const updatedLesson = await updateLesson(editingLesson._id, formData, token);
-        setLessons(lessons.map(l => l._id === updatedLesson._id ? updatedLesson : l));
-      } else { // CREATE
+      if (editingLesson) {
+        const updatedLesson = await updateLesson(
+          editingLesson._id,
+          formData,
+          token
+        );
+        setLessons((prev) =>
+          prev.map((l) => (l._id === updatedLesson._id ? updatedLesson : l))
+        );
+      } else {
         const newLesson = await createLesson(courseId, formData, token);
-        setLessons([...lessons, newLesson]);
+        setLessons((prev) => [...prev, newLesson]);
       }
       closeModal();
     } catch (err: any) {
@@ -79,63 +90,123 @@ const ManageCoursePage = () => {
   };
 
   const handleDeleteLesson = async (lessonId: string) => {
-    if (!token || !window.confirm('Are you sure you want to delete this lesson?')) return;
+    if (
+      !token ||
+      !window.confirm("Are you sure you want to delete this lesson?")
+    )
+      return;
     try {
       await deleteLesson(lessonId, token);
-      setLessons(lessons.filter(l => l._id !== lessonId));
+      setLessons((prev) => prev.filter((l) => l._id !== lessonId));
     } catch (err: any) {
       alert(err.message);
     }
   };
 
-  if (isLoading) return <p>Loading course content...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (isLoading)
+    return (
+      <p className="text-center text-gray-500 py-20 animate-pulse">
+        Loading course content...
+      </p>
+    );
+
+  if (error)
+    return (
+      <p className="text-center text-red-500 py-20 text-lg">Error: {error}</p>
+    );
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
-        <h1 className="text-3xl font-bold">Manage: {course?.title}</h1>
-        <div className="flex items-center space-x-2">
-          <Link
-            to={`/courses/${course?._id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-purple-500 text-white font-bold py-2 px-4 rounded hover:bg-purple-600"
-          >
-            Preview Course
-          </Link>
-          <button onClick={openAddModal} className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600">
-            + Add Lesson
-          </button>
+    <div className="min-h-screen bg-gray-50 py-12 px-6">
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+          <h1 className="text-3xl font-extrabold text-gray-800">
+            Manage:{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              {course?.title}
+            </span>
+          </h1>
+
+          <div className="flex items-center gap-3">
+            <Link
+              to={`/courses/${course?._id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:opacity-90 transition"
+            >
+              Preview Course
+            </Link>
+            <button
+              onClick={openAddModal}
+              className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:opacity-90 transition"
+            >
+              + Add Lesson
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4">Lessons</h2>
-        <ul className="space-y-3">
-          {lessons.sort((a, b) => a.order - b.order).map(lesson => (
-            <li key={lesson._id} className="p-4 border rounded-md flex justify-between items-center">
-              <div>
-                <span className="font-bold">{lesson.order}. {lesson.title}</span>
-              </div>
-              <div className="space-x-2">
-                <button onClick={() => openEditModal(lesson)} className="text-blue-500 hover:underline">Edit</button>
-                <button onClick={() => handleDeleteLesson(lesson._id)} className="text-red-500 hover:underline">Delete</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-        {lessons.length === 0 && <p>No lessons yet. Click "Add Lesson" to get started.</p>}
-      </div>
+        {/* Lessons Section */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Lessons</h2>
 
-      <Modal isOpen={isModalOpen} onClose={closeModal} title={editingLesson ? 'Edit Lesson' : 'Add New Lesson'}>
-        <LessonForm
-          onSubmit={handleFormSubmit}
-          onCancel={closeModal}
-          isLoading={isSubmitting}
-          initialData={editingLesson}
-        />
-      </Modal>
+          {lessons.length > 0 ? (
+            <ul className="space-y-3">
+              {lessons
+                .sort((a, b) => a.order - b.order)
+                .map((lesson) => (
+                  <li
+                    key={lesson._id}
+                    className="flex justify-between items-center p-4 bg-gray-50 border border-gray-200 rounded-lg hover:shadow-md hover:-translate-y-0.5 transition-all"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-600 font-semibold">
+                        {lesson.order}.
+                      </span>
+                      <span className="font-medium text-gray-800">
+                        {lesson.title}
+                      </span>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <button
+                        onClick={() => openEditModal(lesson)}
+                        className="text-blue-600 font-medium hover:underline"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteLesson(lesson._id)}
+                        className="text-red-500 font-medium hover:underline"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <p className="text-gray-600 text-center py-8">
+              No lessons yet. Click{" "}
+              <span className="text-blue-600 font-semibold">“Add Lesson”</span>{" "}
+              to get started.
+            </p>
+          )}
+        </div>
+
+        {/* Modal */}
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          title={editingLesson ? "Edit Lesson" : "Add New Lesson"}
+        >
+          <LessonForm
+            onSubmit={handleFormSubmit}
+            onCancel={closeModal}
+            isLoading={isSubmitting}
+            initialData={editingLesson}
+          />
+        </Modal>
+      </div>
     </div>
   );
 };

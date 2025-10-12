@@ -1,10 +1,10 @@
-// src/pages/EnrolledStudentsPage.tsx
+ // src/pages/EnrolledStudentsPage.tsx
 
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { getEnrolledStudents } from '../services/courseService';
-import type { Student } from '../types';
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { getEnrolledStudents } from "../services/courseService";
+import type { Student } from "../types";
 
 const EnrolledStudentsPage = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -31,40 +31,75 @@ const EnrolledStudentsPage = () => {
     }
   }, [courseId, token]);
 
-  if (isLoading) return <p className="text-center">Loading students...</p>;
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+  if (isLoading)
+    return (
+      <p className="text-center text-gray-500 py-20 text-lg animate-pulse">
+        Loading students...
+      </p>
+    );
+
+  if (error)
+    return (
+      <p className="text-center text-red-500 py-20 text-lg">Error: {error}</p>
+    );
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Enrolled Students</h1>
-        <Link to={`/instructor/courses/${courseId}/manage`} className="text-blue-500 hover:underline">
-          &larr; Back to Course Management
-        </Link>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        {students.length > 0 ? (
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b">
-                <th className="p-4">Name</th>
-                <th className="p-4">Email</th>
-                <th className="p-4">Enrolled On</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student) => (
-                <tr key={student._id} className="border-b hover:bg-gray-50">
-                  <td className="p-4">{student.name}</td>
-                  <td className="p-4">{student.email}</td>
-                  <td className="p-4">{new Date(student.createdAt).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="text-center text-gray-500">No students are currently enrolled in this course.</p>
-        )}
+    <div className="min-h-screen bg-gray-50 py-12 px-6">
+      <div className="max-w-5xl mx-auto">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4 md:mb-0">
+            Enrolled{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Students
+            </span>
+          </h1>
+          <Link
+            to={`/instructor/courses/${courseId}/manage`}
+            className="text-sm font-semibold text-blue-600 hover:text-indigo-600 transition"
+          >
+            ← Back to Course Management
+          </Link>
+        </div>
+
+        {/* Table Section */}
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+          {students.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-gradient-to-r from-blue-50 to-indigo-50 text-gray-700 text-sm uppercase font-semibold tracking-wide">
+                  <tr>
+                    <th className="p-4">Name</th>
+                    <th className="p-4">Email</th>
+                    <th className="p-4">Enrolled On</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students.map((student, idx) => (
+                    <tr
+                      key={student._id}
+                      className={`border-b ${
+                        idx % 2 === 0 ? "bg-gray-50" : "bg-white"
+                      } hover:bg-blue-50 transition`}
+                    >
+                      <td className="p-4 text-gray-800 font-medium">
+                        {student.name}
+                      </td>
+                      <td className="p-4 text-gray-600">{student.email}</td>
+                      <td className="p-4 text-gray-500">
+                        {new Date(student.createdAt).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="text-center py-16 text-gray-500 text-lg">
+              No students are currently enrolled in this course.
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

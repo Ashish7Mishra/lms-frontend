@@ -1,34 +1,43 @@
-// src/pages/CoursesListPage.tsx
+ // src/pages/CoursesListPage.tsx
 
-import { useState, useEffect } from 'react';
-import { getAllCourses } from '../services/courseService';
-import { useAuth } from '../contexts/AuthContext';
-import type { Course } from '../types';
-import CourseCard from '../components/CourseCard';
+import { useState, useEffect } from "react";
+import { getAllCourses } from "../services/courseService";
+import { useAuth } from "../contexts/AuthContext";
+import type { Course } from "../types";
+import CourseCard from "../components/CourseCard";
 
 const CoursesListPage = () => {
   const { token } = useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
-  
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const COURSES_PER_PAGE = 8; // ✅ Only 8 cards per page (4x2 layout)
 
-    window.scrollTo(0, 0); 
-    
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
     const fetchCourses = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        const response = await getAllCourses(token, currentPage);
-        const activeCourses = response.data.filter(course => course.isActive);
 
-        setCourses(activeCourses);
-        setTotalPages(response.pagination.totalPages);
+        const response = await getAllCourses(token);
+        const activeCourses = response.data.filter((course) => course.isActive);
+
+        // Manual pagination (client-side)
+        const total = Math.ceil(activeCourses.length / COURSES_PER_PAGE);
+        setTotalPages(total);
+
+        const startIndex = (currentPage - 1) * COURSES_PER_PAGE;
+        const paginated = activeCourses.slice(
+          startIndex,
+          startIndex + COURSES_PER_PAGE
+        );
+
+        setCourses(paginated);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -39,64 +48,104 @@ const CoursesListPage = () => {
     fetchCourses();
   }, [token, currentPage]);
 
-  const handleNextPage = () => {
+  const handleNextPage = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
-  };
+  const handlePreviousPage = () =>
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
 
-  const handlePreviousPage = () => {
+  // --- Loading & Error States ---
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <p className="text-gray-500 text-lg animate-pulse">
+          Loading courses...
+        </p>
+      </div>
+    );
 
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
-  };
-
-  if (isLoading) {
-    return <p className="text-center text-gray-500">Loading courses...</p>;
-  }
-
-  if (error) {
-    return <p className="text-center text-red-500">Error: {error}</p>;
-  }
+  if (error)
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <p className="text-red-500 text-lg font-medium">Error: {error}</p>
+      </div>
+    );
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Explore Our Courses</h1>
-      {courses.length > 0 ? (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map((course) => (
-              <CourseCard key={course._id} course={course} />
-            ))}
-          </div>
-
-          {totalPages > 1 && (
-            <div className="flex justify-center items-center mt-10 space-x-4">
-              <button
-                onClick={handlePreviousPage}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
-              >
-                &larr; Previous
-              </button>
-              
-              <span className="font-semibold text-gray-700">
-                Page {currentPage} of {totalPages}
-              </span>
-
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
-              >
-                Next &rarr;
-              </button>
-            </div>
-          )}
-        </>
-      ) : (
-        <div className="text-center bg-gray-50 p-8 rounded-lg mt-8">
-            <p className="text-gray-600">No courses available at the moment.</p>
+    <div className="min-h-screen bg-gray-50 py-16 px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* ===== Page Header ===== */}
+        <div className="text-center mb-14">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800">
+            Explore Our{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Courses
+            </span>
+          </h1>
+          <p className="text-gray-500 mt-3 text-lg">
+            Learn new skills and boost your career with our expert-led programs.
+          </p>
         </div>
-      )}
+
+        {/* ===== Course Grid ===== */}
+        {courses.length > 0 ? (
+          <>
+            <div
+              className="
+                grid 
+                grid-cols-1 
+                sm:grid-cols-2 
+                md:grid-cols-3 
+                lg:grid-cols-4 
+                gap-8 
+                justify-items-center
+              "
+            >
+              {courses.map((course) => (
+                <div
+                  key={course._id}
+                  className="w-full max-w-[300px] flex justify-center"
+                >
+                  <CourseCard course={course} />
+                </div>
+              ))}
+            </div>
+
+            {/* ===== Pagination ===== */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center mt-14 space-x-4">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className="px-5 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold shadow-sm hover:bg-gray-200 hover:shadow transition disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                >
+                  ← Previous
+                </button>
+
+                <span className="text-gray-700 font-semibold text-lg">
+                  Page{" "}
+                  <span className="text-blue-600">{currentPage}</span> of{" "}
+                  {totalPages}
+                </span>
+
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className="px-5 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-semibold shadow-sm hover:shadow-md hover:opacity-90 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center bg-white p-12 rounded-2xl shadow-md mt-8">
+            <p className="text-gray-600 text-lg">
+              No courses available at the moment.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

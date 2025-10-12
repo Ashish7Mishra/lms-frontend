@@ -17,7 +17,7 @@ export interface Student {
   _id: string;
   name: string;
   email: string;
-  createdAt: string; 
+  createdAt: string;
 }
 
 export interface Course {
@@ -28,8 +28,10 @@ export interface Course {
   imageUrl: string;
   instructor: Instructor;
   isActive: boolean;
-  enrollment: boolean; 
-  progress: number;   
+  enrollment: boolean;
+  progress: number;
+  thumbnail?: string;
+  image?: string;
 }
 
 export interface PaginatedCoursesResponse {
@@ -47,6 +49,7 @@ export interface Lesson {
   title: string;
   content: string;
   order: number;
-  videoUrl: string; 
-  isCompleted?: boolean; 
+  videoUrl: string;
+  isCompleted?: boolean;
+  description?: string;
 }

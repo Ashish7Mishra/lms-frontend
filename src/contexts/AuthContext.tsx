@@ -1,6 +1,8 @@
 // src/contexts/AuthContext.tsx
 
-import React, { createContext, useState, useContext, useEffect, type ReactNode } from 'react';
+ import { createContext, useState, useContext, useEffect } from 'react';
+import type { ReactNode } from 'react';
+
 
 
 interface User {
