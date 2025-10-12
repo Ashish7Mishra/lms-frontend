@@ -12,7 +12,6 @@ import {
   PlusCircle,
   LayoutDashboard,
   Users,
-  Star,
   Activity,
 } from "lucide-react";
 
@@ -87,7 +86,7 @@ const DashboardPage = () => {
     );
   };
 
-  // --- Instructor Dashboard (Professional Version) ---
+  // --- Instructor Dashboard ---
   const renderInstructorDashboard = () => {
     if (isLoading)
       return <p className="text-center text-gray-500 py-20 animate-pulse">Loading dashboard...</p>;
@@ -124,17 +123,10 @@ const DashboardPage = () => {
           <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-6 rounded-2xl shadow-md text-white">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold opacity-90">Avg. Rating</h3>
-                <p className="text-4xl font-extrabold mt-2">
-                  {myCourses.length
-                    ? (
-                        myCourses.reduce((sum, c) => sum + (c.rating || 0), 0) /
-                        myCourses.length
-                      ).toFixed(1)
-                    : "0.0"}
-                </p>
+                <h3 className="text-lg font-semibold opacity-90">Analytics</h3>
+                <p className="text-4xl font-extrabold mt-2">📊</p>
               </div>
-              <Star className="w-10 h-10 opacity-80" />
+              <Activity className="w-10 h-10 opacity-80" />
             </div>
           </div>
         </section>
@@ -202,14 +194,8 @@ const DashboardPage = () => {
                       {course.description || "No description available."}
                     </p>
 
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-600">
-                        {course.enrolledCount || 0} Students
-                      </span>
-                      <span className="flex items-center text-yellow-500 text-sm font-medium">
-                        <Star className="w-4 h-4 mr-1 fill-yellow-400" />{" "}
-                        {course.rating ? course.rating.toFixed(1) : "N/A"}
-                      </span>
+                    <div className="mt-4 text-sm font-medium text-gray-600">
+                      {course.enrolledCount || 0} Students Enrolled
                     </div>
                   </div>
                 </Link>
