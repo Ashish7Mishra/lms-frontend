@@ -1,18 +1,26 @@
  import { Link } from "react-router-dom";
+import {
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+  Youtube,
+} from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 text-gray-700 border-t border-gray-200 mt-10">
+    <footer className="bg-gray-50 text-gray-700 border-t border-gray-200 mt-16">
       {/* Top Section */}
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* About Section */}
         <div>
           <h3 className="text-lg font-semibold mb-3 text-gray-900">
-            About LMS
+            About Utkal Labs LMS
           </h3>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Learning Management System helps you learn new skills, grow
-            professionally, and achieve your dreams with curated expert courses.
+            Learn, grow, and achieve with Utkal Labs’ LMS — designed to help you
+            master new skills and reach your professional goals with expert-led
+            courses.
           </p>
         </div>
 
@@ -51,16 +59,16 @@ const Footer = () => {
           <p className="text-sm text-gray-600">
             Email:{" "}
             <a
-              href="mailto:support@lms.utkal.labs.com"
+              href="mailto:support@utkallabs.com"
               className="hover:text-blue-600"
             >
-              support@lms.utkal.labs.com
+              support@utkallabs.com
             </a>
           </p>
-          <p className="text-sm text-gray-600">Phone: +1 (555) 123-4567</p>
+          <p className="text-sm text-gray-600">Phone: +91 98765 43210 / 9314239675</p>
         </div>
 
-        {/* Stay Updated */}
+        {/* Stay Updated + Social */}
         <div>
           <h3 className="text-lg font-semibold mb-3 text-gray-900">
             Stay Updated
@@ -73,45 +81,53 @@ const Footer = () => {
             />
             <button
               type="submit"
-              className="bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 rounded-md font-medium hover:opacity-90 transition"
+              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 rounded-md font-medium hover:opacity-90 transition"
             >
               Subscribe
             </button>
           </form>
 
           {/* Social Icons */}
-          <div className="flex space-x-4 mt-4 text-gray-500">
+          <div className="flex space-x-5 mt-5 text-gray-600">
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/utkallabsindia/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-blue-600"
+              className="hover:text-blue-600 transition-colors"
             >
-              <i className="fab fa-facebook-f"></i>
+              <Facebook className="w-5 h-5" />
             </a>
             <a
-              href="https://twitter.com"
+              href="https://x.com/UtkalLabs"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-blue-600"
+              className="hover:text-sky-500 transition-colors"
             >
-              <i className="fab fa-twitter"></i>
+              <Twitter className="w-5 h-5" />
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/company/utkal-labs/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-blue-600"
+              className="hover:text-blue-700 transition-colors"
             >
-              <i className="fab fa-linkedin-in"></i>
+              <Linkedin className="w-5 h-5" />
+            </a>
+            <a
+              href="https://www.instagram.com/utkallabs/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-pink-500 transition-colors"
+            >
+              <Instagram className="w-5 h-5" />
             </a>
           </div>
         </div>
       </div>
 
-      {/* Bottom Copyright */}
-      <div className="border-t border-gray-200 text-center py-4 text-sm text-gray-500">
-        © {new Date().getFullYear()} LMS. All rights reserved.
+      {/* Bottom Section */}
+      <div className="border-t border-gray-200 text-center py-5 text-sm text-gray-500">
+        © {new Date().getFullYear()} <span className="font-semibold">Utkal Labs LMS</span>. All rights reserved.
       </div>
     </footer>
   );

@@ -17,16 +17,16 @@ const InstructorCourseCard: React.FC<InstructorCourseCardProps> = ({
 
   return (
     <div
-      className={`relative bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 transition-transform hover:scale-[1.02] hover:shadow-xl flex flex-col h-full ${
+      className={`relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col transition-all hover:shadow-xl hover:-translate-y-1 duration-200 ${
         !course.isActive ? "opacity-60" : ""
       }`}
     >
-      {/* Image */}
+      {/* Course Image */}
       <div className="relative">
         <img
           src={course.imageUrl || "https://via.placeholder.com/400x200"}
           alt={course.title}
-          className="w-full h-48 object-cover"
+          className="w-full h-44 object-cover"
         />
         <span
           className={`absolute top-3 right-3 text-xs font-semibold py-1 px-3 uppercase rounded-full text-white shadow-md ${
@@ -39,30 +39,29 @@ const InstructorCourseCard: React.FC<InstructorCourseCardProps> = ({
         </span>
       </div>
 
-      {/* Content */}
-      <div className="p-5 flex flex-col justify-between flex-1 space-y-3">
-        {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
+      {/* Course Content */}
+      <div className="flex flex-col flex-1 p-5">
+        <h3 className="text-lg font-semibold text-gray-800 line-clamp-2 mb-3">
           {course.title}
         </h3>
 
         {/* Buttons Section */}
         <div className="flex flex-col space-y-2 mt-auto">
-          <div className="flex gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {/* Edit Button */}
             <Link
               to={`/instructor/courses/${course._id}/edit`}
-              className={`flex-1 text-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium py-2 rounded-lg shadow-md hover:shadow-lg hover:opacity-90 transition-all ${
+              className={`text-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium py-2 rounded-lg shadow-md hover:shadow-lg hover:opacity-90 transition-all ${
                 !course.isActive && disabledLinkStyle
               }`}
             >
               Edit Details
             </Link>
 
-            {/* Manage Button */}
+            {/* Manage Lessons */}
             <Link
               to={`/instructor/courses/${course._id}/manage`}
-              className={`flex-1 text-center bg-gray-100 text-gray-800 font-medium py-2 rounded-lg border hover:bg-gray-200 transition ${
+              className={`text-center bg-gray-100 text-gray-800 font-medium py-2 rounded-lg border hover:bg-gray-200 transition-all ${
                 !course.isActive && disabledLinkStyle
               }`}
             >
@@ -75,23 +74,23 @@ const InstructorCourseCard: React.FC<InstructorCourseCardProps> = ({
             to={`/courses/${course._id}`}
             target="_blank"
             rel="noopener noreferrer"
-            className={`w-full text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium py-2 rounded-lg shadow-md hover:opacity-90 transition ${
+            className={`text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium py-2 rounded-lg shadow-md hover:opacity-90 transition-all ${
               !course.isActive && disabledLinkStyle
             }`}
           >
             Preview as Student
           </Link>
 
-          {/* Active / Inactive Button */}
+          {/* Deactivate Button */}
           {course.isActive ? (
             <button
               onClick={() => onDeactivate(course._id)}
-              className="w-full text-center bg-gradient-to-r from-red-500 to-red-600 text-white font-medium py-2 rounded-lg shadow-md hover:shadow-lg hover:opacity-90 transition"
+              className="text-center bg-gradient-to-r from-red-500 to-red-600 text-white font-medium py-2 rounded-lg shadow-md hover:shadow-lg hover:opacity-90 transition-all"
             >
               Deactivate Course
             </button>
           ) : (
-            <div className="w-full text-center bg-gray-300 text-gray-500 font-semibold py-2 rounded-lg cursor-not-allowed">
+            <div className="text-center bg-gray-300 text-gray-500 font-semibold py-2 rounded-lg cursor-not-allowed">
               Deactivated
             </div>
           )}

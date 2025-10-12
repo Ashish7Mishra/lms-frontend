@@ -14,6 +14,8 @@ const CoursesListPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const COURSES_PER_PAGE = 8; // ✅ Only 8 cards per page (4x2 layout)
+
   useEffect(() => {
     window.scrollTo(0, 0);
 
@@ -21,10 +23,21 @@ const CoursesListPage = () => {
       try {
         setIsLoading(true);
         setError(null);
-        const response = await getAllCourses(token, currentPage);
+
+        const response = await getAllCourses(token);
         const activeCourses = response.data.filter((course) => course.isActive);
-        setCourses(activeCourses);
-        setTotalPages(response.pagination.totalPages);
+
+        // Manual pagination (client-side)
+        const total = Math.ceil(activeCourses.length / COURSES_PER_PAGE);
+        setTotalPages(total);
+
+        const startIndex = (currentPage - 1) * COURSES_PER_PAGE;
+        const paginated = activeCourses.slice(
+          startIndex,
+          startIndex + COURSES_PER_PAGE
+        );
+
+        setCourses(paginated);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -41,50 +54,66 @@ const CoursesListPage = () => {
   const handlePreviousPage = () =>
     setCurrentPage((prev) => Math.max(prev - 1, 1));
 
+  // --- Loading & Error States ---
   if (isLoading)
     return (
-      <p className="text-center text-gray-500 py-20 text-lg animate-pulse">
-        Loading courses...
-      </p>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <p className="text-gray-500 text-lg animate-pulse">
+          Loading courses...
+        </p>
+      </div>
     );
 
   if (error)
     return (
-      <p className="text-center text-red-500 py-20 text-lg">
-        Error: {error}
-      </p>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <p className="text-red-500 text-lg font-medium">Error: {error}</p>
+      </div>
     );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-16 px-6">
       <div className="max-w-7xl mx-auto">
-        {/* Page Header */}
-        <div className="text-center mb-12">
+        {/* ===== Page Header ===== */}
+        <div className="text-center mb-14">
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800">
             Explore Our{" "}
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Courses
             </span>
           </h1>
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 mt-3 text-lg">
             Learn new skills and boost your career with our expert-led programs.
           </p>
         </div>
 
-        {/* 4 x 2 Grid Layout */}
+        {/* ===== Course Grid ===== */}
         {courses.length > 0 ? (
           <>
-            <div className="grid grid-cols-4 gap-6 justify-items-center">
+            <div
+              className="
+                grid 
+                grid-cols-1 
+                sm:grid-cols-2 
+                md:grid-cols-3 
+                lg:grid-cols-4 
+                gap-8 
+                justify-items-center
+              "
+            >
               {courses.map((course) => (
-                <div key={course._id} className="w-[280px]">
+                <div
+                  key={course._id}
+                  className="w-full max-w-[300px] flex justify-center"
+                >
                   <CourseCard course={course} />
                 </div>
               ))}
             </div>
 
-            {/* Pagination */}
+            {/* ===== Pagination ===== */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center mt-12 space-x-4">
+              <div className="flex justify-center items-center mt-14 space-x-4">
                 <button
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1}
@@ -93,7 +122,7 @@ const CoursesListPage = () => {
                   ← Previous
                 </button>
 
-                <span className="text-gray-700 font-semibold">
+                <span className="text-gray-700 font-semibold text-lg">
                   Page{" "}
                   <span className="text-blue-600">{currentPage}</span> of{" "}
                   {totalPages}

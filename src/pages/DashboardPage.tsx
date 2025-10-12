@@ -1,6 +1,4 @@
- // src/pages/DashboardPage.tsx
-
-import { useState, useEffect } from "react";
+ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getMyEnrollments, type Enrollment } from "../services/enrollmentService";
@@ -95,10 +93,10 @@ const DashboardPage = () => {
       return <p className="text-center text-red-500 py-20">Error: {error}</p>;
 
     return (
-      <div className="space-y-10">
+      <div className="space-y-12">
         {/* Analytics Section */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-6 rounded-2xl shadow-md text-white">
+          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-6 rounded-2xl shadow-lg text-white">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold opacity-90">Total Courses</h3>
@@ -108,7 +106,7 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-6 rounded-2xl shadow-md text-white">
+          <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-6 rounded-2xl shadow-lg text-white">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold opacity-90">Total Students</h3>
@@ -120,7 +118,7 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-6 rounded-2xl shadow-md text-white">
+          <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-6 rounded-2xl shadow-lg text-white">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold opacity-90">Analytics</h3>
@@ -131,25 +129,33 @@ const DashboardPage = () => {
           </div>
         </section>
 
-        {/* Quick Actions */}
+        {/* Premium Quick Actions */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <Link
             to="/instructor/courses/create"
-            className="flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl shadow-md font-semibold hover:scale-[1.02] transition-all"
+            className="relative flex items-center justify-center overflow-hidden py-4 rounded-xl font-semibold text-white shadow-lg transition-all group"
           >
-            <PlusCircle className="w-5 h-5 mr-2" /> Create New Course
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 group-hover:opacity-90 transition duration-300"></div>
+            <PlusCircle className="w-5 h-5 mr-2 relative z-10" />
+            <span className="relative z-10">Create New Course</span>
           </Link>
+
           <Link
             to="/instructor/my-courses"
-            className="flex items-center justify-center bg-gradient-to-r from-violet-500 to-indigo-600 text-white py-4 rounded-xl shadow-md font-semibold hover:scale-[1.02] transition-all"
+            className="relative flex items-center justify-center overflow-hidden py-4 rounded-xl font-semibold text-white shadow-lg transition-all group"
           >
-            <LayoutDashboard className="w-5 h-5 mr-2" /> Manage My Courses
+            <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-indigo-600 group-hover:opacity-90 transition duration-300"></div>
+            <LayoutDashboard className="w-5 h-5 mr-2 relative z-10" />
+            <span className="relative z-10">Manage My Courses</span>
           </Link>
+
           <button
             disabled
-            className="flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500 text-white py-4 rounded-xl shadow-md font-semibold cursor-default opacity-80"
+            className="relative flex items-center justify-center overflow-hidden py-4 rounded-xl font-semibold text-white shadow-md cursor-default opacity-80"
           >
-            <Activity className="w-5 h-5 mr-2" /> Analytics (Coming Soon)
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500"></div>
+            <Activity className="w-5 h-5 mr-2 relative z-10" />
+            <span className="relative z-10">Analytics (Coming Soon)</span>
           </button>
         </section>
 
@@ -181,7 +187,7 @@ const DashboardPage = () => {
                           "https://img.freepik.com/free-vector/online-education-concept-illustration_114360-6279.jpg?w=826";
                       }}
                     />
-                    <span className="absolute top-3 right-3 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full">
+                    <span className="absolute top-3 right-3 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full shadow-md">
                       {course.category || "General"}
                     </span>
                   </div>

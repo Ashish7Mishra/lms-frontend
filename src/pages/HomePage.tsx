@@ -1,4 +1,5 @@
  import { Link } from "react-router-dom";
+import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 
 const HomePage = () => {
   return (
@@ -28,21 +29,44 @@ const HomePage = () => {
 
           <Link
             to="/courses"
-            className="inline-block px-6 py-3 bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-semibold rounded-full shadow-md transition-transform transform hover:scale-105"
+            className="inline-block px-6 py-3 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] hover:opacity-90 text-white font-semibold rounded-full shadow-md transition-transform transform hover:scale-105"
           >
             View Courses
           </Link>
 
           {/* --- Social Icons --- */}
-          <div className="flex gap-4 mt-8 text-gray-500">
-            <a href="#" className="hover:text-[#7C3AED]">
-              <i className="fab fa-instagram text-xl"></i>
+          <div className="flex gap-5 mt-8 text-gray-500">
+            <a
+              href="https://www.instagram.com/utkallabs/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-pink-500 transition-colors"
+            >
+              <Instagram className="w-6 h-6" />
             </a>
-            <a href="#" className="hover:text-[#7C3AED]">
-              <i className="fab fa-facebook text-xl"></i>
+            <a
+              href="https://www.facebook.com/utkallabsindia/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-600 transition-colors"
+            >
+              <Facebook className="w-6 h-6" />
             </a>
-            <a href="#" className="hover:text-[#7C3AED]">
-              <i className="fab fa-twitter text-xl"></i>
+            <a
+              href="https://x.com/UtkalLabs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-sky-500 transition-colors"
+            >
+              <Twitter className="w-6 h-6" />
+            </a>
+            <a
+              href="https://www.linkedin.com/company/utkal-labs/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-700 transition-colors"
+            >
+              <Linkedin className="w-6 h-6" />
             </a>
           </div>
         </div>

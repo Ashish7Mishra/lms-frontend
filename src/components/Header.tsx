@@ -46,11 +46,7 @@ const Navbar = () => {
         <nav className="max-w-7xl mx-auto flex justify-between items-center py-3 px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img
-              src="src/assets/logo.jpg"
-              alt="LMS Logo"
-              className="h-10 w-auto object-contain"
-            />
+            
             <span className="text-lg font-bold text-indigo-600">LMS</span>
           </Link>
 
