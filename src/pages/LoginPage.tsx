@@ -31,7 +31,11 @@ const LoginPage = () => {
       
       login(userData, token);
 
-      navigate('/dashboard');
+       if (userData.role === 'Admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
 
     } catch (err: any) {
       setError(err.message);

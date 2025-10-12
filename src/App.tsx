@@ -12,6 +12,11 @@ import CreateCoursePage from './pages/CreateCoursePage';
 import EditCoursePage from './pages/EditCoursePage';
 import ManageCoursePage from './pages/ManageCoursePage';
 import EnrolledStudentsPage from './pages/EnrolledStudentsPage';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
+import AdminLayout from './layouts/AdminLayout';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import AdminUsersPage from './pages/AdminUsersPage';
+import AdminCoursesPage from './pages/AdminCoursesPage';
 
 function App() {
   return (
@@ -35,6 +40,16 @@ function App() {
             <Route path="instructor/courses/:courseId/students" element={<EnrolledStudentsPage />} />
 
           </Route>
+
+          <Route element={<AdminProtectedRoute />}>
+            <Route path="/admin" element={<AdminLayout />}>
+            <Route path="dashboard" element={<AdminDashboardPage />} /> 
+             <Route path="users" element={<AdminUsersPage />} />
+              <Route path="courses" element={<AdminCoursesPage />  }/>
+            </Route>
+          </Route>
+
+
         </Route>
       </Routes>
     </BrowserRouter>
