@@ -1,4 +1,6 @@
- import React, { useState, useEffect } from "react";
+ // src/pages/EditCoursePage.tsx
+
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getCourseById, updateCourse } from "../services/courseService";
@@ -65,10 +67,7 @@ const EditCoursePage = () => {
     formData.append("title", courseDetails.title);
     formData.append("description", courseDetails.description);
     formData.append("category", courseDetails.category);
-
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
+    if (imageFile) formData.append("image", imageFile);
 
     try {
       await updateCourse(courseId, formData, token);
@@ -81,23 +80,22 @@ const EditCoursePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-10 border border-gray-100">
-        <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-800">
+    <div className="min-h-screen bg-gray-50 py-12 px-6 flex items-center justify-center">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
+        <h1 className="text-3xl font-extrabold text-center text-gray-800 mb-8">
           Edit{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500">
+          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Course
           </span>
         </h1>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded-md text-sm">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center">
               {error}
             </div>
           )}
 
-          {/* Title */}
           <FormInput
             label="Course Title"
             id="title"
@@ -112,7 +110,7 @@ const EditCoursePage = () => {
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-semibold text-gray-700"
+              className="block text-sm font-semibold text-gray-700 mb-1"
             >
               Description
             </label>
@@ -123,12 +121,11 @@ const EditCoursePage = () => {
               required
               value={courseDetails.description}
               onChange={handleChange}
-              className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
-              placeholder="Update your course description..."
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm"
+              placeholder="Update course description..."
             />
           </div>
 
-          {/* Category */}
           <FormInput
             label="Category"
             id="category"
@@ -139,25 +136,22 @@ const EditCoursePage = () => {
             onChange={handleChange}
           />
 
-          {/* Image Update */}
+          {/* Existing Image */}
           <div>
             <label
               htmlFor="image"
-              className="block text-sm font-semibold text-gray-700"
+              className="block text-sm font-semibold text-gray-700 mb-2"
             >
-              Update Course Thumbnail
+              Update Course Image <span className="text-gray-400">(optional)</span>
             </label>
 
             {existingImageUrl && (
-              <div className="mt-3 flex items-center gap-4">
+              <div className="mb-3">
                 <img
                   src={existingImageUrl}
                   alt="Current course"
-                  className="w-24 h-24 object-cover rounded-lg border border-gray-200 shadow-sm"
+                  className="w-32 h-32 object-cover rounded-lg border border-gray-200 shadow-sm"
                 />
-                <span className="text-gray-500 text-sm">
-                  Current image preview
-                </span>
               </div>
             )}
 
@@ -167,26 +161,20 @@ const EditCoursePage = () => {
               type="file"
               accept="image/png, image/jpeg, image/jpg"
               onChange={handleFileChange}
-              className="mt-3 block w-full text-sm text-gray-500
+              className="block w-full text-sm text-gray-500 cursor-pointer
                 file:mr-4 file:py-2 file:px-4
-                file:rounded-lg file:border-0
-                file:text-sm file:font-medium
-                file:bg-indigo-50 file:text-indigo-700
-                hover:file:bg-indigo-100 transition-colors"
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-gradient-to-r file:from-blue-100 file:to-indigo-100
+                file:text-blue-700 hover:file:opacity-80"
             />
-            {imageFile && (
-              <p className="mt-2 text-sm text-gray-600 italic">
-                New selected image: {imageFile.name}
-              </p>
-            )}
           </div>
 
-          {/* Submit */}
-          <div className="pt-4">
+          <div>
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all disabled:bg-indigo-300"
+              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90"
             >
               {isLoading ? "Saving Changes..." : "Save Changes"}
             </Button>

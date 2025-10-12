@@ -1,4 +1,6 @@
- import React, { useState, useEffect } from "react";
+ // src/components/LessonForm.tsx
+
+import React, { useState, useEffect } from "react";
 import type { Lesson } from "../types";
 import FormInput from "./FormInput";
 import Button from "./Button";
@@ -51,21 +53,15 @@ const LessonForm: React.FC<LessonFormProps> = ({
     formData.append("title", details.title);
     formData.append("content", details.content);
     formData.append("order", details.order);
-    if (videoFile) formData.append("video", videoFile);
+    if (videoFile) {
+      formData.append("video", videoFile);
+    }
     onSubmit(formData);
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-md border border-gray-100 space-y-6"
-    >
-      {/* Header */}
-      <h2 className="text-2xl font-bold text-gray-800 border-b pb-3">
-        {initialData ? "Edit Lesson" : "Add New Lesson"}
-      </h2>
-
-      {/* Title Input */}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Lesson Title */}
       <FormInput
         label="Lesson Title"
         name="title"
@@ -74,25 +70,29 @@ const LessonForm: React.FC<LessonFormProps> = ({
         required
       />
 
-      {/* Content Input */}
+      {/* Lesson Content */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
+        <label
+          htmlFor="content"
+          className="block text-sm font-semibold text-gray-700 mb-1"
+        >
           Content
         </label>
         <textarea
+          id="content"
           name="content"
           value={details.content}
           onChange={handleChange}
           rows={4}
           required
-          placeholder="Write a brief overview or description of this lesson..."
-          className="mt-1 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow p-3 text-gray-800 placeholder-gray-400 resize-none"
+          placeholder="Enter lesson content or summary..."
+          className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition sm:text-sm"
         />
       </div>
 
-      {/* Order Input */}
+      {/* Lesson Order */}
       <FormInput
-        label="Lesson Order"
+        label="Order"
         name="order"
         type="number"
         value={details.order}
@@ -101,44 +101,40 @@ const LessonForm: React.FC<LessonFormProps> = ({
         min="1"
       />
 
-      {/* File Upload */}
+      {/* Video Upload */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
+        <label
+          htmlFor="video"
+          className="block text-sm font-semibold text-gray-700 mb-1"
+        >
           {initialData ? "Upload New Video (Optional)" : "Lesson Video"}
         </label>
         <input
+          id="video"
           type="file"
           onChange={handleFileChange}
           required={!initialData}
           accept="video/*"
-          className="mt-2 block w-full text-sm text-gray-600
-            file:mr-4 file:py-2.5 file:px-4 file:rounded-lg
-            file:border-0 file:text-sm file:font-semibold
-            file:bg-blue-50 file:text-blue-700
-            hover:file:bg-blue-100 transition-all cursor-pointer"
+          className="block w-full text-sm text-gray-600
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-full file:border-0
+            file:text-sm file:font-semibold
+            file:bg-gradient-to-r file:from-blue-100 file:to-indigo-100
+            file:text-blue-700 hover:file:opacity-80 cursor-pointer transition"
         />
-
-        {initialData && (
-          <p className="text-xs text-gray-500 mt-2">
-            Current video will remain unless you upload a new one.
-          </p>
-        )}
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-end items-center space-x-3 pt-4 border-t">
+      <div className="flex justify-end gap-3 pt-4">
         <button
           type="button"
           onClick={onCancel}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-5 rounded-lg shadow-sm transition-all"
+          className="px-5 py-2 rounded-lg bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300 transition"
         >
           Cancel
         </button>
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="px-6 py-2 rounded-lg"
-        >
+
+        <Button type="submit" disabled={isLoading}>
           {isLoading ? "Saving..." : initialData ? "Update Lesson" : "Save Lesson"}
         </Button>
       </div>

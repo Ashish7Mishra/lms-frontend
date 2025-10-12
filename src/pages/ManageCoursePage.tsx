@@ -1,4 +1,6 @@
- import React, { useState, useEffect } from "react";
+ // src/pages/ManageCoursePage.tsx
+
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -23,7 +25,6 @@ const ManageCoursePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Modal and Form State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,10 +74,8 @@ const ManageCoursePage = () => {
           formData,
           token
         );
-        setLessons((lessons) =>
-          lessons.map((l) =>
-            l._id === updatedLesson._id ? updatedLesson : l
-          )
+        setLessons((prev) =>
+          prev.map((l) => (l._id === updatedLesson._id ? updatedLesson : l))
         );
       } else {
         const newLesson = await createLesson(courseId, formData, token);
@@ -98,7 +97,7 @@ const ManageCoursePage = () => {
       return;
     try {
       await deleteLesson(lessonId, token);
-      setLessons((lessons) => lessons.filter((l) => l._id !== lessonId));
+      setLessons((prev) => prev.filter((l) => l._id !== lessonId));
     } catch (err: any) {
       alert(err.message);
     }
@@ -106,41 +105,40 @@ const ManageCoursePage = () => {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center h-64 text-gray-600">
+      <p className="text-center text-gray-500 py-20 animate-pulse">
         Loading course content...
-      </div>
+      </p>
     );
 
   if (error)
     return (
-      <p className="text-center text-red-500 font-medium mt-10">Error: {error}</p>
+      <p className="text-center text-red-500 py-20 text-lg">Error: {error}</p>
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-2xl border border-gray-100 p-8">
+    <div className="min-h-screen bg-gray-50 py-12 px-6">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
-          <h1 className="text-4xl font-extrabold text-gray-800 mb-4 sm:mb-0">
-            Manage{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500">
-              {course?.title || "Course"}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+          <h1 className="text-3xl font-extrabold text-gray-800">
+            Manage:{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              {course?.title}
             </span>
           </h1>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex items-center gap-3">
             <Link
               to={`/courses/${course?._id}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-lg shadow-sm transition-all"
+              className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:opacity-90 transition"
             >
               Preview Course
             </Link>
-
             <button
               onClick={openAddModal}
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-5 rounded-lg shadow-sm transition-all"
+              className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:opacity-90 transition"
             >
               + Add Lesson
             </button>
@@ -148,38 +146,37 @@ const ManageCoursePage = () => {
         </div>
 
         {/* Lessons Section */}
-        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-inner">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            Course Lessons
-          </h2>
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Lessons</h2>
 
           {lessons.length > 0 ? (
-            <ul className="space-y-4">
+            <ul className="space-y-3">
               {lessons
                 .sort((a, b) => a.order - b.order)
                 .map((lesson) => (
                   <li
                     key={lesson._id}
-                    className="p-5 bg-white rounded-xl shadow-sm border border-gray-100 flex justify-between items-center hover:shadow-md transition-all"
+                    className="flex justify-between items-center p-4 bg-gray-50 border border-gray-200 rounded-lg hover:shadow-md hover:-translate-y-0.5 transition-all"
                   >
-                    <div>
-                      <p className="text-lg font-semibold text-gray-800">
-                        {lesson.order}. {lesson.title}
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1 line-clamp-1">
-                        {lesson.description || "No description available."}
-                      </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-600 font-semibold">
+                        {lesson.order}.
+                      </span>
+                      <span className="font-medium text-gray-800">
+                        {lesson.title}
+                      </span>
                     </div>
-                    <div className="flex gap-3">
+
+                    <div className="flex gap-4">
                       <button
                         onClick={() => openEditModal(lesson)}
-                        className="text-indigo-600 font-medium hover:text-indigo-800"
+                        className="text-blue-600 font-medium hover:underline"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDeleteLesson(lesson._id)}
-                        className="text-red-500 font-medium hover:text-red-700"
+                        className="text-red-500 font-medium hover:underline"
                       >
                         Delete
                       </button>
@@ -188,37 +185,28 @@ const ManageCoursePage = () => {
                 ))}
             </ul>
           ) : (
-            <div className="text-center py-10">
-              <p className="text-gray-600 mb-4">
-                No lessons yet. Click{" "}
-                <span className="font-semibold text-green-600">
-                  “Add Lesson”
-                </span>{" "}
-                to get started.
-              </p>
-              <button
-                onClick={openAddModal}
-                className="bg-green-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-600 transition-all"
-              >
-                Add First Lesson
-              </button>
-            </div>
+            <p className="text-gray-600 text-center py-8">
+              No lessons yet. Click{" "}
+              <span className="text-blue-600 font-semibold">“Add Lesson”</span>{" "}
+              to get started.
+            </p>
           )}
         </div>
-      </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        title={editingLesson ? "Edit Lesson" : "Add New Lesson"}
-      >
-        <LessonForm
-          onSubmit={handleFormSubmit}
-          onCancel={closeModal}
-          isLoading={isSubmitting}
-          initialData={editingLesson}
-        />
-      </Modal>
+        {/* Modal */}
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          title={editingLesson ? "Edit Lesson" : "Add New Lesson"}
+        >
+          <LessonForm
+            onSubmit={handleFormSubmit}
+            onCancel={closeModal}
+            isLoading={isSubmitting}
+            initialData={editingLesson}
+          />
+        </Modal>
+      </div>
     </div>
   );
 };

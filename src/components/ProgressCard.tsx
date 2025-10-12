@@ -1,4 +1,6 @@
- import React, { useEffect, useState } from "react";
+ // src/components/ProgressCard.tsx
+
+import React from "react";
 import { Link } from "react-router-dom";
 import type { Enrollment } from "../services/enrollmentService";
 
@@ -7,77 +9,73 @@ interface ProgressCardProps {
 }
 
 const ProgressCard: React.FC<ProgressCardProps> = ({ enrollment }) => {
-  const targetProgress = enrollment.progress || 0;
-  const [animatedProgress, setAnimatedProgress] = useState(0);
-
-  // Animate the progress bar
-  useEffect(() => {
-    const timeout = setTimeout(() => setAnimatedProgress(targetProgress), 150);
-    return () => clearTimeout(timeout);
-  }, [targetProgress]);
-
-  // ✅ Pick the correct image field (handles all naming styles)
-  const course = enrollment.course || {};
-  const thumbnail =
-    course.thumbnail ||
-    course.imageUrl ||
-   course.image ||
-    "https://images.unsplash.com/photo-1522204502584-007f50f6e6f9?auto=format&fit=crop&w=800&q=60"; // fallback image
+  const { course, progress } = enrollment;
+  const isInactive = !course.isActive;
 
   return (
-    <div className="group bg-white/80 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
-      {/* ✅ Thumbnail */}
-      <div className="relative h-44 w-full overflow-hidden">
+    <div
+      className={`relative bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+        isInactive ? "opacity-60 grayscale" : ""
+      }`}
+    >
+      {/* Course Image */}
+      <div className="relative">
         <img
-          src={thumbnail}
-          alt={course.title || "Course Thumbnail"}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src =
-              "https://images.unsplash.com/photo-1522204502584-007f50f6e6f9?auto=format&fit=crop&w=800&q=60";
-          }}
+          src={course.imageUrl || "https://via.placeholder.com/400x200"}
+          alt={course.title}
+          className="w-full h-48 object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent"></div>
 
-        {course.category && (
-          <span className="absolute bottom-2 right-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
-            {course.category}
+        {/* Status Badge */}
+        {isInactive && (
+          <span className="absolute top-3 right-3 bg-gradient-to-r from-red-500 to-rose-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+            Inactive
           </span>
         )}
       </div>
 
-      {/* Course Info */}
-      <div className="p-5 flex flex-col flex-1">
-        <h3 className="text-lg font-semibold text-gray-900 line-clamp-1 mb-1">
-          {course.title || "Untitled Course"}
+      {/* Card Body */}
+      <div className="p-5 space-y-4">
+        <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
+          {course.title}
         </h3>
 
-        <p className="text-sm text-gray-500 line-clamp-2 mb-4">
-          {course.description || "No description available."}
-        </p>
-
-        {/* Progress */}
-        <div className="mt-auto mb-4">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-sm font-medium text-gray-700">Progress</span>
-            <span className="text-sm font-semibold text-indigo-600">
-              {animatedProgress}%
+        {/* Progress Section */}
+        <div>
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium text-gray-600">Progress</span>
+            <span className="text-sm font-semibold text-blue-600">
+              {progress}%
             </span>
           </div>
+
+          {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
             <div
-              className="bg-gradient-to-r from-indigo-500 to-pink-500 h-2.5 rounded-full transition-all duration-[1500ms] ease-out"
-              style={{ width: `${animatedProgress}%` }}
+              className={`h-2.5 rounded-full transition-all duration-500 ${
+                progress === 100
+                  ? "bg-gradient-to-r from-green-500 to-emerald-600"
+                  : "bg-gradient-to-r from-blue-500 to-indigo-600"
+              }`}
+              style={{ width: `${progress}%` }}
             ></div>
           </div>
         </div>
 
-        {/* Button */}
+        {/* Action Button */}
         <Link
-          to={`/courses/${course._id}`}
-          className="inline-block w-full text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300"
+          to={isInactive ? "#" : `/courses/${course._id}`}
+          state={{ isEnrolled: true }}
+          onClick={(e) => {
+            if (isInactive) e.preventDefault();
+          }}
+          className={`block text-center font-semibold py-2.5 rounded-lg transition-all duration-200 ${
+            isInactive
+              ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+              : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:opacity-90 shadow-md hover:shadow-lg"
+          }`}
         >
-          Continue Learning →
+          {isInactive ? "Course is Inactive" : "Continue Learning"}
         </Link>
       </div>
     </div>

@@ -7,9 +7,8 @@ const HomePage = () => {
       <section className="flex flex-col md:flex-row items-center justify-between px-8 md:px-20 py-16 gap-10">
         {/* --- Left Side Text --- */}
         <div className="flex-1 text-left">
-          
           <h2 className="text-2xl font-semibold text-[#6b7280] mb-4">
-       Learning Management System
+            Learning Management System
           </h2>
 
           <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
@@ -20,6 +19,7 @@ const HomePage = () => {
           <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Read, Write and Remember
           </h3>
+
           <p className="text-gray-600 max-w-md mb-6">
             Learn from anywhere and grow your career with world-class online
             courses. Build your skills and achieve your learning goals with our
@@ -33,7 +33,7 @@ const HomePage = () => {
             View Courses
           </Link>
 
-          {/* Social icons */}
+          {/* --- Social Icons --- */}
           <div className="flex gap-4 mt-8 text-gray-500">
             <a href="#" className="hover:text-[#7C3AED]">
               <i className="fab fa-instagram text-xl"></i>

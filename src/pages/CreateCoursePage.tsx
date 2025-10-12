@@ -61,18 +61,18 @@ const CreateCoursePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-white py-16 px-6 sm:px-10">
-      <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-10 border border-gray-100">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-10 text-gray-800">
+    <div className="min-h-screen bg-gray-50 py-12 px-6 flex items-center justify-center">
+      <div className="w-full max-w-2xl bg-white shadow-lg rounded-2xl p-8">
+        <h1 className="text-3xl font-extrabold text-center text-gray-800 mb-8">
           Create a{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500">
+          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             New Course
           </span>
         </h1>
 
-        <form className="space-y-8" onSubmit={handleSubmit}>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded-md text-sm shadow-sm">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center">
               {error}
             </div>
           )}
@@ -85,7 +85,6 @@ const CreateCoursePage = () => {
             required
             value={courseDetails.title}
             onChange={handleChange}
-            placeholder="Enter your course title"
           />
 
           <div>
@@ -98,12 +97,12 @@ const CreateCoursePage = () => {
             <textarea
               id="description"
               name="description"
-              rows={5}
+              rows={4}
               required
               value={courseDetails.description}
               onChange={handleChange}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm"
               placeholder="Write a short summary about your course..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all resize-none"
             />
           </div>
 
@@ -115,7 +114,6 @@ const CreateCoursePage = () => {
             required
             value={courseDetails.category}
             onChange={handleChange}
-            placeholder="e.g., Web Development, Design, Marketing"
           />
 
           <div>
@@ -123,7 +121,7 @@ const CreateCoursePage = () => {
               htmlFor="image"
               className="block text-sm font-semibold text-gray-700 mb-1"
             >
-              Course Thumbnail
+              Course Image
             </label>
             <input
               id="image"
@@ -132,25 +130,20 @@ const CreateCoursePage = () => {
               required
               accept="image/png, image/jpeg, image/jpg"
               onChange={handleFileChange}
-              className="mt-2 block w-full text-sm text-gray-600
+              className="block w-full text-sm text-gray-500
                 file:mr-4 file:py-2 file:px-4
-                file:rounded-lg file:border-0
-                file:text-sm file:font-medium
-                file:bg-indigo-50 file:text-indigo-700
-                hover:file:bg-indigo-100 transition-colors"
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-gradient-to-r file:from-blue-100 file:to-indigo-100
+                file:text-blue-700 hover:file:opacity-80 cursor-pointer"
             />
-            {imageFile && (
-              <p className="mt-2 text-sm text-gray-600 italic">
-                Selected file: <span className="font-medium">{imageFile.name}</span>
-              </p>
-            )}
           </div>
 
-          <div className="pt-4">
+          <div>
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg disabled:bg-indigo-300"
+              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90"
             >
               {isLoading ? "Creating Course..." : "Create Course"}
             </Button>

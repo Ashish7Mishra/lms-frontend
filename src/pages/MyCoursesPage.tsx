@@ -1,4 +1,6 @@
- import { useState, useEffect } from "react";
+ // src/pages/MyCoursesPage.tsx
+
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getMyCourses, toggleCourseStatus } from "../services/courseService";
@@ -50,37 +52,32 @@ const MyCoursesPage = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading)
     return (
-      <div className="flex justify-center items-center h-64 text-gray-600 text-lg">
+      <p className="text-center text-gray-500 py-20 animate-pulse">
         Loading your courses...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <p className="text-center text-red-500 font-medium mt-8">
-        Error: {error}
       </p>
     );
-  }
+
+  if (error)
+    return (
+      <p className="text-center text-red-500 py-20 text-lg">Error: {error}</p>
+    );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-        {/* Header Section */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
-          <h1 className="text-4xl font-extrabold text-gray-800">
+    <div className="min-h-screen bg-gray-50 py-12 px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800">
             My{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Courses
             </span>
           </h1>
-
           <Link
             to="/instructor/courses/create"
-            className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition-all"
+            className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:opacity-90 transition"
           >
             + Create New Course
           </Link>
@@ -88,7 +85,7 @@ const MyCoursesPage = () => {
 
         {/* Courses Grid */}
         {courses.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {courses.map((course) => (
               <InstructorCourseCard
                 key={course._id}
@@ -98,15 +95,15 @@ const MyCoursesPage = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center bg-gray-50 p-12 rounded-xl border border-gray-200 shadow-inner">
-            <p className="text-gray-600 text-lg mb-4">
+          <div className="text-center bg-white p-12 rounded-2xl shadow-md border border-gray-100 mt-8">
+            <p className="text-gray-600 text-lg">
               You haven’t created any courses yet.
             </p>
             <Link
               to="/instructor/courses/create"
-              className="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-600 transition-all"
+              className="mt-5 inline-block bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90 transition"
             >
-              Create Your First Course
+              Create Your First Course →
             </Link>
           </div>
         )}

@@ -1,4 +1,6 @@
- import React from "react";
+ // src/components/InstructorCourseCard.tsx
+
+import React from "react";
 import { Link } from "react-router-dom";
 import type { Course } from "../types";
 
@@ -11,102 +13,85 @@ const InstructorCourseCard: React.FC<InstructorCourseCardProps> = ({
   course,
   onDeactivate,
 }) => {
-  const disabledLinkStyle =
-    "pointer-events-none grayscale opacity-50 cursor-not-allowed";
+  const disabledLinkStyle = "pointer-events-none grayscale opacity-50";
 
   return (
     <div
-      className={`bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden transform hover:-translate-y-1 ${
+      className={`relative bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 transition-transform hover:scale-[1.02] hover:shadow-xl flex flex-col h-full ${
         !course.isActive ? "opacity-60" : ""
       }`}
     >
-      {/* Image Section */}
+      {/* Image */}
       <div className="relative">
         <img
           src={course.imageUrl || "https://via.placeholder.com/400x200"}
           alt={course.title}
-          className="w-full h-48 object-cover transition-transform duration-500 hover:scale-105"
+          className="w-full h-48 object-cover"
         />
-        {/* Status Tag */}
         <span
-          className={`absolute top-3 right-3 text-xs font-semibold py-1.5 px-3 rounded-full shadow-md text-white ${
+          className={`absolute top-3 right-3 text-xs font-semibold py-1 px-3 uppercase rounded-full text-white shadow-md ${
             course.isActive
-              ? "bg-gradient-to-r from-green-500 to-emerald-600"
-              : "bg-gradient-to-r from-red-500 to-rose-600"
+              ? "bg-gradient-to-r from-green-400 to-green-600"
+              : "bg-gradient-to-r from-red-400 to-red-600"
           }`}
         >
           {course.isActive ? "Active" : "Inactive"}
         </span>
       </div>
 
-      {/* Content Section */}
-      <div className="p-5 flex flex-col h-full">
-        {/* Course Title */}
-        <h3
-          className="text-lg font-semibold text-gray-900 line-clamp-2 leading-snug mb-1"
-          title={course.title}
-        >
+      {/* Content */}
+      <div className="p-5 flex flex-col justify-between flex-1 space-y-3">
+        {/* Title */}
+        <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
           {course.title}
         </h3>
 
-        {/* Instructor */}
-        <p className="text-sm text-gray-500 mb-4">
-          Instructor:{" "}
-          <span className="font-medium text-gray-700">
-            {course.instructor?.name || "Unknown"}
-          </span>
-        </p>
-
         {/* Buttons Section */}
         <div className="flex flex-col space-y-2 mt-auto">
-          {/* Edit + Manage Row */}
-          <div className="flex space-x-2">
+          <div className="flex gap-2">
+            {/* Edit Button */}
             <Link
               to={`/instructor/courses/${course._id}/edit`}
-              className={`flex-1 text-center py-2.5 px-4 rounded-xl font-semibold transition-all duration-300 ${
-                !course.isActive
-                  ? disabledLinkStyle
-                  : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-sm hover:shadow-md"
+              className={`flex-1 text-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium py-2 rounded-lg shadow-md hover:shadow-lg hover:opacity-90 transition-all ${
+                !course.isActive && disabledLinkStyle
               }`}
             >
               Edit Details
             </Link>
+
+            {/* Manage Button */}
             <Link
               to={`/instructor/courses/${course._id}/manage`}
-              className={`flex-1 text-center py-2.5 px-4 rounded-xl font-semibold transition-all duration-300 ${
-                !course.isActive
-                  ? disabledLinkStyle
-                  : "bg-gray-100 text-gray-800 hover:bg-gray-200 shadow-sm hover:shadow-md"
+              className={`flex-1 text-center bg-gray-100 text-gray-800 font-medium py-2 rounded-lg border hover:bg-gray-200 transition ${
+                !course.isActive && disabledLinkStyle
               }`}
             >
               Manage Lessons
             </Link>
           </div>
 
-          {/* Preview as Student */}
+          {/* Preview Button */}
           <Link
             to={`/courses/${course._id}`}
             target="_blank"
             rel="noopener noreferrer"
-            className={`block text-center py-2.5 px-4 rounded-xl font-semibold transition-all duration-300 ${
-              !course.isActive
-                ? disabledLinkStyle
-                : "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-sm hover:shadow-md"
+            className={`w-full text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium py-2 rounded-lg shadow-md hover:opacity-90 transition ${
+              !course.isActive && disabledLinkStyle
             }`}
           >
             Preview as Student
           </Link>
 
-          {/* Deactivate / Deactivated */}
+          {/* Active / Inactive Button */}
           {course.isActive ? (
             <button
               onClick={() => onDeactivate(course._id)}
-              className="w-full text-center py-2.5 px-4 rounded-xl font-semibold text-white bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 shadow-sm hover:shadow-md transition-all duration-300"
+              className="w-full text-center bg-gradient-to-r from-red-500 to-red-600 text-white font-medium py-2 rounded-lg shadow-md hover:shadow-lg hover:opacity-90 transition"
             >
               Deactivate Course
             </button>
           ) : (
-            <div className="w-full text-center py-2.5 px-4 rounded-xl font-semibold bg-gray-200 text-gray-500 cursor-not-allowed">
+            <div className="w-full text-center bg-gray-300 text-gray-500 font-semibold py-2 rounded-lg cursor-not-allowed">
               Deactivated
             </div>
           )}

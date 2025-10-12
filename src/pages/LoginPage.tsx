@@ -1,14 +1,18 @@
- import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { loginUser } from '../services/authService';
-import { Mail, Lock } from 'lucide-react';
+// src/pages/LoginPage.tsx
+
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { loginUser } from "../services/authService";
+import FormInput from "../components/FormInput";
+import Button from "../components/Button";
+import { Mail, Lock } from "lucide-react";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,10 +25,11 @@ const LoginPage = () => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
+
     try {
       const { token, ...userData } = await loginUser(formData);
       login(userData, token);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -33,77 +38,84 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-      <div className="flex w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl">
-        
-        {/* Left Section - Form */}
-        <div className="flex w-full flex-col justify-center bg-gradient-to-br from-purple-500 to-pink-500 p-10 text-white md:w-1/2">
-          <h2 className="mb-6 text-3xl font-bold">Welcome Back!</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-pink-50 px-4">
+      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+        {/* Left Section - Illustration */}
+        <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-indigo-500 to-pink-500 text-white flex-col justify-center items-center p-10">
+          <h2 className="text-3xl font-bold mb-3">Welcome Back!</h2>
+          <p className="text-center text-sm text-pink-100 max-w-sm">
+            Continue your learning journey. Let’s get you signed in and back to
+            growing 🚀
+          </p>
+        </div>
+
+        {/* Right Section - Form */}
+        <div className="w-full md:w-1/2 p-10 flex flex-col justify-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+            Sign In to{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              LMS
+            </span>
+          </h2>
 
           {error && (
-            <div className="mb-4 rounded-md bg-red-100 px-4 py-2 text-sm text-red-800">
+            <div className="mb-4 rounded-md bg-red-100 px-4 py-2 text-sm text-red-800 text-center">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* Email Input */}
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-700 bg-white rounded-full p-1 w-6 h-6" />
-              <input
-                type="email"
+              <FormInput
+                label=""
+                id="email"
                 name="email"
+                type="email"
+                placeholder="Email Address"
+                required
                 value={formData.email}
                 onChange={handleChange}
-                required
                 disabled={isLoading}
-                placeholder="Email Address"
-                className="w-full rounded-full px-12 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-300"
+                className="pl-10"
               />
             </div>
 
+            {/* Password Input */}
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-700 bg-white rounded-full p-1 w-6 h-6" />
-              <input
-                type="password"
+              <FormInput
+                label=""
+                id="password"
                 name="password"
+                type="password"
+                placeholder="Password"
+                required
                 value={formData.password}
                 onChange={handleChange}
-                required
                 disabled={isLoading}
-                placeholder="Password"
-                className="w-full rounded-full px-12 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-300"
+                className="pl-10"
               />
             </div>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center space-x-2">
-                <input type="checkbox" className="h-4 w-4 rounded border-gray-300" />
-                <span>Remember Me</span>
-              </label>
-            </div>
-
-            <button
+            {/* Button */}
+            <Button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-3 font-semibold text-white shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="w-full bg-gradient-to-r from-indigo-500 to-pink-500 text-white py-3 rounded-lg font-semibold shadow-md hover:shadow-lg hover:opacity-90 transition-all"
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
-            </button>
+              {isLoading ? "Signing In..." : "Sign In"}
+            </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm">
-            Don’t have an account?{' '}
-            <Link to="/register" className="font-semibold text-white underline">
-              Sign up
+          {/* Footer Link */}
+          <p className="text-sm text-center text-gray-600 mt-6">
+            Don’t have an account?{" "}
+            <Link
+              to="/register"
+              className="font-semibold text-indigo-600 hover:underline"
+            >
+              Sign Up
             </Link>
-          </p>
-        </div>
-
-        {/* Right Section - Info */}
-        <div className="hidden w-1/2 flex-col items-center justify-center p-10 md:flex">
-          <h3 className="text-2xl font-semibold text-gray-800">Glad to see you again!</h3>
-          <p className="mt-4 text-center text-gray-600">
-            Welcome back! Please log in to continue your learning journey with us. Stay motivated and keep growing 🚀
           </p>
         </div>
       </div>

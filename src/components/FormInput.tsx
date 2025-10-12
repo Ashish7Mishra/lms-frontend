@@ -2,46 +2,29 @@
 
 interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  helperText?: string;
   error?: string;
 }
 
-const FormInput: React.FC<FormInputProps> = ({
-  label,
-  helperText,
-  error,
-  id,
-  name,
-  className = "",
-  ...props
-}) => {
-  const inputId = id || name;
-
+const FormInput: React.FC<FormInputProps> = ({ label, error, ...props }) => {
   return (
-    <div className="space-y-1">
+    <div className="w-full">
       <label
-        htmlFor={inputId}
-        className="block text-sm font-medium text-gray-700"
+        htmlFor={props.id || props.name}
+        className="block text-sm font-semibold text-gray-700 mb-1"
       >
         {label}
       </label>
 
       <input
-        id={inputId}
-        name={name}
         {...props}
-        className={`block w-full px-3 py-2.5 text-sm border rounded-lg shadow-sm focus:outline-none transition-all duration-200 ${
-          error
-            ? "border-red-400 focus:ring-red-500 focus:border-red-500"
-            : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-        } bg-white placeholder-gray-400 ${className}`}
+        className={`block w-full px-4 py-2 border rounded-lg shadow-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 sm:text-sm ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
       />
 
-      {error ? (
-        <p className="text-xs text-red-500">{error}</p>
-      ) : helperText ? (
-        <p className="text-xs text-gray-500">{helperText}</p>
-      ) : null}
+      {error && (
+        <p className="text-sm text-red-500 mt-1 font-medium">{error}</p>
+      )}
     </div>
   );
 };

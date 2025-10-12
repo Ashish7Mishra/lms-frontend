@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -51,7 +51,7 @@ const Footer = () => {
           <p className="text-sm text-gray-600">
             Email:{" "}
             <a
-              href="mailto:support@learnify.com"
+              href="mailto:support@lms.utkal.labs.com"
               className="hover:text-blue-600"
             >
               support@lms.utkal.labs.com
