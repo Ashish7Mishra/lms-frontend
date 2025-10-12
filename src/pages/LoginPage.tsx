@@ -90,6 +90,7 @@ const LoginPage = () => {
                   onChange={handleChange}
                   required
                   disabled={isLoading}
+                  autoComplete="email"
                   className="w-full px-10 py-2 rounded-lg bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
               </div>
@@ -105,6 +106,7 @@ const LoginPage = () => {
                   onChange={handleChange}
                   required
                   disabled={isLoading}
+                  autoComplete="current-password" 
                   className="w-full px-10 py-2 rounded-lg bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
               </div>
