@@ -9,13 +9,14 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: 'Student' | 'Instructor';
+  role: 'Student' | 'Instructor' | 'Admin';
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (userData: User, token: string) => void;
   logout: () => void;
 }
@@ -25,13 +26,26 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
+    try {
+      const storedToken = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+
+      if (storedUser && storedToken) {
+        setUser(JSON.parse(storedUser));
+        setToken(storedToken);
+      }
+    } catch (error) {
+      console.error("Failed to parse auth data from localStorage", error);
+      // Clear potentially corrupt data
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+    } finally {
+      // --- IMPORTANT: Set loading to false after we've checked ---
+      setIsLoading(false);
     }
-  }, [token]);
+  }, []);
 
   const login = (userData: User, userToken: string) => {
     localStorage.setItem('user', JSON.stringify(userData));
@@ -50,7 +64,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated, login, logout }}>
+   <AuthContext.Provider value={{ user, token, isAuthenticated, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

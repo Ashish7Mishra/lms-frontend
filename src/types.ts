@@ -1,3 +1,12 @@
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: 'Student' | 'Instructor' | 'Admin'; 
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface Instructor {
   _id: string;

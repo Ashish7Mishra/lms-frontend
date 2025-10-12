@@ -27,6 +27,12 @@ const LoginPage = () => {
       const { token, ...userData } = await loginUser(formData);
       login(userData, token);
 
+       if (userData.role === 'Admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
+
       // Redirect according to role
       switch (userData.role) {
         case "admin":
