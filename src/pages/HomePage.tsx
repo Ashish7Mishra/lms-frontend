@@ -1,82 +1,60 @@
  import { Link } from "react-router-dom";
-import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 
 const HomePage = () => {
   return (
     <div className="bg-[#F9FAFB] min-h-screen flex flex-col">
       {/* ===== Hero Section ===== */}
-      <section className="flex flex-col md:flex-row items-center justify-between px-8 md:px-20 py-16 gap-10">
+      <section className="relative flex flex-col md:flex-row items-center justify-between px-8 md:px-20 py-16 gap-10 overflow-hidden">
+        
+        {/* Background image only visible on mobile */}
+        <img
+          src="https://img.freepik.com/free-vector/online-education-illustration_1284-68476.jpg?w=1380"
+          alt="Online Learning"
+          className="absolute inset-0 w-full h-full object-cover opacity-10 md:hidden"
+        />
+
         {/* --- Left Side Text --- */}
-        <div className="flex-1 text-left">
-          <h2 className="text-2xl font-semibold text-[#6b7280] mb-4">
-            Learning Management System
-          </h2>
-
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
-            <span className="text-[#FACC15]">Online</span>{" "}
-            <span className="text-[#7C3AED]">Education</span>
+        <div className="relative z-10 flex-1 text-center md:text-left">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-snug">
+            Empower Your Learning Journey <br /> with{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+              Utkal Labs LMS
+            </span>
           </h1>
-
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">
-            Read, Write and Remember
-          </h3>
-
-          <p className="text-gray-600 max-w-md mb-6">
-            Learn from anywhere and grow your career with world-class online
-            courses. Build your skills and achieve your learning goals with our
-            interactive platform.
+          <p className="text-gray-600 mb-8 text-base md:text-lg">
+            Discover expert-led online courses. Build your skills and achieve
+            your learning goals with our interactive platform.
           </p>
-
           <Link
             to="/courses"
-            className="inline-block px-6 py-3 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] hover:opacity-90 text-white font-semibold rounded-full shadow-md transition-transform transform hover:scale-105"
+            className="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition"
           >
             View Courses
           </Link>
 
-          {/* --- Social Icons --- */}
-          <div className="flex gap-5 mt-8 text-gray-500">
-            <a
-              href="https://www.instagram.com/utkallabs/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-pink-500 transition-colors"
-            >
-              <Instagram className="w-6 h-6" />
+          {/* Social Links */}
+          <div className="flex justify-center md:justify-start space-x-5 mt-6 text-gray-600">
+            <a href="https://www.instagram.com/utkallabs/" target="_blank" rel="noreferrer" className="hover:text-pink-500 transition">
+              <i className="fab fa-instagram text-xl"></i>
             </a>
-            <a
-              href="https://www.facebook.com/utkallabsindia/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-600 transition-colors"
-            >
-              <Facebook className="w-6 h-6" />
+            <a href="https://www.facebook.com/utkallabsindia/" target="_blank" rel="noreferrer" className="hover:text-blue-600 transition">
+              <i className="fab fa-facebook text-xl"></i>
             </a>
-            <a
-              href="https://x.com/UtkalLabs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-sky-500 transition-colors"
-            >
-              <Twitter className="w-6 h-6" />
+            <a href="https://x.com/UtkalLabs" target="_blank" rel="noreferrer" className="hover:text-sky-500 transition">
+              <i className="fab fa-twitter text-xl"></i>
             </a>
-            <a
-              href="https://www.linkedin.com/company/utkal-labs/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-700 transition-colors"
-            >
-              <Linkedin className="w-6 h-6" />
+            <a href="https://www.linkedin.com/company/utkal-labs/" target="_blank" rel="noreferrer" className="hover:text-blue-700 transition">
+              <i className="fab fa-linkedin text-xl"></i>
             </a>
           </div>
         </div>
 
-        {/* --- Right Side Image --- */}
-        <div className="flex-1 flex justify-center">
+        {/* --- Right Side Image (for desktop view) --- */}
+        <div className="flex-1 hidden md:flex justify-center">
           <img
             src="https://img.freepik.com/free-vector/online-education-illustration_1284-68476.jpg?w=1380"
-            alt="Online Education"
-            className="max-w-full h-auto rounded-2xl shadow-lg"
+            alt="Learning Illustration"
+            className="w-full max-w-md rounded-xl shadow-md"
           />
         </div>
       </section>

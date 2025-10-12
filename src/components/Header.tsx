@@ -1,14 +1,21 @@
  import { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { loginUser } from "../services/authService";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const { user, login, logout } = useAuth();
   const avatarRef = useRef<HTMLDivElement | null>(null);
 
   const baseLinks = [
@@ -16,18 +23,10 @@ const Navbar = () => {
     { name: "Courses", path: "/courses" },
   ];
 
-  const guestLinks = [
-    { name: "Login", path: "/login" },
-    { name: "Register", path: "/register" },
-  ];
-
-  // Close avatar dropdown on outside click
+  // Close avatar dropdown when clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        avatarRef.current &&
-        !avatarRef.current.contains(event.target as Node)
-      ) {
+      if (avatarRef.current && !avatarRef.current.contains(event.target as Node)) {
         setAvatarMenuOpen(false);
       }
     };
@@ -40,29 +39,50 @@ const Navbar = () => {
     logout();
   };
 
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setLoginError(null);
+    try {
+      const { token, ...userData } = await loginUser(formData);
+      login(userData, token);
+      setShowLoginModal(false);
+
+      // Redirect based on role
+      if (userData.role === "admin") navigate("/admin/dashboard");
+      else if (userData.role === "instructor") navigate("/instructor/dashboard");
+      else navigate("/dashboard");
+    } catch (err: any) {
+      setLoginError(err.message || "Invalid credentials");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
+      {/* ===== NAVBAR ===== */}
       <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
         <nav className="max-w-7xl mx-auto flex justify-between items-center py-3 px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            
             <span className="text-lg font-bold text-indigo-600">LMS</span>
           </Link>
 
           {/* Desktop Menu */}
           <ul className="hidden md:flex items-center gap-4 lg:gap-6">
-            {[...baseLinks, ...(user ? [] : guestLinks)].map((link) => {
+            {baseLinks.map((link) => {
               const isActive = location.pathname === link.path;
               return (
                 <li key={link.name}>
                   <Link
                     to={link.path}
-                    className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 shadow-sm ${
-                      isActive
-                        ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
-                        : "bg-gradient-to-r from-blue-100 to-purple-100 text-gray-700 hover:from-blue-500 hover:to-purple-500 hover:text-white hover:shadow-md"
-                    }`}
+                    className={`px-8 py-2 rounded-full uppercase tracking-wider font-semibold transition duration-200 shadow-[inset_0_0_0_2px_#616467]
+                      ${
+                        isActive
+                          ? "bg-[#616467] text-white"
+                          : "text-black bg-transparent hover:bg-[#616467] hover:text-white"
+                      }`}
                   >
                     {link.name}
                   </Link>
@@ -70,12 +90,33 @@ const Navbar = () => {
               );
             })}
 
+            {!user && (
+              <>
+                <li>
+                  <button
+                    onClick={() => setShowLoginModal(true)}
+                    className="px-8 py-2 rounded-full uppercase tracking-wider font-semibold bg-transparent shadow-[inset_0_0_0_2px_#616467] hover:bg-[#616467] hover:text-white transition"
+                  >
+                    Login
+                  </button>
+                </li>
+                <li>
+                  <Link
+                    to="/register"
+                    className="px-8 py-2 rounded-full uppercase tracking-wider font-semibold bg-transparent shadow-[inset_0_0_0_2px_#616467] hover:bg-[#616467] hover:text-white transition"
+                  >
+                    Register
+                  </Link>
+                </li>
+              </>
+            )}
+
             {/* Avatar Menu */}
             {user && (
               <li className="relative" ref={avatarRef}>
                 <button
                   onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
-                  className="flex items-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 px-4 py-2 rounded-full hover:from-blue-200 hover:to-purple-200 transition-all"
+                  className="flex items-center gap-2 px-5 py-2 rounded-full shadow-[inset_0_0_0_2px_#616467] bg-transparent hover:bg-[#616467] hover:text-white transition"
                 >
                   <div className="h-8 w-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold">
                     {user.name?.charAt(0).toUpperCase() || "U"}
@@ -114,7 +155,7 @@ const Navbar = () => {
             )}
           </ul>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Button */}
           <button
             className="md:hidden p-2 text-gray-700 focus:outline-none"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -123,28 +164,46 @@ const Navbar = () => {
           </button>
         </nav>
 
-        {/* Mobile Dropdown Menu */}
+        {/* ===== MOBILE MENU ===== */}
         {menuOpen && (
-          <div className="md:hidden bg-white shadow-lg border-t border-gray-200 animate-slideDown">
-            <ul className="flex flex-col items-center py-4 space-y-3">
-              {[...baseLinks, ...(user ? [] : guestLinks)].map((link) => {
-                const isActive = location.pathname === link.path;
-                return (
-                  <li key={link.name}>
-                    <Link
-                      to={link.path}
-                      onClick={() => setMenuOpen(false)}
-                      className={`block px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
-                        isActive
-                          ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
-                          : "bg-gradient-to-r from-blue-100 to-purple-100 text-gray-700 hover:from-blue-500 hover:to-purple-500 hover:text-white hover:shadow-md"
-                      }`}
+          <div className="md:hidden bg-white shadow-lg border-t border-gray-200 animate-fadeIn">
+            <ul className="flex flex-col items-center space-y-3 py-4">
+              {baseLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    to={link.path}
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-6 py-2 text-gray-700 font-semibold rounded-full hover:bg-[#616467] hover:text-white transition"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+
+              {!user && (
+                <>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        setShowLoginModal(true);
+                      }}
+                      className="block w-full px-6 py-2 text-center text-gray-700 font-semibold rounded-full border border-gray-400 hover:bg-[#616467] hover:text-white transition"
                     >
-                      {link.name}
+                      Login
+                    </button>
+                  </li>
+                  <li>
+                    <Link
+                      to="/register"
+                      onClick={() => setMenuOpen(false)}
+                      className="block w-full px-6 py-2 text-center text-gray-700 font-semibold rounded-full border border-gray-400 hover:bg-[#616467] hover:text-white transition"
+                    >
+                      Register
                     </Link>
                   </li>
-                );
-              })}
+                </>
+              )}
 
               {user && (
                 <>
@@ -152,7 +211,7 @@ const Navbar = () => {
                     <Link
                       to="/dashboard"
                       onClick={() => setMenuOpen(false)}
-                      className="block px-6 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-blue-100 to-purple-100 text-gray-700 hover:from-blue-500 hover:to-purple-500 hover:text-white hover:shadow-md transition-all"
+                      className="block px-6 py-2 text-gray-700 font-semibold rounded-full hover:bg-[#616467] hover:text-white transition"
                     >
                       Dashboard
                     </Link>
@@ -163,7 +222,7 @@ const Navbar = () => {
                         setMenuOpen(false);
                         setShowLogoutModal(true);
                       }}
-                      className="block w-full px-6 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-red-500 to-rose-600 text-white hover:from-red-600 hover:to-rose-700 shadow-md transition-all"
+                      className="block w-full px-6 py-2 text-center text-red-600 font-semibold rounded-full hover:bg-red-50"
                     >
                       Logout
                     </button>
@@ -175,27 +234,82 @@ const Navbar = () => {
         )}
       </header>
 
-      {/* Logout Confirmation Modal */}
+      {/* ===== LOGIN MODAL ===== */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-[60] bg-black/60 flex justify-center items-center animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md animate-slideUp">
+            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+              Sign In to LMS
+            </h2>
+
+            {loginError && (
+              <div className="text-sm text-red-600 text-center mb-3">
+                {loginError}
+              </div>
+            )}
+
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
+                }
+                required
+                className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, password: e.target.value }))
+                }
+                required
+                className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition"
+              >
+                {isLoading ? "Signing in..." : "Login"}
+              </button>
+            </form>
+
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="mt-4 w-full text-sm text-gray-500 hover:text-gray-700"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===== LOGOUT MODAL ===== */}
       {showLogoutModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-end justify-center md:items-center z-[60] animate-fadeIn">
-          <div className="bg-white rounded-t-3xl md:rounded-2xl shadow-2xl p-6 w-full max-w-sm text-center transform animate-slideUp">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm text-center animate-slideUp">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
               Confirm Logout
             </h3>
             <p className="text-gray-500 text-sm mb-6">
               Are you sure you want to logout of your account?
             </p>
-
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => setShowLogoutModal(false)}
-                className="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 font-medium hover:bg-gray-300 transition-all"
+                className="px-4 py-2 rounded-full bg-gray-200 text-gray-800 font-medium hover:bg-gray-300"
               >
                 Cancel
               </button>
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-rose-600 text-white font-semibold hover:from-red-600 hover:to-rose-700 transition-all"
+                className="px-4 py-2 rounded-full bg-[#616467] text-white font-semibold hover:opacity-90"
               >
                 Logout
               </button>

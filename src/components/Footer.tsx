@@ -10,52 +10,26 @@ import {
 const Footer = () => {
   return (
     <footer className="bg-gray-50 text-gray-700 border-t border-gray-200 mt-16">
-      {/* Top Section */}
-      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
-        {/* About Section */}
+      {/* ===== Top Section ===== */}
+      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 text-center md:text-left">
+        
+        {/* ==== About Section ==== */}
         <div>
           <h3 className="text-lg font-semibold mb-3 text-gray-900">
             About Utkal Labs LMS
           </h3>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-gray-600 leading-relaxed max-w-xs mx-auto md:mx-0">
             Learn, grow, and achieve with Utkal Labs’ LMS — designed to help you
             master new skills and reach your professional goals with expert-led
             courses.
           </p>
         </div>
 
-        {/* Quick Links */}
+        {/* ==== Contact Section ==== */}
         <div>
           <h3 className="text-lg font-semibold mb-3 text-gray-900">
-            Quick Links
+            Contact
           </h3>
-          <ul className="space-y-2 text-sm">
-            <li>
-              <Link to="/" className="hover:text-blue-600 transition">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/courses" className="hover:text-blue-600 transition">
-                Courses
-              </Link>
-            </li>
-            <li>
-              <Link to="/login" className="hover:text-blue-600 transition">
-                Login
-              </Link>
-            </li>
-            <li>
-              <Link to="/register" className="hover:text-blue-600 transition">
-                Register
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* Contact Section */}
-        <div>
-          <h3 className="text-lg font-semibold mb-3 text-gray-900">Contact</h3>
           <p className="text-sm text-gray-600">
             Email:{" "}
             <a
@@ -65,30 +39,32 @@ const Footer = () => {
               support@utkallabs.com
             </a>
           </p>
-          <p className="text-sm text-gray-600">Phone: +91 98765 43210 / 9314239675</p>
+          <p className="text-sm text-gray-600 mt-1">
+            Phone: +91 98765 43210 / 9314239675
+          </p>
         </div>
 
-        {/* Stay Updated + Social */}
+        {/* ==== Stay Updated + Social ==== */}
         <div>
           <h3 className="text-lg font-semibold mb-3 text-gray-900">
             Stay Updated
           </h3>
-          <form className="flex flex-col space-y-3">
+          <form className="flex flex-col sm:flex-row md:flex-col gap-3 justify-center md:justify-start">
             <input
               type="email"
               placeholder="Enter your email"
-              className="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full sm:w-auto md:w-full"
             />
             <button
               type="submit"
-              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 rounded-md font-medium hover:opacity-90 transition"
+              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 px-5 rounded-md font-medium hover:opacity-90 transition w-full sm:w-auto md:w-full"
             >
               Subscribe
             </button>
           </form>
 
           {/* Social Icons */}
-          <div className="flex space-x-5 mt-5 text-gray-600">
+          <div className="flex justify-center md:justify-start space-x-5 mt-5 text-gray-600">
             <a
               href="https://www.facebook.com/utkallabsindia/"
               target="_blank"
@@ -121,13 +97,22 @@ const Footer = () => {
             >
               <Instagram className="w-5 h-5" />
             </a>
+            <a
+              href="https://www.youtube.com/@UtkalLabs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-red-600 transition-colors"
+            >
+              <Youtube className="w-5 h-5" />
+            </a>
           </div>
         </div>
       </div>
 
-      {/* Bottom Section */}
+      {/* ===== Bottom Section ===== */}
       <div className="border-t border-gray-200 text-center py-5 text-sm text-gray-500">
-        © {new Date().getFullYear()} <span className="font-semibold">Utkal Labs LMS</span>. All rights reserved.
+        © {new Date().getFullYear()}{" "}
+        <span className="font-semibold">Utkal Labs LMS</span>. All rights reserved.
       </div>
     </footer>
   );
