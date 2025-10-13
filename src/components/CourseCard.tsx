@@ -21,7 +21,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         <img
           src={course.imageUrl || "https://via.placeholder.com/400x200"}
           alt={course.title}
-          className="w-full h-42 object-cover" // Increased from h-24 to h-36
+          className="w-full h-48 object-cover" // Increased from h-24 to h-36
         />
         <span
           className={`absolute top-2 left-2 text-xs font-semibold text-white py-1 px-2 rounded-full shadow-md
