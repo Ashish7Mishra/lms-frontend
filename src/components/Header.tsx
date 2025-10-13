@@ -70,7 +70,7 @@ const Navbar = () => {
         <nav className="max-w-7xl mx-auto flex justify-between items-center py-3 px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <span className="text-lg font-bold text-indigo-600">LMS</span>
+            <span className="text-50 font-bold text-indigo-800">LMS</span>
           </Link>
 
           {/* ===== DESKTOP MENU ===== */}
