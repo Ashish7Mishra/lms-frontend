@@ -9,7 +9,7 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-50 text-gray-700 border-t border-gray-200 mt-16">
+    <footer className="bg-gray-50 text-gray-700 border-t border-gray-200 mt-auto">
       {/* ===== Top Section ===== */}
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 text-center md:text-left">
         
