@@ -1,25 +1,33 @@
- import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import { getMyEnrollments, type Enrollment } from "../services/enrollmentService";
-import { getMyCourses } from "../services/courseService";
-import type { Course } from "../types";
-import ProgressCard from "../components/ProgressCard";
+ import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { getMyEnrollments, type Enrollment } from '../services/enrollmentService';
+import { getMyCourses, getEnrolledStudents } from '../services/courseService';
+import type { Course, Student } from '../types';
+import ProgressCard from '../components/ProgressCard';
 import {
   BookOpen,
   PlusCircle,
   LayoutDashboard,
   Users,
   Activity,
-} from "lucide-react";
+  X,
+} from 'lucide-react';
 
 const DashboardPage = () => {
   const { user, token } = useAuth();
 
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [myCourses, setMyCourses] = useState<Course[]>([]);
+  
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Modal state for enrolled students
+  const [showStudentsModal, setShowStudentsModal] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [enrolledStudents, setEnrolledStudents] = useState<Student[]>([]);
+  const [loadingStudents, setLoadingStudents] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -30,14 +38,12 @@ const DashboardPage = () => {
 
       setIsLoading(true);
       setError(null);
-
       try {
-        if (user.role === "Student") {
+        if (user.role === 'Student') {
           const enrollmentData = await getMyEnrollments(token);
           setEnrollments(enrollmentData);
         }
-
-        if (user.role === "Instructor") {
+        if (user.role === 'Instructor') {
           const courseData = await getMyCourses(token);
           setMyCourses(courseData);
         }
@@ -51,7 +57,28 @@ const DashboardPage = () => {
     loadData();
   }, [user, token]);
 
-  // --- Student Dashboard ---
+  const handleViewStudents = async (course: Course) => {
+    setSelectedCourse(course);
+    setShowStudentsModal(true);
+    setLoadingStudents(true);
+    
+    try {
+      const students = await getEnrolledStudents(course._id, token!);
+      setEnrolledStudents(students);
+    } catch (err: any) {
+      console.error('Error fetching students:', err);
+      setEnrolledStudents([]);
+    } finally {
+      setLoadingStudents(false);
+    }
+  };
+
+  const closeModal = () => {
+    setShowStudentsModal(false);
+    setSelectedCourse(null);
+    setEnrolledStudents([]);
+  };
+
   const renderStudentDashboard = () => {
     if (isLoading) {
       return (
@@ -76,14 +103,12 @@ const DashboardPage = () => {
         </div>
       );
     }
-
-    if (error)
+    if (error) {
       return <p className="text-center text-red-500 py-20">Error: {error}</p>;
-
+    }
     return (
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">My Learning</h2>
-
         {enrollments.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {enrollments.map((enrollment) => (
@@ -105,7 +130,6 @@ const DashboardPage = () => {
     );
   };
 
-  // --- Instructor Dashboard ---
   const renderInstructorDashboard = () => {
     if (isLoading) {
       return (
@@ -130,10 +154,9 @@ const DashboardPage = () => {
         </div>
       );
     }
-
-    if (error)
+    if (error) {
       return <p className="text-center text-red-500 py-20">Error: {error}</p>;
-
+    }
     return (
       <div className="space-y-12">
         {/* Analytics Section */}
@@ -210,27 +233,14 @@ const DashboardPage = () => {
           {myCourses.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {myCourses.slice(0, 3).map((course) => (
-                <Link
+                <div
                   key={course._id}
-                  to={`/instructor/courses/${course._id}/manage`}
                   className="group bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all overflow-hidden"
                 >
-                  <div className="relative h-40 w-full overflow-hidden">
-                    <img
-                      src={
-                        course.thumbnail?.startsWith("http")
-                          ? course.thumbnail
-                          : `https://your-server-url.com/${course.thumbnail}`
-                      }
-                      alt={course.title}
-                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          "https://img.freepik.com/free-vector/online-education-concept-illustration_114360-6279.jpg?w=826";
-                      }}
-                    />
+                  <div className="relative h-40 w-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                    <BookOpen className="w-20 h-20 text-gray-300 group-hover:scale-105 transition-transform duration-300" strokeWidth={1.5} />
                     <span className="absolute top-3 right-3 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full shadow-md">
-                      {course.category || "General"}
+                      {course.category || 'General'}
                     </span>
                   </div>
 
@@ -238,15 +248,32 @@ const DashboardPage = () => {
                     <h3 className="text-lg font-semibold text-gray-800 line-clamp-2 mb-1">
                       {course.title}
                     </h3>
-                    <p className="text-sm text-gray-500 line-clamp-2">
-                      {course.description || "No description available."}
+                    <p className="text-sm text-gray-500 line-clamp-2 mb-4">
+                      {course.description || 'No description available.'}
                     </p>
 
-                    <div className="mt-4 text-sm font-medium text-gray-600">
+                    <div className="mb-3 text-sm font-medium text-gray-600">
                       {course.enrolledCount || 0} Students Enrolled
                     </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <Link
+                        to={`/instructor/courses/${course._id}/manage`}
+                        className="flex-1 bg-indigo-600 text-white text-sm font-semibold py-2 px-3 rounded-lg hover:bg-indigo-700 transition text-center"
+                      >
+                        Manage
+                      </Link>
+                      <button
+                        onClick={() => handleViewStudents(course)}
+                        className="flex-1 bg-emerald-600 text-white text-sm font-semibold py-2 px-3 rounded-lg hover:bg-emerald-700 transition flex items-center justify-center gap-1"
+                      >
+                        <Users className="w-4 h-4" />
+                        Students
+                      </button>
+                    </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           ) : (
@@ -269,9 +296,75 @@ const DashboardPage = () => {
           </span>{" "}
           👋
         </h1>
-
-        {user?.role === "Student" ? renderStudentDashboard() : renderInstructorDashboard()}
+        {user?.role === 'Student' ? renderStudentDashboard() : renderInstructorDashboard()}
       </div>
+
+      {/* Enrolled Students Modal */}
+      {showStudentsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-white">
+                Enrolled Students - {selectedCourse?.title}
+              </h2>
+              <button
+                onClick={closeModal}
+                className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              {loadingStudents ? (
+                <div className="flex flex-col items-center justify-center py-20">
+                  <div className="relative">
+                    <div className="w-16 h-16 border-4 border-gray-200 rounded-full"></div>
+                    <div className="absolute top-0 left-0 w-16 h-16 border-4 border-blue-600 rounded-full border-t-transparent border-r-transparent animate-spin"></div>
+                  </div>
+                  <p className="mt-4 text-gray-600 text-sm">Loading students...</p>
+                </div>
+              ) : enrolledStudents.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead className="bg-gradient-to-r from-blue-50 to-indigo-50 text-gray-700 text-sm uppercase font-semibold tracking-wide">
+                      <tr>
+                        <th className="p-4">Name</th>
+                        <th className="p-4">Email</th>
+                        <th className="p-4">Enrolled On</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {enrolledStudents.map((student, idx) => (
+                        <tr
+                          key={student._id}
+                          className={`border-b ${
+                            idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                          } hover:bg-blue-50 transition`}
+                        >
+                          <td className="p-4 text-gray-800 font-medium">
+                            {student.name}
+                          </td>
+                          <td className="p-4 text-gray-600">{student.email}</td>
+                          <td className="p-4 text-gray-500">
+                            {new Date(student.createdAt).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-16 text-gray-500 text-lg">
+                  No students are currently enrolled in this course.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
