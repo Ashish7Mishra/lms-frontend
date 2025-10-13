@@ -1,5 +1,4 @@
-// src/components/Navbar.tsx
-
+ // src/components/Navbar.tsx
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
@@ -10,7 +9,6 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -39,7 +37,7 @@ const Navbar = () => {
   const handleLogout = () => {
     setShowLogoutModal(false);
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -49,16 +47,10 @@ const Navbar = () => {
     try {
       const { token, ...userData } = await loginUser(formData);
       login(userData, token);
-      setShowLoginModal(false);
 
-      // Redirect based on role
-      if (userData.role === "Admin") {
-        navigate("/admin/dashboard");
-      } else if (userData.role === "Instructor") {
-        navigate("/dashboard");
-      } else {
-        navigate("/dashboard");
-      }
+      if (userData.role === "Admin") navigate("/admin/dashboard");
+      else if (userData.role === "Instructor") navigate("/instructor/dashboard");
+      else navigate("/dashboard");
     } catch (err: any) {
       setLoginError(err.message || "Invalid credentials");
     } finally {
@@ -66,10 +58,9 @@ const Navbar = () => {
     }
   };
 
-  // Helper function to get dashboard path based on role
   const getDashboardPath = () => {
-    if (!user) return '/dashboard';
-    return user.role === 'Admin' ? '/admin/dashboard' : '/dashboard';
+    if (!user) return "/dashboard";
+    return user.role === "Admin" ? "/admin/dashboard" : "/dashboard";
   };
 
   return (
@@ -82,7 +73,7 @@ const Navbar = () => {
             <span className="text-lg font-bold text-indigo-600">LMS</span>
           </Link>
 
-          {/* Desktop Menu */}
+          {/* ===== DESKTOP MENU ===== */}
           <ul className="hidden md:flex items-center gap-4 lg:gap-6">
             {baseLinks.map((link) => {
               const isActive = location.pathname === link.path;
@@ -90,12 +81,11 @@ const Navbar = () => {
                 <li key={link.name}>
                   <Link
                     to={link.path}
-                    className={`px-8 py-2 rounded-full uppercase tracking-wider font-semibold transition duration-200 shadow-[inset_0_0_0_2px_#616467]
-                      ${
-                        isActive
-                          ? "bg-[#616467] text-white"
-                          : "text-black bg-transparent hover:bg-[#616467] hover:text-white"
-                      }`}
+                    className={`px-8 py-2 rounded-full uppercase tracking-wider font-semibold transition duration-200 shadow-[inset_0_0_0_2px_#616467] ${
+                      isActive
+                        ? "bg-[#616467] text-white"
+                        : "text-black bg-transparent hover:bg-[#616467] hover:text-white"
+                    }`}
                   >
                     {link.name}
                   </Link>
@@ -103,32 +93,32 @@ const Navbar = () => {
               );
             })}
 
-            {/* Show Instructor-specific link */}
-            {user?.role === 'Instructor' && (
+            {/* Instructor link */}
+            {user?.role === "Instructor" && (
               <li>
                 <Link
                   to="/instructor/my-courses"
-                  className={`px-8 py-2 rounded-full uppercase tracking-wider font-semibold transition duration-200 shadow-[inset_0_0_0_2px_#616467]
-                    ${
-                      location.pathname === '/instructor/my-courses'
-                        ? "bg-[#616467] text-white"
-                        : "text-black bg-transparent hover:bg-[#616467] hover:text-white"
-                    }`}
+                  className={`px-8 py-2 rounded-full uppercase tracking-wider font-semibold transition duration-200 shadow-[inset_0_0_0_2px_#616467] ${
+                    location.pathname === "/instructor/my-courses"
+                      ? "bg-[#616467] text-white"
+                      : "text-black bg-transparent hover:bg-[#616467] hover:text-white"
+                  }`}
                 >
                   My Courses
                 </Link>
               </li>
             )}
 
+            {/* ===== AUTH BUTTONS ===== */}
             {!user && (
               <>
                 <li>
-                  <button
-                    onClick={() => setShowLoginModal(true)}
-                    className="px-8 py-2 rounded-full uppercase tracking-wider font-semibold bg-transparent shadow-[inset_0_0_0_2px_#616467] hover:bg-[#616467] hover:text-white transition"
+                  <Link
+                    to="/login"
+                    className="border border-blue-500 text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-blue-50 transition"
                   >
                     Login
-                  </button>
+                  </Link>
                 </li>
                 <li>
                   <Link
@@ -141,7 +131,7 @@ const Navbar = () => {
               </>
             )}
 
-            {/* Avatar Menu */}
+            {/* ===== AVATAR MENU ===== */}
             {user && (
               <li className="relative" ref={avatarRef}>
                 <button
@@ -185,7 +175,7 @@ const Navbar = () => {
             )}
           </ul>
 
-          {/* Mobile Button */}
+          {/* ===== MOBILE TOGGLE ===== */}
           <button
             className="md:hidden p-2 text-gray-700 focus:outline-none"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -210,7 +200,7 @@ const Navbar = () => {
                 </li>
               ))}
 
-              {user?.role === 'Instructor' && (
+              {user?.role === "Instructor" && (
                 <li>
                   <Link
                     to="/instructor/my-courses"
@@ -225,15 +215,13 @@ const Navbar = () => {
               {!user && (
                 <>
                   <li>
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        setShowLoginModal(true);
-                      }}
+                    <Link
+                      to="/login"
+                      onClick={() => setMenuOpen(false)}
                       className="block w-full px-6 py-2 text-center text-gray-700 font-semibold rounded-full border border-gray-400 hover:bg-[#616467] hover:text-white transition"
                     >
                       Login
-                    </button>
+                    </Link>
                   </li>
                   <li>
                     <Link
@@ -275,8 +263,6 @@ const Navbar = () => {
           </div>
         )}
       </header>
-
-   
 
       {/* ===== LOGOUT MODAL ===== */}
       {showLogoutModal && (
