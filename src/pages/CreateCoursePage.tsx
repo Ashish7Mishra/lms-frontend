@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { createCourse } from "../services/courseService";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
+import { SpinnerIcon } from "../components/Spinner";
 
 const CreateCoursePage = () => {
   const navigate = useNavigate();
@@ -145,7 +146,14 @@ const CreateCoursePage = () => {
               disabled={isLoading}
               className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90"
             >
-              {isLoading ? "Creating Course..." : "Create Course"}
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <SpinnerIcon className="w-5 h-5" />
+                  Creating Course...
+                </span>
+              ) : (
+                "Create Course"
+              )}
             </Button>
           </div>
         </form>

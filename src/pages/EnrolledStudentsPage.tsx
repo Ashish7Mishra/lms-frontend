@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getEnrolledStudents } from "../services/courseService";
+import { SpinnerIcon } from "../components/Spinner";
 import type { Student } from "../types";
 
 const EnrolledStudentsPage = () => {
@@ -31,12 +32,16 @@ const EnrolledStudentsPage = () => {
     }
   }, [courseId, token]);
 
-  if (isLoading)
+  if (isLoading) {
     return (
-      <p className="text-center text-gray-500 py-20 text-lg animate-pulse">
-        Loading students...
-      </p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center py-20">
+          <SpinnerIcon className="w-12 h-12 text-blue-600" />
+          <p className="mt-4 text-gray-600 text-sm">Loading students...</p>
+        </div>
+      </div>
     );
+  }
 
   if (error)
     return (
