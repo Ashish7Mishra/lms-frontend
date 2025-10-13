@@ -136,7 +136,11 @@ const CourseDetailPage = () => {
         <h1 className="text-4xl font-extrabold text-gray-800 mb-2">
           {course.title}
         </h1>
-        <p className="text-gray-600">{course.description}</p>
+        {/* CHANGED: Added dangerouslySetInnerHTML to render HTML markup */}
+        <div 
+          className="text-gray-600 leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: course.description }}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -181,9 +185,11 @@ const CourseDetailPage = () => {
                   <h2 className="text-2xl font-bold mb-2 text-gray-800">
                     {selectedLesson.title}
                   </h2>
-                  <p className="text-gray-700 mb-4">
-                    {selectedLesson.content}
-                  </p>
+                  {/* CHANGED: Added dangerouslySetInnerHTML for lesson content too */}
+                  <div 
+                    className="text-gray-700 mb-4 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: selectedLesson.content }}
+                  />
                   {isEnrolledStudent && (
                     <button
                       onClick={handleMarkComplete}
