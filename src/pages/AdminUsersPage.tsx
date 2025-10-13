@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { getUsers, toggleUserStatus, type UserFilters } from '../services/adminService';
-import type { PaginatedUsersResponse } from '../admin';
+import type { PaginatedUsersResponse } from '../types/index';
 import { debounce } from 'lodash';
 
 const AdminUsersPage = () => {
@@ -19,7 +19,7 @@ const AdminUsersPage = () => {
     setError(null);
     try {
       const data = await getUsers(token, currentFilters);
-      setUsersResponse(data); // Assuming data is nested
+      setUsersResponse(data);
     } catch (err: any) {
       setError(err.message);
     } finally {

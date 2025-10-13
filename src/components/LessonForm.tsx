@@ -1,9 +1,9 @@
- // src/components/LessonForm.tsx
+// src/components/LessonForm.tsx
 
-import React, { useState, useEffect } from "react";
-import type { Lesson } from "../types";
-import FormInput from "./FormInput";
-import Button from "./Button";
+import React, { useState, useEffect } from 'react';
+import type { Lesson } from '../types';
+import Button from './Button';
+import FormInput from './FormInput';
 
 interface LessonFormProps {
   onSubmit: (formData: FormData) => void;
@@ -12,130 +12,156 @@ interface LessonFormProps {
   initialData?: Lesson | null;
 }
 
-const LessonForm: React.FC<LessonFormProps> = ({
-  onSubmit,
-  onCancel,
-  isLoading,
-  initialData,
-}) => {
-  const [details, setDetails] = useState({
-    title: "",
-    content: "",
-    order: "1",
+const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, initialData }) => {
+  const [formData, setFormData] = useState({
+    title: initialData?.title || '',
+    content: initialData?.content || '',
+    order: initialData?.order || 1,
   });
   const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (initialData) {
-      setDetails({
+      setFormData({
         title: initialData.title,
         content: initialData.content,
-        order: String(initialData.order),
+        order: initialData.order,
       });
     }
   }, [initialData]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: name === 'order' ? parseInt(value) : value }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
+    if (e.target.files && e.target.files[0]) {
       setVideoFile(e.target.files[0]);
+      if (errors.video) {
+        setErrors(prev => ({ ...prev, video: '' }));
+      }
     }
+  };
+
+  const validate = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!formData.title.trim()) {
+      newErrors.title = 'Title is required';
+    }
+    if (!formData.content.trim()) {
+      newErrors.content = 'Content is required';
+    }
+    if (formData.order < 1) {
+      newErrors.order = 'Order must be at least 1';
+    }
+    if (!initialData && !videoFile) {
+      newErrors.video = 'Video file is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", details.title);
-    formData.append("content", details.content);
-    formData.append("order", details.order);
-    if (videoFile) {
-      formData.append("video", videoFile);
+    
+    if (!validate()) {
+      return;
     }
-    onSubmit(formData);
+
+    const data = new FormData();
+    data.append('title', formData.title);
+    data.append('content', formData.content);
+    data.append('order', formData.order.toString());
+    
+    if (videoFile) {
+      data.append('video', videoFile);
+    }
+
+    onSubmit(data);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Lesson Title */}
+    <form onSubmit={handleSubmit} className="space-y-5">
       <FormInput
         label="Lesson Title"
+        type="text"
         name="title"
-        value={details.title}
+        value={formData.title}
         onChange={handleChange}
+        placeholder="e.g., Introduction to React"
         required
+        error={errors.title}
       />
 
-      {/* Lesson Content */}
       <div>
-        <label
-          htmlFor="content"
-          className="block text-sm font-semibold text-gray-700 mb-1"
-        >
-          Content
+        <label htmlFor="content" className="block text-sm font-semibold text-gray-700 mb-1">
+          Lesson Description
         </label>
         <textarea
           id="content"
           name="content"
-          value={details.content}
+          value={formData.content}
           onChange={handleChange}
-          rows={4}
+          placeholder="Provide a brief description of this lesson..."
           required
-          placeholder="Enter lesson content or summary..."
-          className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition sm:text-sm"
+          rows={4}
+          className={`block w-full px-4 py-2 border rounded-lg shadow-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ${
+            errors.content ? 'border-red-500' : 'border-gray-300'
+          }`}
         />
+        {errors.content && <p className="text-sm text-red-500 mt-1 font-medium">{errors.content}</p>}
       </div>
 
-      {/* Lesson Order */}
       <FormInput
-        label="Order"
-        name="order"
+        label="Lesson Order"
         type="number"
-        value={details.order}
+        name="order"
+        value={formData.order}
         onChange={handleChange}
+        min={1}
         required
-        min="1"
+        error={errors.order}
       />
 
-      {/* Video Upload */}
       <div>
-        <label
-          htmlFor="video"
-          className="block text-sm font-semibold text-gray-700 mb-1"
-        >
-          {initialData ? "Upload New Video (Optional)" : "Lesson Video"}
+        <label htmlFor="video" className="block text-sm font-semibold text-gray-700 mb-1">
+          Video File {initialData && '(Optional - leave empty to keep current video)'}
         </label>
         <input
-          id="video"
           type="file"
-          onChange={handleFileChange}
-          required={!initialData}
+          id="video"
+          name="video"
           accept="video/*"
-          className="block w-full text-sm text-gray-600
-            file:mr-4 file:py-2 file:px-4
-            file:rounded-full file:border-0
-            file:text-sm file:font-semibold
-            file:bg-gradient-to-r file:from-blue-100 file:to-indigo-100
-            file:text-blue-700 hover:file:opacity-80 cursor-pointer transition"
+          onChange={handleFileChange}
+          className={`block w-full px-4 py-2 border rounded-lg shadow-sm text-gray-800 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            errors.video ? 'border-red-500' : 'border-gray-300'
+          }`}
         />
+        {errors.video && <p className="text-sm text-red-500 mt-1 font-medium">{errors.video}</p>}
+        {videoFile && (
+          <p className="text-sm text-gray-600 mt-1">Selected: {videoFile.name}</p>
+        )}
       </div>
 
-      {/* Buttons */}
       <div className="flex justify-end gap-3 pt-4">
         <button
           type="button"
           onClick={onCancel}
-          className="px-5 py-2 rounded-lg bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300 transition"
+          className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition"
+          disabled={isLoading}
         >
           Cancel
         </button>
-
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Saving..." : initialData ? "Update Lesson" : "Save Lesson"}
+          {isLoading ? 'Saving...' : initialData ? 'Update Lesson' : 'Create Lesson'}
         </Button>
       </div>
     </form>

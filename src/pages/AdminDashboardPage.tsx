@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getDashboardData,  type DashboardData } from '../services/adminService';
+import { getDashboardData, type DashboardData } from '../services/adminService';
 
 // A simple reusable card component for stats
 const StatCard = ({ title, value }: { title: string, value: number }) => (
@@ -51,18 +51,8 @@ const AdminDashboardPage = () => {
         <StatCard title="Total Courses" value={stats.totalCourses} />
         <StatCard title="Total Enrollments" value={stats.totalEnrollments} />
       </div>
-
-      {/* We will add recent activity lists here in a future step */}
     </div>
   );
 };
 
 export default AdminDashboardPage;
-
-// --- Also, create placeholder files for the other pages to avoid import errors ---
-// File: src/pages/admin/AdminUsersPage.tsx
-// export default function AdminUsersPage() { return <h1>User Management</h1>; }
-
-// File: src/pages/admin/AdminCoursesPage.tsx
-// export default function AdminCoursesPage() { return <h1>Course Management</h1>; }```
-

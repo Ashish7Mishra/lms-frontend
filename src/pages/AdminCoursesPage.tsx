@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { getCourses, toggleCourseStatus, type CourseFilters } from '../services/adminService';
-import type { PaginatedAdminCoursesResponse } from '../admin';
+import type { PaginatedAdminCoursesResponse } from '../types/index';
 import { debounce } from 'lodash';
 
 const AdminCoursesPage = () => {
@@ -19,7 +19,7 @@ const AdminCoursesPage = () => {
     setError(null);
     try {
       const data = await getCourses(token, currentFilters);
-      setCoursesResponse(data); // Assuming data is nested
+      setCoursesResponse(data);
     } catch (err: any) {
       setError(err.message);
     } finally {

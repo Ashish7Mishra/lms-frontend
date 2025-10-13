@@ -1,97 +1,11 @@
- import { useState, useRef, useEffect } from "react";
+// src/components/Navbar.tsx
+
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { loginUser } from "../services/authService";
 
-
-
-const Header = () => {
-  const { user, isAuthenticated, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login'); // Redirect to login page after logout for a clean experience
-  };
-
-  // Helper function to determine the correct dashboard path based on the user's role
-  const getDashboardPath = () => {
-    if (!user) return '/dashboard'; // Default fallback
-
-    switch (user.role) {
-      case 'Admin':
-        return '/admin/dashboard';
-      case 'Instructor':
-      case 'Student':
-      default:
-        return '/dashboard';
-    }
-  };
-
-  return (
-    <header className="bg-white shadow-md">
-      <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo Link */}
-        <Link to="/" className="text-2xl font-bold text-gray-800">
-          Mini-LMS
-        </Link>
-
-        {/* Navigation Links */}
-        <div className="flex items-center space-x-4">
-          {/* Publicly visible link */}
-          <Link to="/courses" className="text-gray-600 hover:text-blue-500">
-            Courses
-          </Link>
-
-          {isAuthenticated ? (
-            // --- Authenticated User Links ---
-            <>
-              {/* Instructor-only link */}
-              {user?.role === 'Instructor' && (
-                <Link 
-                  to="/instructor/my-courses" 
-                  className="text-gray-600 hover:text-blue-500 font-semibold"
-                >
-                  My Courses
-                </Link>
-              )}
-
-              {/* Dynamic Dashboard Link for all authenticated roles */}
-              <Link to={getDashboardPath()} className="text-gray-600 hover:text-blue-500">
-                Dashboard
-              </Link>
-
-              {/* User Greeting */}
-              <span className="text-gray-700">Hello, {user?.name}</span>
-
-              {/* Logout Button */}
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            // --- Guest User Links ---
-            <>
-              <Link to="/login" className="text-gray-600 hover:text-blue-500">
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                Register
-              </Link>
-            </>
-          )}
-        </div>
-      </nav>
-    </header>
-  );
-};
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
@@ -125,6 +39,7 @@ const Navbar = () => {
   const handleLogout = () => {
     setShowLogoutModal(false);
     logout();
+    navigate('/');
   };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -137,14 +52,24 @@ const Navbar = () => {
       setShowLoginModal(false);
 
       // Redirect based on role
-      if (userData.role === "admin") navigate("/admin/dashboard");
-      else if (userData.role === "instructor") navigate("/instructor/dashboard");
-      else navigate("/dashboard");
+      if (userData.role === "Admin") {
+        navigate("/admin/dashboard");
+      } else if (userData.role === "Instructor") {
+        navigate("/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err: any) {
       setLoginError(err.message || "Invalid credentials");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Helper function to get dashboard path based on role
+  const getDashboardPath = () => {
+    if (!user) return '/dashboard';
+    return user.role === 'Admin' ? '/admin/dashboard' : '/dashboard';
   };
 
   return (
@@ -177,6 +102,23 @@ const Navbar = () => {
                 </li>
               );
             })}
+
+            {/* Show Instructor-specific link */}
+            {user?.role === 'Instructor' && (
+              <li>
+                <Link
+                  to="/instructor/my-courses"
+                  className={`px-8 py-2 rounded-full uppercase tracking-wider font-semibold transition duration-200 shadow-[inset_0_0_0_2px_#616467]
+                    ${
+                      location.pathname === '/instructor/my-courses'
+                        ? "bg-[#616467] text-white"
+                        : "text-black bg-transparent hover:bg-[#616467] hover:text-white"
+                    }`}
+                >
+                  My Courses
+                </Link>
+              </li>
+            )}
 
             {!user && (
               <>
@@ -222,7 +164,7 @@ const Navbar = () => {
                       {user.name}
                     </p>
                     <Link
-                      to="/dashboard"
+                      to={getDashboardPath()}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setAvatarMenuOpen(false)}
                     >
@@ -268,6 +210,18 @@ const Navbar = () => {
                 </li>
               ))}
 
+              {user?.role === 'Instructor' && (
+                <li>
+                  <Link
+                    to="/instructor/my-courses"
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-6 py-2 text-gray-700 font-semibold rounded-full hover:bg-[#616467] hover:text-white transition"
+                  >
+                    My Courses
+                  </Link>
+                </li>
+              )}
+
               {!user && (
                 <>
                   <li>
@@ -297,7 +251,7 @@ const Navbar = () => {
                 <>
                   <li>
                     <Link
-                      to="/dashboard"
+                      to={getDashboardPath()}
                       onClick={() => setMenuOpen(false)}
                       className="block px-6 py-2 text-gray-700 font-semibold rounded-full hover:bg-[#616467] hover:text-white transition"
                     >
@@ -322,61 +276,7 @@ const Navbar = () => {
         )}
       </header>
 
-      {/* ===== LOGIN MODAL ===== */}
-      {showLoginModal && (
-        <div className="fixed inset-0 z-[60] bg-black/60 flex justify-center items-center animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md animate-slideUp">
-            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-              Sign In to LMS
-            </h2>
-
-            {loginError && (
-              <div className="text-sm text-red-600 text-center mb-3">
-                {loginError}
-              </div>
-            )}
-
-            <form onSubmit={handleLoginSubmit} className="space-y-4">
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, email: e.target.value }))
-                }
-                required
-                className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none"
-              />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, password: e.target.value }))
-                }
-                required
-                className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none"
-              />
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition"
-              >
-                {isLoading ? "Signing in..." : "Login"}
-              </button>
-            </form>
-
-            <button
-              onClick={() => setShowLoginModal(false)}
-              className="mt-4 w-full text-sm text-gray-500 hover:text-gray-700"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+   
 
       {/* ===== LOGOUT MODAL ===== */}
       {showLogoutModal && (

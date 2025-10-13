@@ -1,3 +1,5 @@
+// src/types/types.ts
+
 export interface User {
   _id: string;
   name: string;
@@ -13,6 +15,7 @@ export interface Instructor {
   name: string;
   email: string;
 }
+
 export interface Student {
   _id: string;
   name: string;
@@ -29,9 +32,10 @@ export interface Course {
   instructor: Instructor;
   isActive: boolean;
   enrollment: boolean;
-  progress: number;
+  progress?: number;
   thumbnail?: string;
   image?: string;
+  enrolledCount?: number; // Added for instructor dashboard
 }
 
 export interface PaginatedCoursesResponse {
@@ -42,7 +46,6 @@ export interface PaginatedCoursesResponse {
     totalItems: number;
   };
 }
-
 
 export interface Lesson {
   _id: string;
