@@ -1,4 +1,4 @@
- // src/pages/ManageCoursePage.tsx
+  // src/pages/ManageCoursePage.tsx
 
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -103,7 +103,7 @@ const ManageCoursePage = () => {
     }
   };
 
-     if (isLoading)
+ if (isLoading)
   return (
     <div className="flex justify-center items-center min-h-[60vh]">
       <div className="flex flex-col items-center gap-6">
@@ -115,7 +115,7 @@ const ManageCoursePage = () => {
           </div>
         </div>
         <div className="flex flex-col items-center gap-2">
-          <p className="text-gray-700 font-medium text-base">Loading course content...</p>
+          <p className="text-gray-700 font-medium text-base"> Loading course content...</p>
           <div className="flex gap-1">
             <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
             <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
@@ -125,7 +125,6 @@ const ManageCoursePage = () => {
       </div>
     </div>
   );
-
   if (error)
     return (
       <p className="text-center text-red-500 py-20 text-lg">Error: {error}</p>

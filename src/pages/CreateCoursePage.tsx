@@ -6,10 +6,8 @@ import { createCourse } from "../services/courseService";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
 import { SpinnerIcon } from "../components/Spinner";
-
-import "quill/dist/quill.snow.css";
-import ReactQuill from "react-quill";   // ✅ Make sure this is exactly like this
-import "quill/dist/quill.snow.css";    
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const CreateCoursePage = () => {
   const navigate = useNavigate();
@@ -27,7 +25,7 @@ const CreateCoursePage = () => {
 
   // Handle course field changes
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setCourseDetails((prev) => ({ ...prev, [name]: value }));
@@ -51,7 +49,7 @@ const CreateCoursePage = () => {
 
     const formData = new FormData();
     formData.append("title", courseDetails.title);
-    formData.append("description", courseDetails.description); // HTML from Quill
+    formData.append("description", courseDetails.description);
     formData.append("category", courseDetails.category);
     formData.append("image", imageFile);
 
@@ -93,63 +91,32 @@ const CreateCoursePage = () => {
             onChange={handleChange}
           />
 
-          {/* Course Description with React Quill */}
+          {/* Course Description with Markdown */}
           <div>
             <label
               htmlFor="description"
               className="block text-sm font-semibold text-gray-700 mb-1"
             >
-              Description
+              Description (Markdown)
             </label>
-<ReactQuill
-  theme="snow"
-  value={courseDetails.description}
-  onChange={(value) =>
-    setCourseDetails((prev) => ({ ...prev, description: value }))
-  }
-  modules={{
-    toolbar: [
-      [{ font: [] }, { size: [] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ color: [] }, { background: [] }],
-      [{ script: "sub" }, { script: "super" }],
-      [{ header: "1" }, { header: "2" }, "blockquote", "code-block"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" },
-      ],
-      [{ direction: "rtl" }, { align: [] }],
-      ["link", "image", "video"],
-      ["clean"],
-    ],
-  }}
-  formats={[
-    "font",
-    "size",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "color",
-    "background",
-    "script",
-    "header",
-    "blockquote",
-    "code-block",
-    "list",
-    "bullet",
-    "indent",
-    "direction",
-    "align",
-    "link",
-    "image",
-    "video",
-  ]}
-  className="bg-white border border-gray-300 rounded-lg h-60" // Add h-72 or whatever height you want
-/>
-
+            <textarea
+              id="description"
+              name="description"
+              rows={6}
+              required
+              value={courseDetails.description}
+              onChange={handleChange}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm"
+              placeholder="Write your course description in Markdown..."
+            />
+            {/* Live preview */}
+            {courseDetails.description && (
+              <div className="mt-2 p-3 border rounded bg-gray-50 text-gray-800">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {courseDetails.description}
+                </ReactMarkdown>
+              </div>
+            )}
           </div>
 
           {/* Category */}
