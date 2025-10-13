@@ -1,4 +1,4 @@
- // src/components/Navbar.tsx
+
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
@@ -67,11 +67,11 @@ const Navbar = () => {
     <>
       {/* ===== NAVBAR ===== */}
       <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
-        <nav className="max-w-7xl mx-auto flex justify-between items-center py-3 px-6">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-50 font-bold text-indigo-800">LMS</span>
-          </Link>
+     <nav className="max-w-7xl mx-auto flex justify-between items-center py-3 px-6">
+  {/* Logo */}
+  <Link to="/" className="flex items-center space-x-2">
+    <span className="text-2xl font-bold text-indigo-800">LMS</span> {/* Increased from text-50 to text-2xl */}
+  </Link>
 
           {/* ===== DESKTOP MENU ===== */}
           <ul className="hidden md:flex items-center gap-4 lg:gap-6">
@@ -115,7 +115,7 @@ const Navbar = () => {
                 <li>
                   <Link
                     to="/login"
-                    className="border border-blue-500 text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-blue-50 transition"
+                    className="px-8 py-2 rounded-full uppercase tracking-wider font-semibold bg-transparent shadow-[inset_0_0_0_2px_#616467] hover:bg-[#616467] hover:text-white transition"
                   >
                     Login
                   </Link>
