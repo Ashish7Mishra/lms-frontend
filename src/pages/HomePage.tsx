@@ -1,6 +1,7 @@
- import { Link } from "react-router-dom";
+ import React from "react";
+import { Link } from "react-router-dom";
 
-const HomePage = () => {
+const HomePage: React.FC = () => {
   return (
     <div className="bg-[#F9FAFB] min-h-screen flex flex-col justify-between">
       {/* ===== Hero Section ===== */}
@@ -68,7 +69,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* --- Right Side Image (for desktop view) --- */}
+        {/* --- Right Side Image (desktop view) --- */}
         <div className="flex-1 hidden md:flex justify-center">
           <img
             src="https://img.freepik.com/free-vector/online-education-illustration_1284-68476.jpg?w=1380"
