@@ -72,10 +72,10 @@ const CoursesListPage = () => {
     );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-16 px-6">
+    <div className="min-h-screen bg-gray-50 py-2 px-6">
       <div className="max-w-7xl mx-auto">
         {/* ===== Page Header ===== */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-6">
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800">
             Explore Our{" "}
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
