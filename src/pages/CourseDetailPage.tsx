@@ -1,4 +1,4 @@
- // src/pages/CourseDetailPage.tsx
+// src/pages/CourseDetailPage.tsx
 
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
@@ -98,40 +98,64 @@ const CourseDetailPage = () => {
     }
   };
 
+  // Helper function to check if URL is YouTube or Vimeo
+  const getEmbedUrl = (url: string, videoType?: string) => {
+    if (videoType === 'link') {
+      // YouTube
+      const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+      if (youtubeMatch) {
+        return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+      }
+      
+      // Vimeo
+      const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+      if (vimeoMatch) {
+        return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+      }
+    }
+    
+    // Return original URL for direct video files or uploaded videos
+    return url;
+  };
+
+  const renderVideoPlayer = (lesson: Lesson) => {
+    const embedUrl = getEmbedUrl(lesson.videoUrl, lesson.videoType);
+    const isEmbedded = embedUrl !== lesson.videoUrl;
+
+    if (isEmbedded) {
+      // Render iframe for YouTube/Vimeo
+      return (
+        <iframe
+          key={lesson._id}
+          src={embedUrl}
+          className="w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title={lesson.title}
+        />
+      );
+    } else {
+      // Render video tag for direct links or uploaded videos
+      return (
+        <video
+          key={lesson._id}
+          className="w-full h-full"
+          controls
+          autoPlay
+          src={lesson.videoUrl}
+        >
+          Your browser does not support the video tag.
+        </video>
+      );
+    }
+  };
+
   if (isLoading)
-  return (
-    <div className="flex justify-center items-center min-h-[60vh]">
-      <div className="flex flex-col items-center gap-6">
-        <div className="relative">
-          {/* Outer circle */}
-          <div className="w-20 h-20 border-4 border-gray-200 rounded-full"></div>
-          {/* Spinning circle */}
-          <div className="absolute top-0 left-0 w-20 h-20 border-4 border-blue-600 rounded-full border-t-transparent border-r-transparent animate-spin"></div>
-          {/* Center pulsing dot */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
-          </div>
-        </div>
-
-        {/* Text with bouncing dots */}
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-gray-700 font-medium text-base">Loading Course</p>
-          <div className="flex gap-1">
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-if (error)
-  return <p className="text-center text-red-500 py-10">Error: {error}</p>;
-
-if (!course)
-  return <p className="text-center py-10 text-gray-600">Course not found.</p>;
-
+    return <p className="text-center py-10 text-gray-500">Loading course...</p>;
+  if (error)
+    return <p className="text-center text-red-500 py-10">Error: {error}</p>;
+  if (!course)
+    return <p className="text-center py-10 text-gray-600">Course not found.</p>;
 
   const isInstructorOwner =
     user?.role === "Instructor" && user?._id === course.instructor._id;
@@ -164,11 +188,7 @@ if (!course)
         <h1 className="text-4xl font-extrabold text-gray-800 mb-2">
           {course.title}
         </h1>
-        {/* CHANGED: Added dangerouslySetInnerHTML to render HTML markup */}
-        <div 
-          className="text-gray-600 leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: course.description }}
-        />
+        <p className="text-gray-600">{course.description}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -179,13 +199,7 @@ if (!course)
               <>
                 <div className="aspect-video bg-black relative">
                   {canWatchVideo ? (
-                    <video
-                      key={selectedLesson._id}
-                      className="w-full h-full"
-                      controls
-                      autoPlay
-                      src={selectedLesson.videoUrl}
-                    />
+                    renderVideoPlayer(selectedLesson)
                   ) : (
                     <>
                       <img
@@ -213,11 +227,9 @@ if (!course)
                   <h2 className="text-2xl font-bold mb-2 text-gray-800">
                     {selectedLesson.title}
                   </h2>
-                  {/* CHANGED: Added dangerouslySetInnerHTML for lesson content too */}
-                  <div 
-                    className="text-gray-700 mb-4 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: selectedLesson.content }}
-                  />
+                  <p className="text-gray-700 mb-4">
+                    {selectedLesson.content}
+                  </p>
                   {isEnrolledStudent && (
                     <button
                       onClick={handleMarkComplete}

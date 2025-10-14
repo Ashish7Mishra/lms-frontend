@@ -53,6 +53,7 @@ export interface Lesson {
   content: string;
   order: number;
   videoUrl: string;
+  videoType?: 'upload' | 'link';
   isCompleted?: boolean;
   description?: string;
 }
