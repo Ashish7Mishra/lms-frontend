@@ -1,6 +1,6 @@
 // src/pages/CourseDetailPage.tsx
 
-import  type{ useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import {
   getCourseById,
@@ -193,6 +193,64 @@ const CourseDetailPage = () => {
         <p className="text-gray-600">{course.description}</p>
       </div>
 
+      <style>{`
+        .prose-html h1,
+        .prose-html h2,
+        .prose-html h3,
+        .prose-html h4,
+        .prose-html h5,
+        .prose-html h6 {
+          margin-top: 1rem;
+          margin-bottom: 0.75rem;
+          font-weight: 600;
+        }
+        .prose-html p {
+          margin-bottom: 0.75rem;
+          line-height: 1.6;
+        }
+        .prose-html ul,
+        .prose-html ol {
+          margin-bottom: 0.75rem;
+          padding-left: 1.5rem;
+        }
+        .prose-html li {
+          margin-bottom: 0.25rem;
+        }
+        .prose-html a {
+          color: #2563eb;
+          text-decoration: underline;
+        }
+        .prose-html a:hover {
+          color: #1d4ed8;
+        }
+        .prose-html code {
+          background-color: #f3f4f6;
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          font-family: monospace;
+          font-size: 0.875rem;
+        }
+        .prose-html pre {
+          background-color: #f3f4f6;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          overflow-x: auto;
+          margin-bottom: 0.75rem;
+        }
+        .prose-html blockquote {
+          border-left: 4px solid #d1d5db;
+          padding-left: 1rem;
+          font-style: italic;
+          margin: 0.75rem 0;
+        }
+        .prose-html strong {
+          font-weight: 700;
+        }
+        .prose-html em {
+          font-style: italic;
+        }
+      `}</style>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Video Section */}
         <div className="lg:col-span-2">
@@ -238,7 +296,7 @@ const CourseDetailPage = () => {
                           __html: DOMPurify.sanitize(selectedLesson.content, {
                             ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'b', 'i', 'u', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre', 'span', 'div', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
                             ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id']
-                          })
+                          } as any)
                         }}
                       />
                     ) : (
