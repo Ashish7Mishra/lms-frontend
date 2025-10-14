@@ -1,4 +1,4 @@
- import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getMyEnrollments, type Enrollment } from '../services/enrollmentService';
@@ -26,7 +26,7 @@ const DashboardPage = () => {
   // Modal state for enrolled students
   const [showStudentsModal, setShowStudentsModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [enrolledStudents, setEnrolledStudents] = useState<Student[]>([]);
+  const [enrolledStudents, setEnrolledStudents] = useState<any[]>([]);
   const [loadingStudents, setLoadingStudents] = useState(false);
 
   useEffect(() => {
@@ -45,7 +45,18 @@ const DashboardPage = () => {
         }
         if (user.role === 'Instructor') {
           const courseData = await getMyCourses(token);
-          setMyCourses(courseData);
+          // Update enrollment counts for each course
+          const coursesWithCounts = await Promise.all(
+            courseData.map(async (course) => {
+              try {
+                const enrollments = await getEnrolledStudents(course._id, token);
+                return { ...course, enrolledCount: enrollments.length };
+              } catch {
+                return course;
+              }
+            })
+          );
+          setMyCourses(coursesWithCounts);
         }
       } catch (err: any) {
         setError(err.message);
@@ -77,6 +88,22 @@ const DashboardPage = () => {
     setShowStudentsModal(false);
     setSelectedCourse(null);
     setEnrolledStudents([]);
+  };
+
+  // Get category-based gradient colors (matching CourseCard style)
+  const getCategoryGradient = (category?: string) => {
+    switch (category) {
+      case 'Web':
+        return 'from-blue-400 to-blue-600';
+      case 'Design':
+        return 'from-purple-400 to-purple-600';
+      case 'Data':
+        return 'from-sky-400 to-sky-600';
+      case 'Marketing':
+        return 'from-emerald-400 to-emerald-600';
+      default:
+        return 'from-indigo-400 to-indigo-600';
+    }
   };
 
   const renderStudentDashboard = () => {
@@ -235,20 +262,42 @@ const DashboardPage = () => {
               {myCourses.slice(0, 3).map((course) => (
                 <div
                   key={course._id}
-                  className="group bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all overflow-hidden"
+                  className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col"
                 >
-                  <div className="relative h-40 w-full overflow-hidden bg-gray-100 flex items-center justify-center">
-                    <BookOpen className="w-20 h-20 text-gray-300 group-hover:scale-105 transition-transform duration-300" strokeWidth={1.5} />
-                    <span className="absolute top-3 right-3 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full shadow-md">
+                  {/* Dynamic Image/Thumbnail */}
+                  <div className="relative">
+                    {course.imageUrl ? (
+                      <img
+                        src={course.imageUrl}
+                        alt={course.title}
+                        className="w-full h-48 object-cover"
+                      />
+                    ) : (
+                      <div className={`w-full h-48 bg-gradient-to-br ${getCategoryGradient(course.category)} flex items-center justify-center`}>
+                        <BookOpen className="w-20 h-20 text-white opacity-90" strokeWidth={1.5} />
+                      </div>
+                    )}
+                    <span className={`absolute top-2 left-2 text-xs font-semibold text-white py-1 px-2 rounded-full shadow-md
+                      ${course.category === "Web"
+                        ? "bg-blue-500"
+                        : course.category === "Design"
+                        ? "bg-purple-500"
+                        : course.category === "Data"
+                        ? "bg-sky-500"
+                        : course.category === "Marketing"
+                        ? "bg-emerald-500"
+                        : "bg-indigo-500"
+                      }`}
+                    >
                       {course.category || 'General'}
                     </span>
                   </div>
 
-                  <div className="p-5">
-                    <h3 className="text-lg font-semibold text-gray-800 line-clamp-2 mb-1">
+                  <div className="p-5 flex flex-col flex-grow">
+                    <h3 className="text-lg font-semibold text-gray-800 line-clamp-2 mb-2">
                       {course.title}
                     </h3>
-                    <p className="text-sm text-gray-500 line-clamp-2 mb-4">
+                    <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-grow">
                       {course.description || 'No description available.'}
                     </p>
 
@@ -257,7 +306,7 @@ const DashboardPage = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 mt-auto">
                       <Link
                         to={`/instructor/courses/${course._id}/manage`}
                         className="flex-1 bg-indigo-600 text-white text-sm font-semibold py-2 px-3 rounded-lg hover:bg-indigo-700 transition text-center"
@@ -337,19 +386,23 @@ const DashboardPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {enrolledStudents.map((student, idx) => (
+                      {enrolledStudents.map((enrollment, idx) => (
                         <tr
-                          key={student._id}
+                          key={enrollment._id || idx}
                           className={`border-b ${
                             idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'
                           } hover:bg-blue-50 transition`}
                         >
                           <td className="p-4 text-gray-800 font-medium">
-                            {student.name}
+                            {enrollment.studentId?.name || enrollment.student?.name || 'N/A'}
                           </td>
-                          <td className="p-4 text-gray-600">{student.email}</td>
+                          <td className="p-4 text-gray-600">
+                            {enrollment.studentId?.email || enrollment.student?.email || 'N/A'}
+                          </td>
                           <td className="p-4 text-gray-500">
-                            {new Date(student.createdAt).toLocaleDateString()}
+                            {enrollment.enrolledAt || enrollment.createdAt 
+                              ? new Date(enrollment.enrolledAt || enrollment.createdAt).toLocaleDateString()
+                              : 'N/A'}
                           </td>
                         </tr>
                       ))}
