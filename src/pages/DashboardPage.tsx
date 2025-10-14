@@ -45,17 +45,20 @@ const DashboardPage = () => {
         }
         if (user.role === 'Instructor') {
           const courseData = await getMyCourses(token);
-          // Update enrollment counts for each course
+          
+          // Fetch enrollment counts for each course
           const coursesWithCounts = await Promise.all(
             courseData.map(async (course) => {
               try {
-                const enrollments = await getEnrolledStudents(course._id, token);
-                return { ...course, enrolledCount: enrollments.length };
-              } catch {
-                return course;
+                const students = await getEnrolledStudents(course._id, token);
+                return { ...course, enrolledCount: students.length };
+              } catch (error) {
+                // If fetching fails, keep the original enrolledCount or default to 0
+                return { ...course, enrolledCount: course.enrolledCount || 0 };
               }
             })
           );
+          
           setMyCourses(coursesWithCounts);
         }
       } catch (err: any) {
@@ -75,6 +78,7 @@ const DashboardPage = () => {
     
     try {
       const students = await getEnrolledStudents(course._id, token!);
+      console.log('Enrolled students response:', students);
       setEnrolledStudents(students);
     } catch (err: any) {
       console.error('Error fetching students:', err);
@@ -394,10 +398,10 @@ const DashboardPage = () => {
                           } hover:bg-blue-50 transition`}
                         >
                           <td className="p-4 text-gray-800 font-medium">
-                            {enrollment.studentId?.name || enrollment.student?.name || 'N/A'}
+                            {enrollment.name || enrollment.studentId?.name || enrollment.student?.name || JSON.stringify(enrollment)}
                           </td>
                           <td className="p-4 text-gray-600">
-                            {enrollment.studentId?.email || enrollment.student?.email || 'N/A'}
+                            {enrollment.email || enrollment.studentId?.email || enrollment.student?.email || 'N/A'}
                           </td>
                           <td className="p-4 text-gray-500">
                             {enrollment.enrolledAt || enrollment.createdAt 
