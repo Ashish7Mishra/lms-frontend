@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getMyEnrollments, type Enrollment } from '../services/enrollmentService';
 import { getMyCourses, getEnrolledStudents } from '../services/courseService';
-import type { Course, Student } from '../types';
+import type { Course } from '../types';
 import ProgressCard from '../components/ProgressCard';
 import {
   BookOpen,
@@ -54,6 +54,7 @@ const DashboardPage = () => {
                 return { ...course, enrolledCount: students.length };
               } catch (error) {
                 // If fetching fails, keep the original enrolledCount or default to 0
+                console.log(error);
                 return { ...course, enrolledCount: course.enrolledCount || 0 };
               }
             })
