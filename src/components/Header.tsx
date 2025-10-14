@@ -9,8 +9,8 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [ setIsLoading] = useState(false);
-  const [ setLoginError] = useState<string | null>(null);
+  const [ isLoading,setIsLoading] = useState(false);
+  const [ loginError,setLoginError] = useState<string | null>(null);
   const [formData] = useState({ email: "", password: "" });
 
   const location = useLocation();
