@@ -1,4 +1,4 @@
-// src/components/LessonForm.tsx
+ // src/components/LessonForm.tsx
 
 import React, { useState, useEffect, useRef } from 'react';
 import type { Lesson } from '../types';
@@ -26,7 +26,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
   const [videoInputType, setVideoInputType] = useState<'upload' | 'link'>('upload');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [previewMode, setPreviewMode] = useState(false);
-  const [contentFormat, setContentFormat] = useState<'markdown' | 'html'>('markdown');
+  const [contentFormat, setContentFormat] = useState<'markdown' | 'html' | 'plain'>('markdown');
 
   useEffect(() => {
     if (initialData) {
@@ -178,12 +178,19 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
           </ReactMarkdown>
         </div>
       );
-    } else {
+    } else if (contentFormat === 'html') {
       return (
         <div 
           className="prose prose-sm max-w-none"
           dangerouslySetInnerHTML={{ __html: formData.content }}
         />
+      );
+    } else {
+      // Plain text
+      return (
+        <div className="whitespace-pre-wrap text-gray-800">
+          {formData.content}
+        </div>
       );
     }
   };
@@ -209,11 +216,12 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
           <div className="flex gap-2">
             <select
               value={contentFormat}
-              onChange={(e) => setContentFormat(e.target.value as 'markdown' | 'html')}
+              onChange={(e) => setContentFormat(e.target.value as 'markdown' | 'html' | 'plain')}
               className="text-xs px-2 py-1 border border-gray-300 rounded bg-white"
             >
               <option value="markdown">Markdown</option>
               <option value="html">HTML</option>
+              <option value="plain">Plain Text</option>
             </select>
             <button
               type="button"
@@ -243,12 +251,12 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
           <div>
             {/* Toolbar */}
             {contentFormat === 'markdown' && (
-              <div className="mb-0 p-2 bg-gray-50 border border-b-0 border-gray-300 rounded-t-lg flex flex-wrap gap-1">
+              <div className="mb-0 p-2 bg-gray-50 border border-b-0 border-gray-300 rounded-t-lg flex flex-wrap gap-1 items-center">
                 <button
                   type="button"
                   onClick={() => insertMarkdown('**', '**')}
                   title="Bold"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm font-bold"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-sm font-bold"
                 >
                   B
                 </button>
@@ -256,7 +264,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
                   type="button"
                   onClick={() => insertMarkdown('*', '*')}
                   title="Italic"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm italic"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-sm italic"
                 >
                   I
                 </button>
@@ -264,16 +272,16 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
                   type="button"
                   onClick={() => insertMarkdown('~~', '~~')}
                   title="Strikethrough"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm line-through"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-sm line-through"
                 >
                   S
                 </button>
-                <div className="border-l border-gray-300 mx-1"></div>
+                <div className="border-l border-gray-300 h-6"></div>
                 <button
                   type="button"
                   onClick={() => insertMarkdown('# ', '\n')}
                   title="Heading 1"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm font-bold"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-xs font-bold"
                 >
                   H1
                 </button>
@@ -281,7 +289,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
                   type="button"
                   onClick={() => insertMarkdown('## ', '\n')}
                   title="Heading 2"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm font-bold"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-xs font-bold"
                 >
                   H2
                 </button>
@@ -289,16 +297,16 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
                   type="button"
                   onClick={() => insertMarkdown('### ', '\n')}
                   title="Heading 3"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm font-bold"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-xs font-bold"
                 >
                   H3
                 </button>
-                <div className="border-l border-gray-300 mx-1"></div>
+                <div className="border-l border-gray-300 h-6"></div>
                 <button
                   type="button"
                   onClick={() => insertMarkdown('- ', '\n')}
                   title="Bullet List"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-xs whitespace-nowrap"
                 >
                   • List
                 </button>
@@ -306,16 +314,16 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
                   type="button"
                   onClick={() => insertMarkdown('1. ', '\n')}
                   title="Numbered List"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-xs whitespace-nowrap"
                 >
                   1. List
                 </button>
-                <div className="border-l border-gray-300 mx-1"></div>
+                <div className="border-l border-gray-300 h-6"></div>
                 <button
                   type="button"
                   onClick={() => insertMarkdown('[', '](url)')}
                   title="Link"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-xs"
                 >
                   Link
                 </button>
@@ -323,15 +331,15 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
                   type="button"
                   onClick={() => insertMarkdown('`', '`')}
                   title="Code"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm font-mono"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-xs font-mono"
                 >
-                  {'{'}Code{'}'}
+                  Code
                 </button>
                 <button
                   type="button"
                   onClick={() => insertMarkdown('```\n', '\n```')}
                   title="Code Block"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-xs"
                 >
                   Block
                 </button>
@@ -339,7 +347,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
                   type="button"
                   onClick={() => insertMarkdown('> ', '\n')}
                   title="Quote"
-                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm"
+                  className="px-2.5 py-1.5 hover:bg-gray-200 rounded transition text-xs"
                 >
                   Quote
                 </button>
@@ -352,13 +360,16 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
               name="content"
               value={formData.content}
               onChange={handleChange}
-              placeholder={contentFormat === 'markdown' 
-                ? "# Heading\n\n**Bold text**\n\n- List item\n\n[Link](url)"
-                : "<h2>Heading</h2>\n<p>Paragraph text</p>"
+              placeholder={
+                contentFormat === 'markdown' 
+                  ? "# Heading\n\n**Bold text**\n\n- List item\n\n[Link](url)"
+                  : contentFormat === 'html'
+                  ? "<h2>Heading</h2>\n<p>Paragraph text</p>"
+                  : "Enter your plain text content here..."
               }
               required
-              rows={10}
-              className={`block w-full px-4 py-2 border shadow-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 font-mono text-sm ${
+              rows={12}
+              className={`block w-full px-4 py-2 border shadow-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 font-mono text-sm resize-none ${
                 contentFormat === 'markdown' && !previewMode ? 'rounded-b-lg' : 'rounded-lg'
               } ${
                 errors.content ? 'border-red-500' : 'border-gray-300'
@@ -367,11 +378,13 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
             <p className="text-xs text-gray-500 mt-2">
               {contentFormat === 'markdown'
                 ? 'Use the toolbar or markdown syntax for formatting'
-                : 'Write valid HTML content'}
+                : contentFormat === 'html'
+                ? 'Write valid HTML content'
+                : 'Plain text with no formatting'}
             </p>
           </div>
         ) : (
-          <div className={`border rounded-lg p-4 bg-gray-50 min-h-[300px] max-h-[400px] overflow-y-auto ${
+          <div className={`border rounded-lg p-4 bg-gray-50 min-h-[200px] max-h-[300px] overflow-y-auto ${
             errors.content ? 'border-red-500' : 'border-gray-300'
           }`}>
             {formData.content ? renderPreview() : <p className="text-gray-400">Preview will appear here...</p>}
