@@ -1,4 +1,4 @@
- // src/components/LessonForm.tsx
+// src/components/LessonForm.tsx
 
 import React, { useState, useEffect, useRef } from 'react';
 import type { Lesson } from '../types';
@@ -27,6 +27,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [previewMode, setPreviewMode] = useState(false);
   const [contentFormat, setContentFormat] = useState<'markdown' | 'html' | 'plain'>('markdown');
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -384,10 +385,35 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
             </p>
           </div>
         ) : (
-          <div className={`border rounded-lg p-4 bg-gray-50 min-h-[200px] max-h-[300px] overflow-y-auto ${
+          <div className={`border rounded-lg p-4 bg-gray-50 overflow-hidden transition-all duration-300 ${
             errors.content ? 'border-red-500' : 'border-gray-300'
-          }`}>
-            {formData.content ? renderPreview() : <p className="text-gray-400">Preview will appear here...</p>}
+          } ${showFullDescription ? 'max-h-[600px] overflow-y-auto' : 'max-h-[200px]'}`}>
+            <div className={showFullDescription ? '' : 'overflow-hidden'}>
+              {formData.content ? renderPreview() : <p className="text-gray-400">Preview will appear here...</p>}
+            </div>
+            {formData.content && (
+              <button
+                type="button"
+                onClick={() => setShowFullDescription(!showFullDescription)}
+                className="mt-3 text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center gap-1 transition"
+              >
+                {showFullDescription ? (
+                  <>
+                    View Less
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    </svg>
+                  </>
+                ) : (
+                  <>
+                    View More
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            )}
           </div>
         )}
 

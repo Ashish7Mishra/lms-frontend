@@ -1,4 +1,4 @@
-// src/pages/CourseDetailPage.tsx
+ // src/pages/CourseDetailPage.tsx
 
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
@@ -35,6 +35,7 @@ const CourseDetailPage = () => {
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
   const [isMarking, setIsMarking] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   useEffect(() => {
     if (!courseId) return;
@@ -287,41 +288,78 @@ const CourseDetailPage = () => {
                   <h2 className="text-2xl font-bold mb-2 text-gray-800">
                     {selectedLesson.title}
                   </h2>
-                  <div className="text-gray-700 mb-4 prose prose-sm max-w-none">
-                    {selectedLesson.content.includes('<') && selectedLesson.content.includes('>') ? (
-                      // Render as HTML if it contains HTML tags
-                      <div
-                        className="space-y-2"
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(selectedLesson.content, {
-                            ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'b', 'i', 'u', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre', 'span', 'div', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
-                            ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id']
-                          } as any)
-                        }}
-                      />
-                    ) : (
-                      // Render as Markdown if no HTML tags detected
-                      <ReactMarkdown
-                        components={{
-                          h1: ({...props}) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
-                          h2: ({...props}) => <h2 className="text-xl font-bold mt-3 mb-2" {...props} />,
-                          h3: ({...props}) => <h3 className="text-lg font-bold mt-2 mb-1" {...props} />,
-                          p: ({...props}) => <p className="mb-2" {...props} />,
-                          ul: ({...props}) => <ul className="list-disc list-inside mb-2" {...props} />,
-                          ol: ({...props}) => <ol className="list-decimal list-inside mb-2" {...props} />,
-                          li: ({...props}) => <li className="ml-2" {...props} />,
-                          strong: ({...props}) => <strong className="font-bold" {...props} />,
-                          em: ({...props}) => <em className="italic" {...props} />,
-                          code: ({...props}) => <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono" {...props} />,
-                          pre: ({...props}) => <pre className="bg-gray-100 p-3 rounded mb-2 overflow-auto" {...props} />,
-                          blockquote: ({...props}) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2" {...props} />,
-                          a: ({...props}) => <a className="text-blue-600 underline hover:text-blue-800" {...props} />,
-                        }}
-                      >
-                        {selectedLesson.content}
-                      </ReactMarkdown>
+                  
+                  {/* Description with View More */}
+                  <div className={`text-gray-700 mb-4 transition-all duration-300 ${
+                    showFullDescription ? 'max-h-none' : 'max-h-[200px] overflow-hidden relative'
+                  }`}>
+                    <div className={`prose prose-sm max-w-none prose-html ${
+                      !showFullDescription ? 'mask-gradient' : ''
+                    }`}>
+                      {selectedLesson.content.includes('<') && selectedLesson.content.includes('>') ? (
+                        // Render as HTML if it contains HTML tags
+                        <div
+                          className="space-y-2"
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(selectedLesson.content, {
+                              ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'b', 'i', 'u', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre', 'span', 'div', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
+                              ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id']
+                            } as any)
+                          }}
+                        />
+                      ) : (
+                        // Render as Markdown if no HTML tags detected
+                        <ReactMarkdown
+                          components={{
+                            h1: ({...props}) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
+                            h2: ({...props}) => <h2 className="text-xl font-bold mt-3 mb-2" {...props} />,
+                            h3: ({...props}) => <h3 className="text-lg font-bold mt-2 mb-1" {...props} />,
+                            p: ({...props}) => <p className="mb-2" {...props} />,
+                            ul: ({...props}) => <ul className="list-disc list-inside mb-2" {...props} />,
+                            ol: ({...props}) => <ol className="list-decimal list-inside mb-2" {...props} />,
+                            li: ({...props}) => <li className="ml-2" {...props} />,
+                            strong: ({...props}) => <strong className="font-bold" {...props} />,
+                            em: ({...props}) => <em className="italic" {...props} />,
+                            code: ({...props}) => <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono" {...props} />,
+                            pre: ({...props}) => <pre className="bg-gray-100 p-3 rounded mb-2 overflow-auto" {...props} />,
+                            blockquote: ({...props}) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2" {...props} />,
+                            a: ({...props}) => <a className="text-blue-600 underline hover:text-blue-800" {...props} />,
+                          }}
+                        >
+                          {selectedLesson.content}
+                        </ReactMarkdown>
+                      )}
+                    </div>
+                    {!showFullDescription && (
+                      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
                     )}
                   </div>
+
+                  {/* View More Button */}
+                  {selectedLesson.content && selectedLesson.content.length > 300 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowFullDescription(!showFullDescription)}
+                      className="mb-4 text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center gap-1 transition"
+                    >
+                      {showFullDescription ? (
+                        <>
+                          View Less
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                          </svg>
+                        </>
+                      ) : (
+                        <>
+                          View More
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                  )}
+
                   {isEnrolledStudent && (
                     <button
                       onClick={handleMarkComplete}
