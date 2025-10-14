@@ -15,10 +15,12 @@ const Navbar = () => {
 
   const baseLinks = [
     { name: "Home", path: "/" },
-    { name: "Courses", path: "/courses" },
+    ...(user?.role !== "Instructor" 
+      ? [{ name: "Courses", path: "/courses" }] 
+      : []
+    ),
   ];
 
-  // Close avatar dropdown when clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (avatarRef.current && !avatarRef.current.contains(event.target as Node)) {
@@ -40,45 +42,49 @@ const Navbar = () => {
     return user.role === "Admin" ? "/admin/dashboard" : "/dashboard";
   };
 
+  const isActive = (path: string) => location.pathname === path;
+
   return (
     <>
       {/* ===== NAVBAR ===== */}
-      <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
-        <nav className="max-w-7xl mx-auto flex justify-between items-center py-3 px-6">
+      <header className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-lg border-b border-gray-100 shadow-sm">
+        <nav className="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-indigo-800">LMS</span>
+          <Link to="/" className="flex items-center space-x-2.5 group">
+            <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white font-bold text-lg">L</span>
+            </div>
+            <span className="text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 hidden sm:inline group-hover:opacity-80 transition-opacity">
+              Lernify
+            </span>
           </Link>
 
           {/* ===== DESKTOP MENU ===== */}
-          <ul className="hidden md:flex items-center gap-4 lg:gap-6">
-            {baseLinks.map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
-                <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className={`px-8 py-2 rounded-full uppercase tracking-wider font-semibold transition-all duration-300 shadow-[inset_0_0_0_2px_#616467] ${
-                      isActive
-                        ? "bg-[#616467] text-white scale-105"
-                        : "text-black bg-transparent hover:bg-[#616467] hover:text-white hover:scale-105 hover:shadow-lg"
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              );
-            })}
+          <ul className="hidden md:flex items-center gap-2">
+            {baseLinks.map((link) => (
+              <li key={link.name}>
+                <Link
+                  to={link.path}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    isActive(link.path)
+                      ? "bg-indigo-50 text-indigo-700"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              </li>
+            ))}
 
             {/* Instructor link */}
             {user?.role === "Instructor" && (
               <li>
                 <Link
                   to="/instructor/my-courses"
-                  className={`px-8 py-2 rounded-full uppercase tracking-wider font-semibold transition-all duration-300 shadow-[inset_0_0_0_2px_#616467] ${
-                    location.pathname === "/instructor/my-courses"
-                      ? "bg-[#616467] text-white scale-105"
-                      : "text-black bg-transparent hover:bg-[#616467] hover:text-white hover:scale-105 hover:shadow-lg"
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    isActive("/instructor/my-courses")
+                      ? "bg-indigo-50 text-indigo-700"
+                      : "text-gray-700 hover:bg-gray-50"
                   }`}
                 >
                   My Courses
@@ -92,7 +98,7 @@ const Navbar = () => {
                 <li>
                   <Link
                     to="/login"
-                    className="px-8 py-2 rounded-full uppercase tracking-wider font-semibold bg-transparent shadow-[inset_0_0_0_2px_#616467] hover:bg-[#616467] hover:text-white hover:scale-105 hover:shadow-lg transition-all duration-300"
+                    className="px-5 py-2 rounded-lg text-gray-700 font-medium border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all duration-300"
                   >
                     Login
                   </Link>
@@ -100,7 +106,7 @@ const Navbar = () => {
                 <li>
                   <Link
                     to="/register"
-                    className="px-8 py-2 rounded-full uppercase tracking-wider font-semibold bg-transparent shadow-[inset_0_0_0_2px_#616467] hover:bg-[#616467] hover:text-white hover:scale-105 hover:shadow-lg transition-all duration-300"
+                    className="px-5 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 shadow-sm hover:shadow-md transition-all duration-300"
                   >
                     Register
                   </Link>
@@ -110,29 +116,29 @@ const Navbar = () => {
 
             {/* ===== AVATAR MENU ===== */}
             {user && (
-              <li className="relative" ref={avatarRef}>
+              <li className="relative ml-4" ref={avatarRef}>
                 <button
                   onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
-                  className="flex items-center gap-2 px-5 py-2 rounded-full shadow-[inset_0_0_0_2px_#616467] bg-transparent hover:bg-[#616467] hover:text-white hover:scale-105 hover:shadow-lg transition-all duration-300"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-all duration-300"
                 >
-                  <div className="h-8 w-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold">
+                  <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-md">
                     {user.name?.charAt(0).toUpperCase() || "U"}
                   </div>
                   <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-300 ${
+                    className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${
                       avatarMenuOpen ? "rotate-180" : ""
                     }`}
                   />
                 </button>
 
                 {avatarMenuOpen && (
-                  <div className="absolute right-0 mt-3 w-44 bg-white border border-gray-200 rounded-xl shadow-lg py-2 animate-fadeIn">
-                    <p className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100 font-medium">
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 animate-fadeIn z-50">
+                    <p className="px-4 py-3 text-sm font-semibold text-gray-900 border-b border-gray-100">
                       {user.name}
                     </p>
                     <Link
                       to={getDashboardPath()}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#616467] hover:text-white transition-colors duration-200"
+                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200"
                       onClick={() => setAvatarMenuOpen(false)}
                     >
                       Dashboard
@@ -142,7 +148,7 @@ const Navbar = () => {
                         setAvatarMenuOpen(false);
                         setShowLogoutModal(true);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-semibold transition-colors duration-200"
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 font-medium transition-colors duration-200"
                     >
                       Logout
                     </button>
@@ -154,45 +160,43 @@ const Navbar = () => {
 
           {/* ===== MOBILE TOGGLE ===== */}
           <button
-            className="md:hidden p-2 text-gray-700 focus:outline-none hover:bg-gray-100 rounded-lg transition-colors"
+            className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? <X size={26} /> : <Menu size={26} />}
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </nav>
 
         {/* ===== MOBILE MENU ===== */}
         {menuOpen && (
-          <div className="md:hidden bg-white shadow-lg border-t border-gray-200 animate-fadeIn">
-            <ul className="flex flex-col items-center space-y-3 py-4">
-              {baseLinks.map((link) => {
-                const isActive = location.pathname === link.path;
-                return (
-                  <li key={link.name} className="w-full px-4">
-                    <Link
-                      to={link.path}
-                      onClick={() => setMenuOpen(false)}
-                      className={`block px-6 py-2 text-center font-semibold rounded-full shadow-[inset_0_0_0_2px_#616467] transition-all duration-300 ${
-                        isActive
-                          ? "bg-[#616467] text-white"
-                          : "text-gray-700 bg-transparent hover:bg-[#616467] hover:text-white"
-                      }`}
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                );
-              })}
+          <div className="md:hidden bg-white border-t border-gray-100 animate-fadeIn">
+            <ul className="flex flex-col py-2">
+              {baseLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    to={link.path}
+                    onClick={() => setMenuOpen(false)}
+                    className={`block px-6 py-3 font-medium transition-all duration-300 ${
+                      isActive(link.path)
+                        ? "bg-indigo-50 text-indigo-700 border-l-4 border-indigo-600"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
 
+              {/* My Courses link for instructors in mobile */}
               {user?.role === "Instructor" && (
-                <li className="w-full px-4">
+                <li>
                   <Link
                     to="/instructor/my-courses"
                     onClick={() => setMenuOpen(false)}
-                    className={`block px-6 py-2 text-center font-semibold rounded-full shadow-[inset_0_0_0_2px_#616467] transition-all duration-300 ${
-                      location.pathname === "/instructor/my-courses"
-                        ? "bg-[#616467] text-white"
-                        : "text-gray-700 bg-transparent hover:bg-[#616467] hover:text-white"
+                    className={`block px-6 py-3 font-medium transition-all duration-300 ${
+                      isActive("/instructor/my-courses")
+                        ? "bg-indigo-50 text-indigo-700 border-l-4 border-indigo-600"
+                        : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     My Courses
@@ -202,20 +206,20 @@ const Navbar = () => {
 
               {!user && (
                 <>
-                  <li className="w-full px-4">
+                  <li className="border-t border-gray-100 mt-2 pt-2">
                     <Link
                       to="/login"
                       onClick={() => setMenuOpen(false)}
-                      className="block w-full px-6 py-2 text-center text-gray-700 font-semibold rounded-full shadow-[inset_0_0_0_2px_#616467] hover:bg-[#616467] hover:text-white transition-all duration-300"
+                      className="block px-6 py-3 text-gray-700 font-medium hover:bg-gray-50 transition-all duration-300"
                     >
                       Login
                     </Link>
                   </li>
-                  <li className="w-full px-4">
+                  <li>
                     <Link
                       to="/register"
                       onClick={() => setMenuOpen(false)}
-                      className="block w-full px-6 py-2 text-center text-gray-700 font-semibold rounded-full shadow-[inset_0_0_0_2px_#616467] hover:bg-[#616467] hover:text-white transition-all duration-300"
+                      className="block px-6 py-3 text-indigo-600 font-semibold hover:bg-indigo-50 transition-all duration-300"
                     >
                       Register
                     </Link>
@@ -225,22 +229,22 @@ const Navbar = () => {
 
               {user && (
                 <>
-                  <li className="w-full px-4">
+                  <li className="border-t border-gray-100 mt-2 pt-2">
                     <Link
                       to={getDashboardPath()}
                       onClick={() => setMenuOpen(false)}
-                      className="block px-6 py-2 text-center text-gray-700 font-semibold rounded-full shadow-[inset_0_0_0_2px_#616467] hover:bg-[#616467] hover:text-white transition-all duration-300"
+                      className="block px-6 py-3 text-gray-700 font-medium hover:bg-gray-50 transition-all duration-300"
                     >
                       Dashboard
                     </Link>
                   </li>
-                  <li className="w-full px-4">
+                  <li>
                     <button
                       onClick={() => {
                         setMenuOpen(false);
                         setShowLogoutModal(true);
                       }}
-                      className="block w-full px-6 py-2 text-center text-red-600 font-semibold rounded-full shadow-[inset_0_0_0_2px_#ef4444] hover:bg-red-500 hover:text-white transition-all duration-300"
+                      className="block w-full text-left px-6 py-3 text-red-600 font-medium hover:bg-red-50 transition-all duration-300"
                     >
                       Logout
                     </button>
@@ -255,23 +259,28 @@ const Navbar = () => {
       {/* ===== LOGOUT MODAL ===== */}
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm text-center animate-slideUp">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm text-center animate-slideUp">
+            <div className="flex justify-center mb-4">
+              <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
+                <span className="text-red-600 text-xl">⚠</span>
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
               Confirm Logout
             </h3>
-            <p className="text-gray-500 text-sm mb-6">
+            <p className="text-gray-600 text-sm mb-6">
               Are you sure you want to logout of your account?
             </p>
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-3">
               <button
                 onClick={() => setShowLogoutModal(false)}
-                className="px-4 py-2 rounded-full bg-gray-200 text-gray-800 font-medium hover:bg-gray-300 transition-colors duration-200"
+                className="px-6 py-2.5 rounded-lg bg-gray-100 text-gray-800 font-medium hover:bg-gray-200 transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 rounded-full bg-[#616467] text-white font-semibold hover:bg-[#4a4d4f] hover:scale-105 transition-all duration-200"
+                className="px-6 py-2.5 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 shadow-sm hover:shadow-md transition-all duration-200"
               >
                 Logout
               </button>

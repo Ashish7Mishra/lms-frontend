@@ -18,7 +18,7 @@ const HomePage: React.FC = () => {
           <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-snug">
             Empower Your Learning Journey <br /> with{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
-              Utkal Labs LMS
+              Learnify
             </span>
           </h1>
           <p className="text-gray-600 mb-8 text-base md:text-lg max-w-xl mx-auto md:mx-0">

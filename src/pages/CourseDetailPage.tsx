@@ -117,7 +117,6 @@ const CourseDetailPage = () => {
       }
     }
     
-    // Return original URL for direct video files or uploaded videos
     return url;
   };
 
@@ -126,7 +125,6 @@ const CourseDetailPage = () => {
     const isEmbedded = embedUrl !== lesson.videoUrl;
 
     if (isEmbedded) {
-      // Render iframe for YouTube/Vimeo
       return (
         <iframe
           key={lesson._id}
@@ -138,7 +136,6 @@ const CourseDetailPage = () => {
         />
       );
     } else {
-      // Render video tag for direct links or uploaded videos
       return (
         <video
           key={lesson._id}
@@ -180,9 +177,13 @@ const CourseDetailPage = () => {
   if (!course)
     return <p className="text-center py-10 text-gray-600">Course not found.</p>;
 
+  // User role checks
   const isInstructorOwner =
     user?.role === "Instructor" && user?._id === course.instructor._id;
   const isEnrolledStudent = user?.role === "Student" && course.enrollment;
+  const isStudent = user?.role === "Student";
+  
+  // Video access: Owner instructors and enrolled students can watch
   const canWatchVideo = isInstructorOwner || isEnrolledStudent;
 
   if (!course.isActive && !isInstructorOwner) {
@@ -212,6 +213,15 @@ const CourseDetailPage = () => {
           {course.title}
         </h1>
         <p className="text-gray-600">{course.description}</p>
+        <div className="mt-3 flex items-center gap-2 text-sm text-gray-500">
+          <span className="font-medium">Instructor:</span>
+          <span className="text-gray-700">{course.instructor.name}</span>
+          {isInstructorOwner && (
+            <span className="ml-2 bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold">
+              Your Course
+            </span>
+          )}
+        </div>
       </div>
 
       <style>{`
@@ -317,7 +327,6 @@ const CourseDetailPage = () => {
                       !showFullDescription ? 'mask-gradient' : ''
                     }`}>
                       {selectedLesson.content.includes('<') && selectedLesson.content.includes('>') ? (
-                        // Render as HTML if it contains HTML tags
                         <div
                           className="space-y-2"
                           dangerouslySetInnerHTML={{
@@ -328,7 +337,6 @@ const CourseDetailPage = () => {
                           }}
                         />
                       ) : (
-                        // Render as Markdown if no HTML tags detected
                         <ReactMarkdown
                           components={{
                             h1: ({...props}) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
@@ -380,6 +388,7 @@ const CourseDetailPage = () => {
                     </button>
                   )}
 
+                  {/* Mark Complete Button - Only for enrolled students */}
                   {isEnrolledStudent && (
                     <button
                       onClick={handleMarkComplete}
@@ -410,9 +419,10 @@ const CourseDetailPage = () => {
         {/* Sidebar Section */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl shadow-md p-5 space-y-4">
-            {/* Enrollment Buttons */}
+            {/* Action Buttons - Based on User Role */}
             {(() => {
-              if (isInstructorOwner)
+              // Owner Instructor - Show manage button
+              if (isInstructorOwner) {
                 return (
                   <Link
                     to={`/instructor/courses/${course._id}/students`}
@@ -421,8 +431,10 @@ const CourseDetailPage = () => {
                     View Enrolled Students
                   </Link>
                 );
+              }
 
-              if (!isAuthenticated)
+              // Not authenticated - Show login button
+              if (!isAuthenticated) {
                 return (
                   <Link
                     to="/login"
@@ -431,30 +443,41 @@ const CourseDetailPage = () => {
                     Login to Enroll
                   </Link>
                 );
+              }
 
-              if (course.enrollment)
+              // Enrolled Student - Show enrolled status
+              if (course.enrollment) {
                 return (
-                  <div className="p-3 bg-green-100 text-green-700 text-center rounded-md font-semibold">
+                  <div className="p-3 bg-green-100 text-green-700 text-center rounded-md font-semibold flex items-center justify-center gap-2">
+                    <CheckCircleIcon className="h-5 w-5" />
                     You are enrolled
                   </div>
                 );
+              }
 
-              return (
-                <button
-                  onClick={handleEnroll}
-                  disabled={isEnrolling}
-                  className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 rounded-lg hover:opacity-90 transition disabled:bg-gray-400"
-                >
-                  {isEnrolling ? "Enrolling..." : "Enroll Now"}
-                </button>
-              );
+              // Student (not enrolled) - Show enroll button
+              if (isStudent) {
+                return (
+                  <>
+                    <button
+                      onClick={handleEnroll}
+                      disabled={isEnrolling}
+                      className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 rounded-lg hover:opacity-90 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      {isEnrolling ? "Enrolling..." : "Enroll Now"}
+                    </button>
+                    {enrollmentError && (
+                      <p className="text-red-500 text-sm">{enrollmentError}</p>
+                    )}
+                  </>
+                );
+              }
+
+              return null;
             })()}
-            {enrollmentError && (
-              <p className="text-red-500 text-sm">{enrollmentError}</p>
-            )}
 
             {/* Lessons List */}
-            <h3 className="text-xl font-bold border-b pb-2 text-gray-800">
+            <h3 className="text-xl font-bold border-b pb-2 text-gray-800 pt-2">
               Course Lessons
             </h3>
             <div className="max-h-[600px] overflow-y-auto pr-1 space-y-2">
@@ -469,28 +492,28 @@ const CourseDetailPage = () => {
                         : "hover:bg-gray-100"
                     }`}
                   >
-                    <div className="flex items-center">
-                      <PlayCircleIcon className="h-5 w-5 text-gray-400 mr-3" />
-                      <span className="text-gray-700 font-medium">
+                    <div className="flex items-center flex-1 min-w-0">
+                      <PlayCircleIcon className="h-5 w-5 text-gray-400 mr-3 flex-shrink-0" />
+                      <span className="text-gray-700 font-medium text-left truncate">
                         {lesson.title}
                       </span>
                     </div>
-                    {isAuthenticated &&
+                    {isEnrolledStudent &&
                       (lesson.isCompleted ? (
                         <CheckCircleIcon
-                          className="h-5 w-5 text-green-500"
+                          className="h-5 w-5 text-green-500 flex-shrink-0 ml-2"
                           title="Completed"
                         />
                       ) : (
                         <div
-                          className="h-5 w-5 border-2 border-gray-300 rounded-full"
+                          className="h-5 w-5 border-2 border-gray-300 rounded-full flex-shrink-0 ml-2"
                           title="Not Completed"
                         ></div>
                       ))}
                   </button>
                 ))
               ) : (
-                <p className="text-gray-500">No lessons available.</p>
+                <p className="text-gray-500 text-center py-4">No lessons available.</p>
               )}
             </div>
           </div>
