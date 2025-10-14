@@ -1,6 +1,6 @@
   // src/pages/ManageCoursePage.tsx
 
-import type { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import {
