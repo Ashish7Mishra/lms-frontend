@@ -1,10 +1,11 @@
 // src/components/LessonForm.tsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { Lesson } from '../types';
 import Button from './Button';
 import FormInput from './FormInput';
-import { Link as LinkIcon, Upload } from 'lucide-react';
+import { Link as LinkIcon, Upload, Eye, Code } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 interface LessonFormProps {
   onSubmit: (formData: FormData) => void;
@@ -14,6 +15,7 @@ interface LessonFormProps {
 }
 
 const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, initialData }) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
     content: initialData?.content || '',
@@ -23,6 +25,8 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
   const [videoLink, setVideoLink] = useState('');
   const [videoInputType, setVideoInputType] = useState<'upload' | 'link'>('upload');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [previewMode, setPreviewMode] = useState(false);
+  const [contentFormat, setContentFormat] = useState<'markdown' | 'html'>('markdown');
 
   useEffect(() => {
     if (initialData) {
@@ -31,7 +35,6 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
         content: initialData.content,
         order: initialData.order,
       });
-      // If editing and there's a video URL, check if it's a link or upload
       if (initialData.videoUrl && initialData.videoType === 'link') {
         setVideoInputType('link');
         setVideoLink(initialData.videoUrl);
@@ -42,7 +45,6 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: name === 'order' ? parseInt(value) : value }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -52,7 +54,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setVideoFile(file);
-      setVideoLink(''); // Clear link if file is selected
+      setVideoLink('');
       if (errors.video) {
         setErrors(prev => ({ ...prev, video: '' }));
       }
@@ -62,10 +64,29 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const link = e.target.value;
     setVideoLink(link);
-    setVideoFile(null); // Clear file if link is entered
+    setVideoFile(null);
     if (errors.video) {
       setErrors(prev => ({ ...prev, video: '' }));
     }
+  };
+
+  const insertMarkdown = (before: string, after: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = formData.content.substring(start, end) || 'text';
+    const beforeText = formData.content.substring(0, start);
+    const afterText = formData.content.substring(end);
+
+    const newContent = beforeText + before + selectedText + after + afterText;
+    setFormData(prev => ({ ...prev, content: newContent }));
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + before.length, start + before.length + selectedText.length);
+    }, 0);
   };
 
   const validate = () => {
@@ -80,8 +101,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
     if (formData.order < 1) {
       newErrors.order = 'Order must be at least 1';
     }
-    
-    // Video validation: require either file or link for new lessons
+
     if (!initialData) {
       if (videoInputType === 'upload' && !videoFile) {
         newErrors.video = 'Please upload a video file';
@@ -109,7 +129,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validate()) {
       return;
     }
@@ -118,24 +138,54 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
     data.append('title', formData.title);
     data.append('content', formData.content);
     data.append('order', formData.order.toString());
-    
-    // Handle video based on input type
+
     if (videoInputType === 'upload' && videoFile) {
-      // For file upload, append the video file
       data.append('video', videoFile);
-      // Don't send videoType for upload, backend expects just 'video' field
     } else if (videoInputType === 'link' && videoLink.trim()) {
-      // For link, send videoLink field
       data.append('videoLink', videoLink.trim());
     }
 
-    // Log FormData for debugging (optional)
     console.log('Submitting FormData:');
     for (const pair of data.entries()) {
       console.log(pair[0] + ': ' + pair[1]);
     }
 
     onSubmit(data);
+  };
+
+  const renderPreview = () => {
+    if (contentFormat === 'markdown') {
+      return (
+        <div className="prose prose-sm max-w-none">
+          <ReactMarkdown
+            components={{
+              h1: ({...props}) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
+              h2: ({...props}) => <h2 className="text-xl font-bold mt-3 mb-2" {...props} />,
+              h3: ({...props}) => <h3 className="text-lg font-bold mt-2 mb-1" {...props} />,
+              p: ({...props}) => <p className="mb-2" {...props} />,
+              ul: ({...props}) => <ul className="list-disc list-inside mb-2" {...props} />,
+              ol: ({...props}) => <ol className="list-decimal list-inside mb-2" {...props} />,
+              li: ({...props}) => <li className="ml-2" {...props} />,
+              strong: ({...props}) => <strong className="font-bold" {...props} />,
+              em: ({...props}) => <em className="italic" {...props} />,
+              code: ({...props}) => <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono" {...props} />,
+              pre: ({...props}) => <pre className="bg-gray-100 p-3 rounded mb-2 overflow-auto" {...props} />,
+              blockquote: ({...props}) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2" {...props} />,
+              a: ({...props}) => <a className="text-blue-600 underline hover:text-blue-800" {...props} />,
+            }}
+          >
+            {formData.content}
+          </ReactMarkdown>
+        </div>
+      );
+    } else {
+      return (
+        <div 
+          className="prose prose-sm max-w-none"
+          dangerouslySetInnerHTML={{ __html: formData.content }}
+        />
+      );
+    }
   };
 
   return (
@@ -152,21 +202,182 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
       />
 
       <div>
-        <label htmlFor="content" className="block text-sm font-semibold text-gray-700 mb-1">
-          Lesson Description
-        </label>
-        <textarea
-          id="content"
-          name="content"
-          value={formData.content}
-          onChange={handleChange}
-          placeholder="Provide a brief description of this lesson..."
-          required
-          rows={4}
-          className={`block w-full px-4 py-2 border rounded-lg shadow-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ${
+        <div className="flex items-center justify-between mb-2">
+          <label htmlFor="content" className="block text-sm font-semibold text-gray-700">
+            Lesson Description
+          </label>
+          <div className="flex gap-2">
+            <select
+              value={contentFormat}
+              onChange={(e) => setContentFormat(e.target.value as 'markdown' | 'html')}
+              className="text-xs px-2 py-1 border border-gray-300 rounded bg-white"
+            >
+              <option value="markdown">Markdown</option>
+              <option value="html">HTML</option>
+            </select>
+            <button
+              type="button"
+              onClick={() => setPreviewMode(!previewMode)}
+              className={`flex items-center gap-1 text-xs px-3 py-1 rounded transition ${
+                previewMode
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {previewMode ? (
+                <>
+                  <Code className="h-3 w-3" />
+                  Edit
+                </>
+              ) : (
+                <>
+                  <Eye className="h-3 w-3" />
+                  Preview
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {!previewMode ? (
+          <div>
+            {/* Toolbar */}
+            {contentFormat === 'markdown' && (
+              <div className="mb-0 p-2 bg-gray-50 border border-b-0 border-gray-300 rounded-t-lg flex flex-wrap gap-1">
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('**', '**')}
+                  title="Bold"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm font-bold"
+                >
+                  B
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('*', '*')}
+                  title="Italic"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm italic"
+                >
+                  I
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('~~', '~~')}
+                  title="Strikethrough"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm line-through"
+                >
+                  S
+                </button>
+                <div className="border-l border-gray-300 mx-1"></div>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('# ', '\n')}
+                  title="Heading 1"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm font-bold"
+                >
+                  H1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('## ', '\n')}
+                  title="Heading 2"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm font-bold"
+                >
+                  H2
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('### ', '\n')}
+                  title="Heading 3"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm font-bold"
+                >
+                  H3
+                </button>
+                <div className="border-l border-gray-300 mx-1"></div>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('- ', '\n')}
+                  title="Bullet List"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm"
+                >
+                  • List
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('1. ', '\n')}
+                  title="Numbered List"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm"
+                >
+                  1. List
+                </button>
+                <div className="border-l border-gray-300 mx-1"></div>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('[', '](url)')}
+                  title="Link"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm"
+                >
+                  Link
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('`', '`')}
+                  title="Code"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm font-mono"
+                >
+                  {'{'}Code{'}'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('```\n', '\n```')}
+                  title="Code Block"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm"
+                >
+                  Block
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('> ', '\n')}
+                  title="Quote"
+                  className="px-3 py-1 hover:bg-gray-200 rounded transition text-sm"
+                >
+                  Quote
+                </button>
+              </div>
+            )}
+
+            <textarea
+              ref={textareaRef}
+              id="content"
+              name="content"
+              value={formData.content}
+              onChange={handleChange}
+              placeholder={contentFormat === 'markdown' 
+                ? "# Heading\n\n**Bold text**\n\n- List item\n\n[Link](url)"
+                : "<h2>Heading</h2>\n<p>Paragraph text</p>"
+              }
+              required
+              rows={10}
+              className={`block w-full px-4 py-2 border shadow-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 font-mono text-sm ${
+                contentFormat === 'markdown' && !previewMode ? 'rounded-b-lg' : 'rounded-lg'
+              } ${
+                errors.content ? 'border-red-500' : 'border-gray-300'
+              }`}
+            />
+            <p className="text-xs text-gray-500 mt-2">
+              {contentFormat === 'markdown'
+                ? 'Use the toolbar or markdown syntax for formatting'
+                : 'Write valid HTML content'}
+            </p>
+          </div>
+        ) : (
+          <div className={`border rounded-lg p-4 bg-gray-50 min-h-[300px] max-h-[400px] overflow-y-auto ${
             errors.content ? 'border-red-500' : 'border-gray-300'
-          }`}
-        />
+          }`}>
+            {formData.content ? renderPreview() : <p className="text-gray-400">Preview will appear here...</p>}
+          </div>
+        )}
+
         {errors.content && <p className="text-sm text-red-500 mt-1 font-medium">{errors.content}</p>}
       </div>
 
@@ -186,8 +397,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
         <label className="block text-sm font-semibold text-gray-700 mb-3">
           Video Source {initialData && '(Optional - leave empty to keep current video)'}
         </label>
-        
-        {/* Toggle Buttons */}
+
         <div className="flex gap-2 mb-4">
           <button
             type="button"
@@ -221,7 +431,6 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
           </button>
         </div>
 
-        {/* Upload Input */}
         {videoInputType === 'upload' && (
           <div>
             <input
@@ -237,7 +446,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
             {videoFile && (
               <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-sm text-green-700 flex items-center gap-2">
-                  <span className="text-green-600 font-bold">✓</span> 
+                  <span className="text-green-600 font-bold">✓</span>
                   Selected: <span className="font-medium">{videoFile.name}</span>
                   <span className="text-gray-500">({(videoFile.size / (1024 * 1024)).toFixed(2)} MB)</span>
                 </p>
@@ -246,7 +455,6 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
           </div>
         )}
 
-        {/* Link Input */}
         {videoInputType === 'link' && (
           <div>
             <input
@@ -263,7 +471,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
             {videoLink && isValidUrl(videoLink) && (
               <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-sm text-green-700 flex items-center gap-2">
-                  <span className="text-green-600 font-bold">✓</span> 
+                  <span className="text-green-600 font-bold">✓</span>
                   Valid URL provided
                 </p>
               </div>
@@ -272,9 +480,9 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
         )}
 
         {errors.video && <p className="text-sm text-red-500 mt-2 font-medium">{errors.video}</p>}
-        
+
         <p className="text-xs text-gray-500 mt-2">
-          {videoInputType === 'upload' 
+          {videoInputType === 'upload'
             ? 'Upload a video file from your computer (MP4, MOV, AVI, etc.)'
             : 'Provide a direct link to a video (supports YouTube, Vimeo, Cloudinary, etc.)'}
         </p>

@@ -17,6 +17,8 @@ import {
   PlayCircleIcon,
   LockClosedIcon,
 } from "@heroicons/react/24/solid";
+import ReactMarkdown from "react-markdown";
+import DOMPurify from "dompurify";
 
 const CourseDetailPage = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -227,9 +229,41 @@ const CourseDetailPage = () => {
                   <h2 className="text-2xl font-bold mb-2 text-gray-800">
                     {selectedLesson.title}
                   </h2>
-                  <p className="text-gray-700 mb-4">
-                    {selectedLesson.content}
-                  </p>
+                  <div className="text-gray-700 mb-4 prose prose-sm max-w-none">
+                    {selectedLesson.content.includes('<') && selectedLesson.content.includes('>') ? (
+                      // Render as HTML if it contains HTML tags
+                      <div
+                        className="space-y-2"
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(selectedLesson.content, {
+                            ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'b', 'i', 'u', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre', 'span', 'div', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
+                            ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id']
+                          })
+                        }}
+                      />
+                    ) : (
+                      // Render as Markdown if no HTML tags detected
+                      <ReactMarkdown
+                        components={{
+                          h1: ({...props}) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
+                          h2: ({...props}) => <h2 className="text-xl font-bold mt-3 mb-2" {...props} />,
+                          h3: ({...props}) => <h3 className="text-lg font-bold mt-2 mb-1" {...props} />,
+                          p: ({...props}) => <p className="mb-2" {...props} />,
+                          ul: ({...props}) => <ul className="list-disc list-inside mb-2" {...props} />,
+                          ol: ({...props}) => <ol className="list-decimal list-inside mb-2" {...props} />,
+                          li: ({...props}) => <li className="ml-2" {...props} />,
+                          strong: ({...props}) => <strong className="font-bold" {...props} />,
+                          em: ({...props}) => <em className="italic" {...props} />,
+                          code: ({...props}) => <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono" {...props} />,
+                          pre: ({...props}) => <pre className="bg-gray-100 p-3 rounded mb-2 overflow-auto" {...props} />,
+                          blockquote: ({...props}) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2" {...props} />,
+                          a: ({...props}) => <a className="text-blue-600 underline hover:text-blue-800" {...props} />,
+                        }}
+                      >
+                        {selectedLesson.content}
+                      </ReactMarkdown>
+                    )}
+                  </div>
                   {isEnrolledStudent && (
                     <button
                       onClick={handleMarkComplete}
