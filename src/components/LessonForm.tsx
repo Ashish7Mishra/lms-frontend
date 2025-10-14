@@ -50,7 +50,8 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setVideoFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setVideoFile(file);
       setVideoLink(''); // Clear link if file is selected
       if (errors.video) {
         setErrors(prev => ({ ...prev, video: '' }));
@@ -59,7 +60,8 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
   };
 
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVideoLink(e.target.value);
+    const link = e.target.value;
+    setVideoLink(link);
     setVideoFile(null); // Clear file if link is entered
     if (errors.video) {
       setErrors(prev => ({ ...prev, video: '' }));
@@ -119,11 +121,18 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
     
     // Handle video based on input type
     if (videoInputType === 'upload' && videoFile) {
+      // For file upload, append the video file
       data.append('video', videoFile);
-      data.append('videoType', 'upload');
+      // Don't send videoType for upload, backend expects just 'video' field
     } else if (videoInputType === 'link' && videoLink.trim()) {
-      data.append('videoUrl', videoLink);
-      data.append('videoType', 'link');
+      // For link, send videoLink field
+      data.append('videoLink', videoLink.trim());
+    }
+
+    // Log FormData for debugging (optional)
+    console.log('Submitting FormData:');
+    for (const pair of data.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
     }
 
     onSubmit(data);
@@ -182,7 +191,10 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
         <div className="flex gap-2 mb-4">
           <button
             type="button"
-            onClick={() => setVideoInputType('upload')}
+            onClick={() => {
+              setVideoInputType('upload');
+              setVideoLink('');
+            }}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
               videoInputType === 'upload'
                 ? 'bg-blue-600 text-white shadow-md'
@@ -194,7 +206,10 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
           </button>
           <button
             type="button"
-            onClick={() => setVideoInputType('link')}
+            onClick={() => {
+              setVideoInputType('link');
+              setVideoFile(null);
+            }}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
               videoInputType === 'link'
                 ? 'bg-blue-600 text-white shadow-md'
@@ -220,9 +235,13 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
               }`}
             />
             {videoFile && (
-              <p className="text-sm text-gray-600 mt-2 flex items-center gap-2">
-                <span className="text-green-600">✓</span> Selected: {videoFile.name}
-              </p>
+              <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-700 flex items-center gap-2">
+                  <span className="text-green-600 font-bold">✓</span> 
+                  Selected: <span className="font-medium">{videoFile.name}</span>
+                  <span className="text-gray-500">({(videoFile.size / (1024 * 1024)).toFixed(2)} MB)</span>
+                </p>
+              </div>
             )}
           </div>
         )}
@@ -242,9 +261,12 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
               }`}
             />
             {videoLink && isValidUrl(videoLink) && (
-              <p className="text-sm text-green-600 mt-2 flex items-center gap-2">
-                <span>✓</span> Valid URL
-              </p>
+              <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-700 flex items-center gap-2">
+                  <span className="text-green-600 font-bold">✓</span> 
+                  Valid URL provided
+                </p>
+              </div>
             )}
           </div>
         )}
@@ -258,7 +280,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
         </p>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4">
+      <div className="flex justify-end gap-3 pt-4 border-t">
         <button
           type="button"
           onClick={onCancel}
