@@ -1,5 +1,5 @@
 // src/components/Modal.tsx
-import  { type ReactNode } from 'react'
+import React, { ReactNode } from 'react';
 import { X } from 'lucide-react';
 
 interface ModalProps {
