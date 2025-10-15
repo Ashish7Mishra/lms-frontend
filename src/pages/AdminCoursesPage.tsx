@@ -65,76 +65,128 @@ const AdminCoursesPage = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Course Management</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Course Management</h1>
 
       {/* Filter Controls */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-white p-4 rounded-lg shadow-md">
-        <input type="text" name="search" placeholder="Search by title..." onChange={handleFilterChange} className="p-2 border rounded" />
-        <input type="text" name="category" placeholder="Filter by category..." onChange={handleFilterChange} className="p-2 border rounded" />
-        <select name="isActive" onChange={handleFilterChange} className="p-2 border rounded">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6 bg-white p-3 sm:p-4 rounded-lg shadow-md">
+        <input 
+          type="text" 
+          name="search" 
+          placeholder="Search by title..." 
+          onChange={handleFilterChange} 
+          className="p-2 border rounded text-sm sm:text-base" 
+        />
+        <input 
+          type="text" 
+          name="category" 
+          placeholder="Filter by category..." 
+          onChange={handleFilterChange} 
+          className="p-2 border rounded text-sm sm:text-base" 
+        />
+        <select 
+          name="isActive" 
+          onChange={handleFilterChange} 
+          className="p-2 border rounded text-sm sm:text-base"
+        >
           <option value="">Any Status</option>
           <option value="true">Active</option>
           <option value="false">Inactive</option>
         </select>
       </div>
       
-      {isLoading && <p>Loading courses...</p>}
-      {error && <p className="text-red-500">Error: {error}</p>}
+      {isLoading && <p className="text-center py-4">Loading courses...</p>}
+      {error && <p className="text-red-500 text-center py-4">Error: {error}</p>}
 
       {!isLoading && coursesResponse && (
-        <div className="bg-white rounded-lg shadow-md overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50">
-              <tr className="border-b">
-                <th className="p-4">Title</th>
-                <th className="p-4">Instructor</th>
-                <th className="p-4">Enrollments</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Created</th>
-                <th className="p-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {coursesResponse.data.map(course => (
-                <tr key={course._id} className="border-b hover:bg-gray-50">
-                  <td className="p-4 font-medium">{course.title}</td>
-                  <td className="p-4">{course.instructor?.name || 'Instructor Not Found'}</td>
-                  <td className="p-4 font-semibold text-center">{course.enrollmentCount}</td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${course.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {course.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="p-4">{new Date(course.createdAt).toLocaleDateString()}</td>
-                  <td className="p-4 whitespace-nowrap">
-                    <button onClick={() => handleToggleStatus(course._id)} className="text-blue-500 hover:underline">
-                      {course.isActive ? 'Deactivate' : 'Activate'}
-                    </button>
-                  </td>
+        <>
+          {/* Mobile Card View */}
+          <div className="block lg:hidden space-y-4">
+            {coursesResponse.data.map(course => (
+              <div key={course._id} className="bg-white rounded-lg shadow-md p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1">
+                    <h3 className="font-medium text-lg">{course.title}</h3>
+                    <p className="text-sm text-gray-600">{course.instructor?.name || 'Instructor Not Found'}</p>
+                  </div>
+                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${course.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    {course.isActive ? 'Active' : 'Inactive'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+                  <div>
+                    <span className="text-gray-500">Enrollments:</span>
+                    <p className="font-semibold">{course.enrollmentCount}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Created:</span>
+                    <p className="font-medium">{new Date(course.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => handleToggleStatus(course._id)} 
+                  className="w-full text-blue-500 hover:text-blue-700 font-medium py-2 border border-blue-500 rounded hover:bg-blue-50 transition"
+                >
+                  {course.isActive ? 'Deactivate' : 'Activate'}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block bg-white rounded-lg shadow-md overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-gray-50">
+                <tr className="border-b">
+                  <th className="p-4">Title</th>
+                  <th className="p-4">Instructor</th>
+                  <th className="p-4">Enrollments</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4">Created</th>
+                  <th className="p-4">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {coursesResponse.data.map(course => (
+                  <tr key={course._id} className="border-b hover:bg-gray-50">
+                    <td className="p-4 font-medium">{course.title}</td>
+                    <td className="p-4">{course.instructor?.name || 'Instructor Not Found'}</td>
+                    <td className="p-4 font-semibold text-center">{course.enrollmentCount}</td>
+                    <td className="p-4">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${course.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        {course.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="p-4">{new Date(course.createdAt).toLocaleDateString()}</td>
+                    <td className="p-4 whitespace-nowrap">
+                      <button onClick={() => handleToggleStatus(course._id)} className="text-blue-500 hover:underline">
+                        {course.isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {/* Pagination Controls */}
       {!isLoading && coursesResponse?.pagination && coursesResponse.pagination.totalPages > 1 && (
-        <div className="flex justify-center items-center mt-6">
+        <div className="flex flex-col sm:flex-row justify-center items-center mt-4 sm:mt-6 gap-3">
           <button 
             onClick={() => handlePageChange(coursesResponse.pagination.currentPage - 1)} 
             disabled={!coursesResponse.pagination.hasPreviousPage} 
-            className="px-4 py-2 border rounded-md mx-1 disabled:opacity-50"
+            className="w-full sm:w-auto px-4 py-2 border rounded-md mx-1 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition"
           >
             &larr; Previous
           </button>
-          <span className="px-4">
+          <span className="px-4 text-sm sm:text-base">
             Page {coursesResponse.pagination.currentPage} of {coursesResponse.pagination.totalPages}
           </span>
           <button 
             onClick={() => handlePageChange(coursesResponse.pagination.currentPage + 1)} 
             disabled={!coursesResponse.pagination.hasNextPage} 
-            className="px-4 py-2 border rounded-md mx-1 disabled:opacity-50"
+            className="w-full sm:w-auto px-4 py-2 border rounded-md mx-1 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition"
           >
             Next &rarr;
           </button>
