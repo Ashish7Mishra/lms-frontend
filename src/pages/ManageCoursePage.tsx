@@ -156,7 +156,7 @@ const ManageCoursePage = () => {
             <div className="flex items-center gap-3 w-full md:w-auto">
               <Link
                 to={`/courses/${course?._id}`}
-                target="_blank"
+                
                 rel="noopener noreferrer"
                 className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-lg hover:bg-gray-50 transition-colors"
               >
