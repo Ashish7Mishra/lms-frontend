@@ -188,7 +188,7 @@ const ManageCoursePage = () => {
               <div className="space-y-3">
                 {lessons
                   .sort((a, b) => a.order - b.order)
-                  .map((lesson, index) => (
+                  .map((lesson) => (
                     <div
                       key={lesson._id}
                       className="group flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100/50 border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300 transition-all"
