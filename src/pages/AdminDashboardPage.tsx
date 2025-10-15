@@ -1,11 +1,10 @@
- // src/pages/admin/AdminDashboardPage.tsx
+
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { getDashboardData, type DashboardData } from '../services/adminService';
-import { Users, GraduationCap, BookOpen, UserCheck, TrendingUp, BarChart3, Settings, ChevronRight } from 'lucide-react';
+import { Users, GraduationCap, BookOpen, UserCheck } from 'lucide-react';
 
-// A simple reusable card component for stats with icons
 const StatCard = ({ 
   title, 
   value, 
@@ -27,10 +26,6 @@ const StatCard = ({
       <div className="flex items-start justify-between mb-4">
         <div className={`${iconBg} p-4 rounded-xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
           <Icon className="w-7 h-7 text-white" />
-        </div>
-        <div className="flex items-center space-x-1 px-3 py-1.5 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-full text-xs font-bold shadow-md group-hover:scale-110 transition-transform duration-300">
-          <TrendingUp className="w-3 h-3" />
-          <span>+0</span>
         </div>
       </div>
       <h3 className={`text-sm font-bold mb-2 bg-gradient-to-r ${gradient} bg-clip-text text-transparent group-hover:scale-105 transition-all duration-300`}>{title}</h3>
@@ -63,10 +58,23 @@ const AdminDashboardPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
+        <div className="flex justify-center items-center min-h-[70vh]">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative">
+            <div className="w-20 h-20 border-4 border-gray-200 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-20 h-20 border-4 border-blue-600 rounded-full border-t-transparent border-r-transparent animate-spin"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-gray-700 font-semibold text-lg">Loading Dashboard</p>
+            <div className="flex gap-1.5">
+              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            </div>
+          </div>
         </div>
       </div>
     );

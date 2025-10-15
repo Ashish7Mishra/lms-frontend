@@ -6,6 +6,30 @@ import { debounce } from 'lodash';
 import { UserPlus } from 'lucide-react';
 import CreateAdminModal from '../components/CreateAdminModal';
 
+const LoadingSpinner = ({ message = "Loading Users" }) => {
+  return (
+    <div className="flex justify-center items-center py-12">
+      <div className="flex flex-col items-center gap-6">
+        <div className="relative">
+          <div className="w-20 h-20 border-4 border-gray-200 rounded-full"></div>
+          <div className="absolute top-0 left-0 w-20 h-20 border-4 border-blue-600 rounded-full border-t-transparent border-r-transparent animate-spin"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-gray-700 font-semibold text-lg">{message}</p>
+          <div className="flex gap-1.5">
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AdminUsersPage = () => {
   const { token } = useAuth();
   const [usersResponse, setUsersResponse] = useState<PaginatedUsersResponse | null>(null);
@@ -132,7 +156,10 @@ const AdminUsersPage = () => {
         </select>
       </div>
 
-      {isLoading && <p className="text-center py-4">Loading users...</p>}
+      {/* Loading Spinner */}
+      {isLoading && <LoadingSpinner message="Loading users..." />}
+
+      {/* Error Message */}
       {error && <p className="text-red-500 text-center py-4">Error: {error}</p>}
 
       {!isLoading && usersResponse && (

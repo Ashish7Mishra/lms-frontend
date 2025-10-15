@@ -6,6 +6,30 @@ import { getCourses, toggleCourseStatus, type CourseFilters } from '../services/
 import type { PaginatedAdminCoursesResponse } from '../types/index';
 import { debounce } from 'lodash';
 
+const LoadingSpinner = ({ message = "Loading Courses" }) => {
+  return (
+    <div className="flex justify-center items-center py-12">
+      <div className="flex flex-col items-center gap-6">
+        <div className="relative">
+          <div className="w-20 h-20 border-4 border-gray-200 rounded-full"></div>
+          <div className="absolute top-0 left-0 w-20 h-20 border-4 border-blue-600 rounded-full border-t-transparent border-r-transparent animate-spin"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-gray-700 font-semibold text-lg">{message}</p>
+          <div className="flex gap-1.5">
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AdminCoursesPage = () => {
   const { token } = useAuth();
   const [coursesResponse, setCoursesResponse] = useState<PaginatedAdminCoursesResponse | null>(null);
@@ -94,7 +118,10 @@ const AdminCoursesPage = () => {
         </select>
       </div>
       
-      {isLoading && <p className="text-center py-4">Loading courses...</p>}
+      {/* Loading Spinner */}
+      {isLoading && <LoadingSpinner message="Loading courses..." />}
+      
+      {/* Error Message */}
       {error && <p className="text-red-500 text-center py-4">Error: {error}</p>}
 
       {!isLoading && coursesResponse && (
