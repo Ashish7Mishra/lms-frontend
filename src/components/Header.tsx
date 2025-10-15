@@ -11,7 +11,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const avatarRef = useRef<HTMLLIElement >(null);
+  const avatarRef = useRef<HTMLLIElement | null>(null);
 
   const baseLinks = [
     { name: "Home", path: "/" },
