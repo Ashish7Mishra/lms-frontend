@@ -28,6 +28,12 @@ export interface CourseFilters {
   instructorId?: string;
 }
 
+export interface CreateAdminData {
+  name: string;
+  email: string;
+  password: string;
+}
+
 // Get dashboard data
 export const getDashboardData = async (token: string): Promise<DashboardData> => {
   try {
@@ -83,6 +89,21 @@ export const updateUserRole = async (userId: string, newRole: 'Student' | 'Instr
     return response.data.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Failed to update user role.');
+  }
+};
+
+// Create new admin using registration endpoint
+export const createAdmin = async (adminData: CreateAdminData, token: string): Promise<User> => {
+  try {
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+    const registrationData = {
+      ...adminData,
+      role: 'Admin' // Set role as Admin
+    };
+    const response = await apiService.post('/auth/register', registrationData, config);
+    return response.data.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to create admin.');
   }
 };
 
