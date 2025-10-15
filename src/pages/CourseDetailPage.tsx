@@ -1,6 +1,4 @@
-// src/pages/CourseDetailPage.tsx
-
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import {
   getCourseById,
@@ -19,7 +17,7 @@ import {
   AcademicCapIcon,
   ClockIcon,
   UserGroupIcon,
-} from "@heroicons/react/24/solid";
+}from "@heroicons/react/24/solid";
 import ReactMarkdown from "react-markdown";
 import DOMPurify from "dompurify";
 
