@@ -1,9 +1,8 @@
-// src/pages/EnrolledStudentsPage.tsx
+ // src/pages/EnrolledStudentsPage.tsx
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getEnrolledStudents } from "../services/courseService";
-import { SpinnerIcon } from "../components/Spinner";
 import { ArrowLeft, Users, Mail, Calendar } from "lucide-react";
 import type { Student } from "../types";
 
