@@ -1,6 +1,4 @@
-// src/layouts/AdminLayout.tsx
-
-import  { useState } from "react";
+import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -105,7 +103,6 @@ const AdminLayout = () => {
         </div>
       </div>
 
-      {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-80 bg-gradient-to-b from-slate-900 via-indigo-900 to-purple-900 text-white flex-col h-screen sticky top-0 shadow-2xl">
         <div className="p-6 border-b border-white border-opacity-10">
           <div className="flex items-center space-x-3">
@@ -186,7 +183,6 @@ const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-auto mt-[73px] lg:mt-0">
         <Outlet />
       </main>

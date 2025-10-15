@@ -13,13 +13,13 @@ const Footer = () => {
   const { user } = useAuth();
 
   // Check if user is Admin or Instructor
-  const shouldHideCourseLink = user?.role === 'Admin' || user?.role === 'Instructor';
+  const shouldHideCourseLink =
+    user?.role === "Admin" || user?.role === "Instructor";
 
   return (
     <footer className="bg-white text-gray-700 border-t border-gray-100 mt-auto">
       {/* ===== Top Section ===== */}
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        
         {/* ==== Logo Section ==== */}
         <div className="flex flex-col">
           <div className="flex items-center space-x-2 mb-4">
@@ -31,7 +31,8 @@ const Footer = () => {
             </span>
           </div>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Empower your learning journey with expert-led courses designed to help you master new skills and achieve your goals.
+            Empower your learning journey with expert-led courses designed to
+            help you master new skills and achieve your goals.
           </p>
         </div>
 
@@ -42,24 +43,36 @@ const Footer = () => {
           </h3>
           <ul className="space-y-2.5 text-sm">
             <li>
-              <a href="/" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <a
+                href="/"
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+              >
                 Home
               </a>
             </li>
             {!shouldHideCourseLink && (
               <li>
-                <a href="/courses" className="text-gray-600 hover:text-blue-600 transition-colors">
+                <a
+                  href="/courses"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
                   Courses
                 </a>
               </li>
             )}
             <li>
-              <a href="/about" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <a
+                href="/about"
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+              >
                 About Us
               </a>
             </li>
             <li>
-              <a href="/contact" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <a
+                href="/contact"
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+              >
                 Contact
               </a>
             </li>
@@ -84,7 +97,7 @@ const Footer = () => {
               className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
             >
               <Phone className="w-4 h-4" />
-              +91 9876543210
+              +91 9314239675 / 7847890523
             </a>
           </div>
         </div>
@@ -117,9 +130,17 @@ const Footer = () => {
       <div className="border-t border-gray-100 px-6 py-8">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <p className="text-sm text-gray-600">
-            © {new Date().getFullYear()} <span className="font-semibold text-gray-900">Lernify</span>. All rights reserved.
+            © {new Date().getFullYear()}{" "}
+            <span className="font-semibold text-gray-900">Lernify</span>. All
+            rights reserved.
           </p>
-
+          <p className="text-sm text-gray-600">
+            ©{" "}
+            <span className="font-semibold text-gray-900">
+              Manage and develop by Abhishek Kumar & Ashish Kumar Mishra.
+            </span>
+            .
+          </p>
           {/* Social Icons */}
           <div className="flex gap-4 text-gray-600">
             <a
@@ -153,14 +174,6 @@ const Footer = () => {
               className="p-2 rounded-lg hover:bg-pink-50 hover:text-pink-500 transition-colors"
             >
               <Instagram className="w-5 h-5" />
-            </a>
-            <a
-              href="https://www.youtube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
-            >
-              <Youtube className="w-5 h-5" />
             </a>
           </div>
         </div>
