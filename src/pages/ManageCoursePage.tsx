@@ -1,11 +1,7 @@
- // src/pages/ManageCoursePage.tsx
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import {
-  getCourseById,
-  getLessonsByCourseId,
-} from "../services/courseService";
+import { getCourseById, getLessonsByCourseId } from "../services/courseService";
 import {
   createLesson,
   updateLesson,
@@ -110,11 +106,22 @@ const ManageCoursePage = () => {
             <div className="absolute top-0 left-0 w-16 h-16 border-4 border-blue-500 rounded-full border-t-transparent border-r-transparent animate-spin"></div>
           </div>
           <div className="flex flex-col items-center gap-3">
-            <p className="text-gray-700 font-semibold text-base">Loading course content...</p>
+            <p className="text-gray-700 font-semibold text-base">
+              Loading course content...
+            </p>
             <div className="flex gap-1.5">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              <div
+                className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              ></div>
             </div>
           </div>
         </div>
@@ -127,7 +134,9 @@ const ManageCoursePage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-red-100 p-6 max-w-md">
           <div className="flex items-center gap-3 mb-3">
             <AlertCircle className="w-5 h-5 text-red-500" />
-            <h3 className="font-semibold text-gray-900">Error Loading Course</h3>
+            <h3 className="font-semibold text-gray-900">
+              Error Loading Course
+            </h3>
           </div>
           <p className="text-gray-600 text-sm">{error}</p>
         </div>
@@ -137,11 +146,12 @@ const ManageCoursePage = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-6 pt-28">
       <div className="max-w-5xl mx-auto">
-        {/* Header */}
         <div className="mb-10">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600 mb-2">Manage Course</p>
+              <p className="text-sm font-medium text-gray-600 mb-2">
+                Manage Course
+              </p>
               <h1 className="text-4xl font-bold text-gray-900">
                 {course?.title}
               </h1>
@@ -172,7 +182,6 @@ const ManageCoursePage = () => {
           </div>
         </div>
 
-        {/* Lessons Section */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100">
           <div className="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
             <Book className="w-5 h-5 text-blue-500" />
@@ -229,9 +238,7 @@ const ManageCoursePage = () => {
                                   Cancel
                                 </button>
                                 <button
-                                  onClick={() =>
-                                    handleDeleteLesson(lesson._id)
-                                  }
+                                  onClick={() => handleDeleteLesson(lesson._id)}
                                   className="px-3 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                                 >
                                   Delete
@@ -270,7 +277,6 @@ const ManageCoursePage = () => {
           )}
         </div>
 
-        {/* Modal */}
         <Modal
           isOpen={isModalOpen}
           onClose={closeModal}

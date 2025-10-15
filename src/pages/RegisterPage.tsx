@@ -1,10 +1,17 @@
- // src/pages/RegisterPage.tsx
+// src/pages/RegisterPage.tsx
 
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { registerUser } from "../services/authService";
-import { Mail, Lock, User, GraduationCap, ArrowRight, BookOpen } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  User,
+  GraduationCap,
+  ArrowRight,
+  BookOpen,
+} from "lucide-react";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -31,13 +38,11 @@ const RegisterPage = () => {
     e.preventDefault();
     setError(null);
 
-    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       return;
     }
 
-    // Validate password length
     if (formData.password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
@@ -46,13 +51,12 @@ const RegisterPage = () => {
     setIsLoading(true);
 
     try {
-      const { confirmPassword, ...registerData } = formData;
+      const { ...registerData } = formData;
       const response = await registerUser(registerData);
       const { token, ...userData } = response.data || response;
-      
+
       login(userData, token);
 
-      // Redirect based on role
       if (userData.role === "Admin") {
         navigate("/admin/dashboard");
       } else {
@@ -83,7 +87,6 @@ const RegisterPage = () => {
           </p>
         </div>
 
-        {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
@@ -92,7 +95,6 @@ const RegisterPage = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Name Input */}
             <div>
               <label
                 htmlFor="name"
@@ -118,7 +120,6 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            {/* Email Input */}
             <div>
               <label
                 htmlFor="email"
@@ -145,7 +146,6 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            {/* Password Input */}
             <div>
               <label
                 htmlFor="password"
@@ -172,7 +172,6 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            {/* Confirm Password Input */}
             <div>
               <label
                 htmlFor="confirmPassword"
@@ -199,7 +198,6 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            {/* Role Selection */}
             <div>
               <label
                 htmlFor="role"
@@ -234,7 +232,6 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            {/* Terms and Conditions */}
             <div className="flex items-center">
               <input
                 id="terms"
@@ -243,7 +240,10 @@ const RegisterPage = () => {
                 required
                 className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
               />
-              <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="terms"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 I agree to the{" "}
                 <Link
                   to="/terms"
@@ -254,7 +254,6 @@ const RegisterPage = () => {
               </label>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
@@ -277,7 +276,6 @@ const RegisterPage = () => {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
@@ -289,7 +287,6 @@ const RegisterPage = () => {
             </div>
           </div>
 
-          {/* Login Link */}
           <div className="text-center">
             <Link
               to="/login"
@@ -301,7 +298,6 @@ const RegisterPage = () => {
           </div>
         </div>
 
-        {/* Back to Home */}
         <div className="text-center">
           <Link
             to="/"

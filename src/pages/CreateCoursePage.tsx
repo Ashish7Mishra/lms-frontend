@@ -1,11 +1,9 @@
- // src/pages/CreateCoursePage.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { createCourse } from "../services/courseService";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
-import { SpinnerIcon } from "../components/Spinner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -23,7 +21,6 @@ const CreateCoursePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle course field changes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -31,12 +28,10 @@ const CreateCoursePage = () => {
     setCourseDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle image file
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) setImageFile(e.target.files[0]);
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token || !imageFile) {
@@ -80,7 +75,6 @@ const CreateCoursePage = () => {
             </div>
           )}
 
-          {/* Course Title */}
           <FormInput
             label="Course Title"
             id="title"
@@ -91,7 +85,6 @@ const CreateCoursePage = () => {
             onChange={handleChange}
           />
 
-          {/* Course Description with Markdown */}
           <div>
             <label
               htmlFor="description"
@@ -109,7 +102,7 @@ const CreateCoursePage = () => {
               className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm"
               placeholder="Write your course description in Markdown..."
             />
-            {/* Live preview */}
+
             {courseDetails.description && (
               <div className="mt-2 p-3 border rounded bg-gray-50 text-gray-800">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -119,7 +112,6 @@ const CreateCoursePage = () => {
             )}
           </div>
 
-          {/* Category */}
           <FormInput
             label="Category"
             id="category"
@@ -130,7 +122,6 @@ const CreateCoursePage = () => {
             onChange={handleChange}
           />
 
-          {/* Course Image */}
           <div>
             <label
               htmlFor="image"
@@ -154,7 +145,6 @@ const CreateCoursePage = () => {
             />
           </div>
 
-          {/* Submit Button */}
           <div>
             <Button
               type="submit"

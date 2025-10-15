@@ -1,4 +1,3 @@
-// src/pages/admin/AdminCoursesPage.tsx
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
@@ -91,7 +90,6 @@ const AdminCoursesPage = () => {
     <div>
       <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Course Management</h1>
 
-      {/* Filter Controls */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6 bg-white p-3 sm:p-4 rounded-lg shadow-md">
         <input 
           type="text" 
@@ -118,15 +116,15 @@ const AdminCoursesPage = () => {
         </select>
       </div>
       
-      {/* Loading Spinner */}
+     
       {isLoading && <LoadingSpinner message="Loading courses..." />}
       
-      {/* Error Message */}
+      
       {error && <p className="text-red-500 text-center py-4">Error: {error}</p>}
 
       {!isLoading && coursesResponse && (
         <>
-          {/* Mobile Card View */}
+         
           <div className="block lg:hidden space-y-4">
             {coursesResponse.data.map(course => (
               <div key={course._id} className="bg-white rounded-lg shadow-md p-4">
@@ -159,7 +157,6 @@ const AdminCoursesPage = () => {
             ))}
           </div>
 
-          {/* Desktop Table View */}
           <div className="hidden lg:block bg-white rounded-lg shadow-md overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-gray-50">
@@ -197,7 +194,7 @@ const AdminCoursesPage = () => {
         </>
       )}
 
-      {/* Pagination Controls */}
+    
       {!isLoading && coursesResponse?.pagination && coursesResponse.pagination.totalPages > 1 && (
         <div className="flex flex-col sm:flex-row justify-center items-center mt-4 sm:mt-6 gap-3">
           <button 

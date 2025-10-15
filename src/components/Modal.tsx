@@ -1,6 +1,5 @@
-// src/components/Modal.tsx
-import type { } from 'react';
-import { X } from 'lucide-react';
+import type {} from "react";
+import { X } from "lucide-react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,7 +13,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 animate-fadeIn">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-slideUp">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
           <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
           <button
@@ -25,7 +23,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           </button>
         </div>
 
-        {/* Content */}
         <div className="p-6 overflow-y-auto flex-1 scrollbar-default">
           <style>{`
             .scrollbar-default::-webkit-scrollbar {

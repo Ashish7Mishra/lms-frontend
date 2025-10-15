@@ -1,10 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { getUsers, toggleUserStatus, createAdmin, type UserFilters, type CreateAdminData } from '../services/adminService';
-import type { PaginatedUsersResponse } from '../types/index';
-import { debounce } from 'lodash';
-import { UserPlus } from 'lucide-react';
-import CreateAdminModal from '../components/CreateAdminModal';
+import React, { useState, useEffect, useCallback } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  getUsers,
+  toggleUserStatus,
+  createAdmin,
+  type UserFilters,
+  type CreateAdminData,
+} from "../services/adminService";
+import type { PaginatedUsersResponse } from "../types/index";
+import { debounce } from "lodash";
+import { UserPlus } from "lucide-react";
+import CreateAdminModal from "../components/CreateAdminModal";
 
 const LoadingSpinner = ({ message = "Loading Users" }) => {
   return (
@@ -20,9 +26,18 @@ const LoadingSpinner = ({ message = "Loading Users" }) => {
         <div className="flex flex-col items-center gap-2">
           <p className="text-gray-700 font-semibold text-lg">{message}</p>
           <div className="flex gap-1.5">
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            <div
+              className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+              style={{ animationDelay: "0ms" }}
+            ></div>
+            <div
+              className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+              style={{ animationDelay: "150ms" }}
+            ></div>
+            <div
+              className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+              style={{ animationDelay: "300ms" }}
+            ></div>
           </div>
         </div>
       </div>
@@ -32,55 +47,83 @@ const LoadingSpinner = ({ message = "Loading Users" }) => {
 
 const AdminUsersPage = () => {
   const { token } = useAuth();
-  const [usersResponse, setUsersResponse] = useState<PaginatedUsersResponse | null>(null);
-  const [filters, setFilters] = useState<UserFilters>({ page: 1, limit: 10, role: '', isActive: '', search: '' });
+  const [usersResponse, setUsersResponse] =
+    useState<PaginatedUsersResponse | null>(null);
+  const [filters, setFilters] = useState<UserFilters>({
+    page: 1,
+    limit: 10,
+    role: "",
+    isActive: "",
+    search: "",
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreatingAdmin, setIsCreatingAdmin] = useState(false);
 
-  const fetchUsers = useCallback(async (currentFilters: UserFilters) => {
-    if (!token) return;
-    setIsLoading(true);
-    setError(null);
-    try {
-      const data = await getUsers(token, currentFilters);
-      setUsersResponse(data);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [token]);
+  const fetchUsers = useCallback(
+    async (currentFilters: UserFilters) => {
+      if (!token) return;
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await getUsers(token, currentFilters);
+        setUsersResponse(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [token]
+  );
 
-  const debouncedFetch = useCallback(debounce((newFilters) => fetchUsers(newFilters), 500), [fetchUsers]);
+  const debouncedFetch = useCallback(
+    debounce((newFilters) => fetchUsers(newFilters), 500),
+    [fetchUsers]
+  );
 
   useEffect(() => {
     debouncedFetch(filters);
     return () => debouncedFetch.cancel();
   }, [filters, debouncedFetch]);
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFilters(prev => ({ ...prev, page: 1, [e.target.name]: e.target.value }));
+  const handleFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setFilters((prev) => ({
+      ...prev,
+      page: 1,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handlePageChange = (newPage: number) => {
-    if (newPage < 1 || (usersResponse && newPage > usersResponse.pagination.totalPages)) {
+    if (
+      newPage < 1 ||
+      (usersResponse && newPage > usersResponse.pagination.totalPages)
+    ) {
       return;
     }
-    setFilters(prev => ({ ...prev, page: newPage }));
+    setFilters((prev) => ({ ...prev, page: newPage }));
   };
 
   const handleToggleStatus = async (userId: string) => {
-    if (!token || !window.confirm("Are you sure you want to change this user's status?")) return;
+    if (
+      !token ||
+      !window.confirm("Are you sure you want to change this user's status?")
+    )
+      return;
     try {
       const updatedUser = await toggleUserStatus(userId, token);
-      setUsersResponse(prev => {
+      setUsersResponse((prev) => {
         if (!prev) return null;
         return {
           ...prev,
-          data: prev.data.map(user =>
-            user._id === userId ? { ...user, isActive: updatedUser.isActive } : user
+          data: prev.data.map((user) =>
+            user._id === userId
+              ? { ...user, isActive: updatedUser.isActive }
+              : user
           ),
         };
       });
@@ -91,21 +134,25 @@ const AdminUsersPage = () => {
 
   const handleCreateAdmin = async (adminData: CreateAdminData) => {
     if (!token) {
-      alert('No authentication token found');
+      alert("No authentication token found");
       return;
     }
     setIsCreatingAdmin(true);
     try {
-      console.log('Creating admin with data:', { ...adminData, password: '[REDACTED]' });
+      console.log("Creating admin with data:", {
+        ...adminData,
+        password: "[REDACTED]",
+      });
       const result = await createAdmin(adminData, token);
-      console.log('Admin created successfully:', result);
-      alert('Admin created successfully!');
+      console.log("Admin created successfully:", result);
+      alert("Admin created successfully!");
       setIsModalOpen(false);
-      // Refresh the user list
+
       fetchUsers(filters);
     } catch (err: any) {
-      console.error('Failed to create admin:', err);
-      const errorMessage = err.response?.data?.message || err.message || 'Unknown error occurred';
+      console.error("Failed to create admin:", err);
+      const errorMessage =
+        err.response?.data?.message || err.message || "Unknown error occurred";
       alert(`Failed to create admin: ${errorMessage}`);
       throw err;
     } finally {
@@ -115,7 +162,6 @@ const AdminUsersPage = () => {
 
   return (
     <div>
-      {/* Header with Title and Create Button */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold">User Management</h1>
         <button
@@ -127,7 +173,6 @@ const AdminUsersPage = () => {
         </button>
       </div>
 
-      {/* Filter Controls */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6 bg-white p-3 sm:p-4 rounded-lg shadow-md">
         <input
           type="text"
@@ -156,25 +201,28 @@ const AdminUsersPage = () => {
         </select>
       </div>
 
-      {/* Loading Spinner */}
       {isLoading && <LoadingSpinner message="Loading users..." />}
 
-      {/* Error Message */}
       {error && <p className="text-red-500 text-center py-4">Error: {error}</p>}
 
       {!isLoading && usersResponse && (
         <>
-          {/* Mobile Card View */}
           <div className="block lg:hidden space-y-4">
-            {usersResponse.data.map(user => (
+            {usersResponse.data.map((user) => (
               <div key={user._id} className="bg-white rounded-lg shadow-md p-4">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1">
                     <h3 className="font-medium text-lg">{user.name}</h3>
                     <p className="text-sm text-gray-600">{user.email}</p>
                   </div>
-                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {user.isActive ? 'Active' : 'Inactive'}
+                  <span
+                    className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                      user.isActive
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {user.isActive ? "Active" : "Inactive"}
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-sm mb-3">
@@ -184,20 +232,21 @@ const AdminUsersPage = () => {
                   </div>
                   <div>
                     <span className="text-gray-500">Joined:</span>
-                    <p className="font-medium">{new Date(user.createdAt).toLocaleDateString()}</p>
+                    <p className="font-medium">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
                 <button
                   onClick={() => handleToggleStatus(user._id)}
                   className="w-full text-blue-500 hover:text-blue-700 font-medium py-2 border border-blue-500 rounded hover:bg-blue-50 transition"
                 >
-                  {user.isActive ? 'Deactivate' : 'Activate'}
+                  {user.isActive ? "Deactivate" : "Activate"}
                 </button>
               </div>
             ))}
           </div>
 
-          {/* Desktop Table View */}
           <div className="hidden lg:block bg-white rounded-lg shadow-md overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-gray-50">
@@ -211,23 +260,31 @@ const AdminUsersPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {usersResponse.data.map(user => (
+                {usersResponse.data.map((user) => (
                   <tr key={user._id} className="border-b hover:bg-gray-50">
                     <td className="p-4 font-medium">{user.name}</td>
                     <td className="p-4">{user.email}</td>
                     <td className="p-4">{user.role}</td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {user.isActive ? 'Active' : 'Inactive'}
+                      <span
+                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                          user.isActive
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {user.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
-                    <td className="p-4">{new Date(user.createdAt).toLocaleDateString()}</td>
+                    <td className="p-4">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </td>
                     <td className="p-4 whitespace-nowrap">
                       <button
                         onClick={() => handleToggleStatus(user._id)}
                         className="text-blue-500 hover:underline"
                       >
-                        {user.isActive ? 'Deactivate' : 'Activate'}
+                        {user.isActive ? "Deactivate" : "Activate"}
                       </button>
                     </td>
                   </tr>
@@ -238,30 +295,35 @@ const AdminUsersPage = () => {
         </>
       )}
 
-      {/* Pagination Controls */}
-      {!isLoading && usersResponse?.pagination && usersResponse.pagination.totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row justify-center items-center mt-4 sm:mt-6 gap-3">
-          <button
-            onClick={() => handlePageChange(usersResponse.pagination.currentPage - 1)}
-            disabled={!usersResponse.pagination.hasPreviousPage}
-            className="w-full sm:w-auto px-4 py-2 border rounded-md mx-1 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition"
-          >
-            &larr; Previous
-          </button>
-          <span className="px-4 text-sm sm:text-base">
-            Page {usersResponse.pagination.currentPage} of {usersResponse.pagination.totalPages}
-          </span>
-          <button
-            onClick={() => handlePageChange(usersResponse.pagination.currentPage + 1)}
-            disabled={!usersResponse.pagination.hasNextPage}
-            className="w-full sm:w-auto px-4 py-2 border rounded-md mx-1 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition"
-          >
-            Next &rarr;
-          </button>
-        </div>
-      )}
+      {!isLoading &&
+        usersResponse?.pagination &&
+        usersResponse.pagination.totalPages > 1 && (
+          <div className="flex flex-col sm:flex-row justify-center items-center mt-4 sm:mt-6 gap-3">
+            <button
+              onClick={() =>
+                handlePageChange(usersResponse.pagination.currentPage - 1)
+              }
+              disabled={!usersResponse.pagination.hasPreviousPage}
+              className="w-full sm:w-auto px-4 py-2 border rounded-md mx-1 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition"
+            >
+              &larr; Previous
+            </button>
+            <span className="px-4 text-sm sm:text-base">
+              Page {usersResponse.pagination.currentPage} of{" "}
+              {usersResponse.pagination.totalPages}
+            </span>
+            <button
+              onClick={() =>
+                handlePageChange(usersResponse.pagination.currentPage + 1)
+              }
+              disabled={!usersResponse.pagination.hasNextPage}
+              className="w-full sm:w-auto px-4 py-2 border rounded-md mx-1 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition"
+            >
+              Next &rarr;
+            </button>
+          </div>
+        )}
 
-      {/* Create Admin Modal */}
       <CreateAdminModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -1,10 +1,7 @@
- // src/pages/EnrolledStudentsPage.tsx
- 
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getEnrolledStudents } from "../services/courseService";
-//import { SpinnerIcon } from "../components/Spinner";
 import { ArrowLeft, Users, Mail, Calendar } from "lucide-react";
 import type { Student } from "../types";
 const EnrolledStudentsPage = () => {
@@ -44,11 +41,22 @@ const EnrolledStudentsPage = () => {
             </div>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-gray-700 font-semibold text-lg">Loading students...</p>
+            <p className="text-gray-700 font-semibold text-lg">
+              Loading students...
+            </p>
             <div className="flex gap-1.5">
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              ></div>
             </div>
           </div>
         </div>
@@ -60,7 +68,9 @@ const EnrolledStudentsPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 flex items-center justify-center p-4">
         <div className="text-center bg-red-50 p-8 rounded-2xl border border-red-200 shadow-lg">
-          <p className="text-red-600 text-lg font-semibold mb-2">⚠️ Error Loading Students</p>
+          <p className="text-red-600 text-lg font-semibold mb-2">
+            ⚠️ Error Loading Students
+          </p>
           <p className="text-red-500">{error}</p>
         </div>
       </div>
@@ -69,7 +79,6 @@ const EnrolledStudentsPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-2">
@@ -80,7 +89,8 @@ const EnrolledStudentsPage = () => {
             </h1>
             <p className="text-gray-600 flex items-center gap-2 mt-2">
               <Users className="w-5 h-5" />
-              <span className="font-semibold">{students.length}</span> students enrolled
+              <span className="font-semibold">{students.length}</span> students
+              enrolled
             </p>
           </div>
           <Link
@@ -92,11 +102,9 @@ const EnrolledStudentsPage = () => {
           </Link>
         </div>
 
-        {/* Students Section */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
           {students.length > 0 ? (
             <>
-              {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
@@ -139,11 +147,14 @@ const EnrolledStudentsPage = () => {
                         <td className="p-5">
                           <div className="flex items-center gap-2 text-gray-500">
                             <Calendar className="w-4 h-4 text-purple-500" />
-                            {new Date(student.createdAt).toLocaleDateString('en-US', {
-                              month: 'long',
-                              day: 'numeric',
-                              year: 'numeric'
-                            })}
+                            {new Date(student.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              }
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -152,7 +163,6 @@ const EnrolledStudentsPage = () => {
                 </table>
               </div>
 
-              {/* Mobile Card View */}
               <div className="md:hidden divide-y divide-gray-200">
                 {students.map((student, idx) => (
                   <div
@@ -177,11 +187,14 @@ const EnrolledStudentsPage = () => {
                           <div className="flex items-center gap-2 text-sm text-gray-500">
                             <Calendar className="w-4 h-4 text-purple-500 flex-shrink-0" />
                             <span>
-                              {new Date(student.createdAt).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric'
-                              })}
+                              {new Date(student.createdAt).toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                }
+                              )}
                             </span>
                           </div>
                         </div>
@@ -204,7 +217,6 @@ const EnrolledStudentsPage = () => {
           )}
         </div>
 
-        {/* Summary Card */}
         {students.length > 0 && (
           <div className="mt-8 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">

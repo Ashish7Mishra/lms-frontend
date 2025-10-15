@@ -38,14 +38,17 @@ const CoursesListPage = () => {
   }, [token]);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
     // Filter courses based on search
     const filtered = searchTerm
-      ? allCourses.filter((course) =>
-          course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.category?.toLowerCase().includes(searchTerm.toLowerCase())
+      ? allCourses.filter(
+          (course) =>
+            course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            course.description
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            course.category?.toLowerCase().includes(searchTerm.toLowerCase())
         )
       : allCourses;
 
@@ -83,7 +86,7 @@ const CoursesListPage = () => {
   const getPageNumbers = () => {
     const pages = [];
     const maxVisible = 5;
-    
+
     if (totalPages <= maxVisible) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -91,21 +94,21 @@ const CoursesListPage = () => {
     } else {
       if (currentPage <= 3) {
         for (let i = 1; i <= 4; i++) pages.push(i);
-        pages.push('...');
+        pages.push("...");
         pages.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
         pages.push(1);
-        pages.push('...');
+        pages.push("...");
         for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
       } else {
         pages.push(1);
-        pages.push('...');
+        pages.push("...");
         for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
-        pages.push('...');
+        pages.push("...");
         pages.push(totalPages);
       }
     }
-    
+
     return pages;
   };
 
@@ -121,11 +124,22 @@ const CoursesListPage = () => {
             </div>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-gray-700 font-semibold text-lg">Loading Courses</p>
+            <p className="text-gray-700 font-semibold text-lg">
+              Loading Courses
+            </p>
             <div className="flex gap-1.5">
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              ></div>
             </div>
           </div>
         </div>
@@ -136,7 +150,9 @@ const CoursesListPage = () => {
     return (
       <div className="flex justify-center items-center min-h-[70vh]">
         <div className="text-center bg-red-50 p-8 rounded-2xl border border-red-200">
-          <p className="text-red-600 text-lg font-semibold">⚠️ Error Loading Courses</p>
+          <p className="text-red-600 text-lg font-semibold">
+            ⚠️ Error Loading Courses
+          </p>
           <p className="text-red-500 mt-2">{error}</p>
         </div>
       </div>
@@ -158,7 +174,6 @@ const CoursesListPage = () => {
           </p>
         </div>
 
-        {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-8 sm:mb-10">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -172,7 +187,6 @@ const CoursesListPage = () => {
           </div>
         </div>
 
-        {/* Course Grid */}
         {courses.length > 0 ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 mb-12">
@@ -183,10 +197,8 @@ const CoursesListPage = () => {
               ))}
             </div>
 
-            {/* Enhanced Pagination */}
             {totalPages > 1 && (
               <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 mt-12 px-4">
-
                 <button
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1}
@@ -195,28 +207,31 @@ const CoursesListPage = () => {
                   ← Previous
                 </button>
 
-                {/* Page Numbers */}
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
-                  {getPageNumbers().map((page, index) => (
-                    page === '...' ? (
-                      <span key={`ellipsis-${index}`} className="px-2 text-gray-400">...</span>
+                  {getPageNumbers().map((page, index) =>
+                    page === "..." ? (
+                      <span
+                        key={`ellipsis-${index}`}
+                        className="px-2 text-gray-400"
+                      >
+                        ...
+                      </span>
                     ) : (
                       <button
                         key={page}
                         onClick={() => handlePageClick(page as number)}
                         className={`min-w-[44px] h-11 px-4 rounded-lg font-semibold transition-all ${
                           currentPage === page
-                            ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-110'
-                            : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                            ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-110"
+                            : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                         }`}
                       >
                         {page}
                       </button>
                     )
-                  ))}
+                  )}
                 </div>
 
-                {/* Next Button */}
                 <button
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
@@ -227,20 +242,32 @@ const CoursesListPage = () => {
               </div>
             )}
 
-            {/* Page Info */}
             <div className="text-center mt-6 text-gray-600 text-sm">
-              Showing {((currentPage - 1) * COURSES_PER_PAGE) + 1} - {Math.min(currentPage * COURSES_PER_PAGE, searchTerm ? courses.length : allCourses.length)} of {searchTerm ? allCourses.filter(c => c.title.toLowerCase().includes(searchTerm.toLowerCase())).length : allCourses.length} courses
+              Showing {(currentPage - 1) * COURSES_PER_PAGE + 1} -{" "}
+              {Math.min(
+                currentPage * COURSES_PER_PAGE,
+                searchTerm ? courses.length : allCourses.length
+              )}{" "}
+              of{" "}
+              {searchTerm
+                ? allCourses.filter((c) =>
+                    c.title.toLowerCase().includes(searchTerm.toLowerCase())
+                  ).length
+                : allCourses.length}{" "}
+              courses
             </div>
           </>
         ) : (
           <div className="text-center bg-white p-12 rounded-2xl shadow-lg border border-gray-200 mt-8">
             <div className="text-6xl mb-4">📚</div>
             <p className="text-gray-600 text-lg font-semibold mb-2">
-              {searchTerm ? 'No courses found matching your search' : 'No courses available at the moment'}
+              {searchTerm
+                ? "No courses found matching your search"
+                : "No courses available at the moment"}
             </p>
             {searchTerm && (
               <button
-                onClick={() => setSearchTerm('')}
+                onClick={() => setSearchTerm("")}
                 className="mt-4 text-blue-600 hover:text-blue-700 font-semibold"
               >
                 Clear search

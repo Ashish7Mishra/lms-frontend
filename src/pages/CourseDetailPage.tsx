@@ -1,9 +1,6 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
-import {
-  getCourseById,
-  getLessonsByCourseId,
-} from "../services/courseService";
+import { getCourseById, getLessonsByCourseId } from "../services/courseService";
 import {
   enrollInCourse,
   markLessonAsComplete,
@@ -17,7 +14,7 @@ import {
   AcademicCapIcon,
   ClockIcon,
   UserGroupIcon,
-}from "@heroicons/react/24/solid";
+} from "@heroicons/react/24/solid";
 import ReactMarkdown from "react-markdown";
 import DOMPurify from "dompurify";
 
@@ -70,9 +67,7 @@ const CourseDetailPage = () => {
     setEnrollmentError(null);
     try {
       await enrollInCourse(courseId, token);
-      setCourse((prev) =>
-        prev ? { ...prev, enrollment: true } : null
-      );
+      setCourse((prev) => (prev ? { ...prev, enrollment: true } : null));
     } catch (err: any) {
       setEnrollmentError(err.message);
     } finally {
@@ -103,8 +98,10 @@ const CourseDetailPage = () => {
   };
 
   const getEmbedUrl = (url: string, videoType?: string) => {
-    if (videoType === 'link') {
-      const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+    if (videoType === "link") {
+      const youtubeMatch = url.match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/
+      );
       if (youtubeMatch) {
         return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
       }
@@ -149,9 +146,10 @@ const CourseDetailPage = () => {
   };
 
   // Calculate progress
-  const completedLessons = lessons.filter(l => l.isCompleted).length;
+  const completedLessons = lessons.filter((l) => l.isCompleted).length;
   const totalLessons = lessons.length;
-  const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+  const progressPercentage =
+    totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
 
   if (isLoading)
     return (
@@ -165,11 +163,22 @@ const CourseDetailPage = () => {
             </div>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-gray-700 font-medium text-base">Loading Course</p>
+            <p className="text-gray-700 font-medium text-base">
+              Loading Course
+            </p>
             <div className="flex gap-1">
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              ></div>
             </div>
           </div>
         </div>
@@ -189,7 +198,10 @@ const CourseDetailPage = () => {
       <div className="flex justify-center items-center min-h-[60vh] px-4">
         <div className="text-center">
           <p className="text-gray-600 text-lg">Course not found.</p>
-          <Link to="/courses" className="mt-4 inline-block text-blue-600 hover:text-blue-800 font-medium">
+          <Link
+            to="/courses"
+            className="mt-4 inline-block text-blue-600 hover:text-blue-800 font-medium"
+          >
             ← Back to Courses
           </Link>
         </div>
@@ -228,21 +240,25 @@ const CourseDetailPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
-      {/* Enhanced Header with Gradient Background */}
       <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-sm border border-blue-100">
         <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
           <div className="flex-1 min-w-0 w-full">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 mb-2 sm:mb-3 leading-tight break-words">
               {course.title}
             </h1>
-            <p className="text-gray-700 text-sm sm:text-base lg:text-lg leading-relaxed mb-3 sm:mb-4">{course.description}</p>
+            <p className="text-gray-700 text-sm sm:text-base lg:text-lg leading-relaxed mb-3 sm:mb-4">
+              {course.description}
+            </p>
 
-            {/* Instructor and Badge */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-2 bg-white px-3 sm:px-4 py-2 rounded-full shadow-sm border border-gray-200 w-full sm:w-auto">
                 <AcademicCapIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-medium text-gray-600">Instructor:</span>
-                <span className="text-xs sm:text-sm font-semibold text-gray-900 truncate">{course.instructor.name}</span>
+                <span className="text-xs sm:text-sm font-medium text-gray-600">
+                  Instructor:
+                </span>
+                <span className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
+                  {course.instructor.name}
+                </span>
               </div>
 
               {isInstructorOwner && (
@@ -253,22 +269,29 @@ const CourseDetailPage = () => {
             </div>
           </div>
 
-          {/* Course Stats */}
           <div className="flex flex-col gap-3 bg-white rounded-xl p-4 shadow-sm border border-gray-200 w-full sm:w-auto sm:min-w-[200px]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                 <ClockIcon className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-500 font-medium">Total Lessons</p>
-                <p className="text-xl font-bold text-gray-900">{totalLessons}</p>
+                <p className="text-xs text-gray-500 font-medium">
+                  Total Lessons
+                </p>
+                <p className="text-xl font-bold text-gray-900">
+                  {totalLessons}
+                </p>
               </div>
             </div>
             {isEnrolledStudent && totalLessons > 0 && (
               <div className="pt-3 border-t border-gray-100">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-gray-600">Progress</span>
-                  <span className="text-xs font-bold text-blue-600">{Math.round(progressPercentage)}%</span>
+                  <span className="text-xs font-medium text-gray-600">
+                    Progress
+                  </span>
+                  <span className="text-xs font-bold text-blue-600">
+                    {Math.round(progressPercentage)}%
+                  </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div
@@ -276,22 +299,24 @@ const CourseDetailPage = () => {
                     style={{ width: `${progressPercentage}%` }}
                   ></div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1.5">{completedLessons} of {totalLessons} completed</p>
+                <p className="text-xs text-gray-500 mt-1.5">
+                  {completedLessons} of {totalLessons} completed
+                </p>
               </div>
             )}
           </div>
         </div>
       </div>
 
-
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        {/* Enhanced Video Section */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
             {selectedLesson ? (
               <>
-                <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+                <div
+                  className="relative w-full"
+                  style={{ paddingTop: "56.25%" }}
+                >
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-800">
                     {canWatchVideo ? (
                       renderVideoPlayer(selectedLesson)
@@ -320,17 +345,19 @@ const CourseDetailPage = () => {
                   </div>
                 </div>
 
-                {/* Enhanced Lesson Details */}
                 <div className="p-4 sm:p-6 lg:p-8">
                   <div className="flex flex-col sm:flex-row items-start justify-between mb-3 sm:mb-4 gap-3">
                     <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 flex-1 break-words">
                       {selectedLesson.title}
                     </h2>
                     {isEnrolledStudent && (
-                      <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold flex-shrink-0 ${selectedLesson.isCompleted
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-600'
-                        }`}>
+                      <div
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold flex-shrink-0 ${
+                          selectedLesson.isCompleted
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-100 text-gray-600"
+                        }`}
+                      >
                         {selectedLesson.isCompleted ? (
                           <>
                             <CheckCircleIcon className="w-4 h-4" />
@@ -346,37 +373,138 @@ const CourseDetailPage = () => {
                     )}
                   </div>
 
-                  {/* Enhanced Description with View More */}
-                  <div className={`text-gray-700 mb-4 sm:mb-6 transition-all duration-300 ${showFullDescription ? 'max-h-none' : 'max-h-[200px] overflow-hidden relative'
-                    }`}>
-                    <div className={`prose prose-sm max-w-none prose-html ${!showFullDescription ? 'mask-gradient' : ''
-                      }`}>
-                      {selectedLesson.content.includes('<') && selectedLesson.content.includes('>') ? (
+                  <div
+                    className={`text-gray-700 mb-4 sm:mb-6 transition-all duration-300 ${
+                      showFullDescription
+                        ? "max-h-none"
+                        : "max-h-[200px] overflow-hidden relative"
+                    }`}
+                  >
+                    <div
+                      className={`prose prose-sm max-w-none prose-html ${
+                        !showFullDescription ? "mask-gradient" : ""
+                      }`}
+                    >
+                      {selectedLesson.content.includes("<") &&
+                      selectedLesson.content.includes(">") ? (
                         <div
                           className="space-y-2 text-sm sm:text-base"
                           dangerouslySetInnerHTML={{
                             __html: DOMPurify.sanitize(selectedLesson.content, {
-                              ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'b', 'i', 'u', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre', 'span', 'div', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
-                              ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id']
-                            } as any)
+                              ALLOWED_TAGS: [
+                                "h1",
+                                "h2",
+                                "h3",
+                                "h4",
+                                "h5",
+                                "h6",
+                                "p",
+                                "br",
+                                "strong",
+                                "em",
+                                "b",
+                                "i",
+                                "u",
+                                "ul",
+                                "ol",
+                                "li",
+                                "a",
+                                "blockquote",
+                                "code",
+                                "pre",
+                                "span",
+                                "div",
+                                "img",
+                                "table",
+                                "thead",
+                                "tbody",
+                                "tr",
+                                "th",
+                                "td",
+                              ],
+                              ALLOWED_ATTR: [
+                                "href",
+                                "src",
+                                "alt",
+                                "title",
+                                "class",
+                                "id",
+                              ],
+                            } as any),
                           }}
                         />
                       ) : (
                         <ReactMarkdown
                           components={{
-                            h1: ({ ...props }) => <h1 className="text-xl sm:text-2xl font-bold mt-4 mb-2" {...props} />,
-                            h2: ({ ...props }) => <h2 className="text-lg sm:text-xl font-bold mt-3 mb-2" {...props} />,
-                            h3: ({ ...props }) => <h3 className="text-base sm:text-lg font-bold mt-2 mb-1" {...props} />,
-                            p: ({ ...props }) => <p className="mb-2 text-sm sm:text-base" {...props} />,
-                            ul: ({ ...props }) => <ul className="list-disc list-inside mb-2 text-sm sm:text-base" {...props} />,
-                            ol: ({ ...props }) => <ol className="list-decimal list-inside mb-2 text-sm sm:text-base" {...props} />,
-                            li: ({ ...props }) => <li className="ml-2" {...props} />,
-                            strong: ({ ...props }) => <strong className="font-bold" {...props} />,
-                            em: ({ ...props }) => <em className="italic" {...props} />,
-                            code: ({ ...props }) => <code className="bg-gray-100 px-2 py-1 rounded text-xs sm:text-sm font-mono" {...props} />,
-                            pre: ({ ...props }) => <pre className="bg-gray-100 p-3 rounded mb-2 overflow-auto text-xs sm:text-sm" {...props} />,
-                            blockquote: ({ ...props }) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2 text-sm sm:text-base" {...props} />,
-                            a: ({ ...props }) => <a className="text-blue-600 underline hover:text-blue-800 break-words" {...props} />,
+                            h1: ({ ...props }) => (
+                              <h1
+                                className="text-xl sm:text-2xl font-bold mt-4 mb-2"
+                                {...props}
+                              />
+                            ),
+                            h2: ({ ...props }) => (
+                              <h2
+                                className="text-lg sm:text-xl font-bold mt-3 mb-2"
+                                {...props}
+                              />
+                            ),
+                            h3: ({ ...props }) => (
+                              <h3
+                                className="text-base sm:text-lg font-bold mt-2 mb-1"
+                                {...props}
+                              />
+                            ),
+                            p: ({ ...props }) => (
+                              <p
+                                className="mb-2 text-sm sm:text-base"
+                                {...props}
+                              />
+                            ),
+                            ul: ({ ...props }) => (
+                              <ul
+                                className="list-disc list-inside mb-2 text-sm sm:text-base"
+                                {...props}
+                              />
+                            ),
+                            ol: ({ ...props }) => (
+                              <ol
+                                className="list-decimal list-inside mb-2 text-sm sm:text-base"
+                                {...props}
+                              />
+                            ),
+                            li: ({ ...props }) => (
+                              <li className="ml-2" {...props} />
+                            ),
+                            strong: ({ ...props }) => (
+                              <strong className="font-bold" {...props} />
+                            ),
+                            em: ({ ...props }) => (
+                              <em className="italic" {...props} />
+                            ),
+                            code: ({ ...props }) => (
+                              <code
+                                className="bg-gray-100 px-2 py-1 rounded text-xs sm:text-sm font-mono"
+                                {...props}
+                              />
+                            ),
+                            pre: ({ ...props }) => (
+                              <pre
+                                className="bg-gray-100 p-3 rounded mb-2 overflow-auto text-xs sm:text-sm"
+                                {...props}
+                              />
+                            ),
+                            blockquote: ({ ...props }) => (
+                              <blockquote
+                                className="border-l-4 border-gray-300 pl-4 italic my-2 text-sm sm:text-base"
+                                {...props}
+                              />
+                            ),
+                            a: ({ ...props }) => (
+                              <a
+                                className="text-blue-600 underline hover:text-blue-800 break-words"
+                                {...props}
+                              />
+                            ),
                           }}
                         >
                           {selectedLesson.content}
@@ -388,40 +516,62 @@ const CourseDetailPage = () => {
                     )}
                   </div>
 
-                  {/* Enhanced View More Button */}
-                  {selectedLesson.content && selectedLesson.content.length > 300 && (
-                    <button
-                      type="button"
-                      onClick={() => setShowFullDescription(!showFullDescription)}
-                      className="mb-4 sm:mb-6 text-blue-600 hover:text-blue-800 font-semibold text-sm flex items-center gap-2 transition-all duration-200 hover:gap-3 group"
-                    >
-                      {showFullDescription ? (
-                        <>
-                          <span>View Less</span>
-                          <svg className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                          </svg>
-                        </>
-                      ) : (
-                        <>
-                          <span>View More</span>
-                          <svg className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </>
-                      )}
-                    </button>
-                  )}
+                  {selectedLesson.content &&
+                    selectedLesson.content.length > 300 && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowFullDescription(!showFullDescription)
+                        }
+                        className="mb-4 sm:mb-6 text-blue-600 hover:text-blue-800 font-semibold text-sm flex items-center gap-2 transition-all duration-200 hover:gap-3 group"
+                      >
+                        {showFullDescription ? (
+                          <>
+                            <span>View Less</span>
+                            <svg
+                              className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 15l7-7 7 7"
+                              />
+                            </svg>
+                          </>
+                        ) : (
+                          <>
+                            <span>View More</span>
+                            <svg
+                              className="w-4 h-4 group-hover:translate-y-0.5 transition-transform"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                              />
+                            </svg>
+                          </>
+                        )}
+                      </button>
+                    )}
 
-                  {/* Enhanced Mark Complete Button */}
                   {isEnrolledStudent && (
                     <button
                       onClick={handleMarkComplete}
                       disabled={selectedLesson.isCompleted || isMarking}
-                      className={`w-full py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-xl disabled:cursor-not-allowed ${selectedLesson.isCompleted
+                      className={`w-full py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-xl disabled:cursor-not-allowed ${
+                        selectedLesson.isCompleted
                           ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
                           : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700 active:scale-[0.98]"
-                        }`}
+                      }`}
                     >
                       {isMarking ? (
                         <span className="flex items-center justify-center gap-2">
@@ -445,16 +595,16 @@ const CourseDetailPage = () => {
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <PlayCircleIcon className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
                 </div>
-                <p className="text-gray-500 text-base sm:text-lg">This course has no lessons yet.</p>
+                <p className="text-gray-500 text-base sm:text-lg">
+                  This course has no lessons yet.
+                </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Enhanced Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 overflow-hidden lg:sticky lg:top-6">
-
             <div className="p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-white border-b border-gray-100">
               {(() => {
                 if (isInstructorOwner) {
@@ -521,7 +671,6 @@ const CourseDetailPage = () => {
               })()}
             </div>
 
-            {/* Lessons List Section */}
             <div className="p-4 sm:p-6">
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
                 <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full"></div>
@@ -533,22 +682,29 @@ const CourseDetailPage = () => {
                     <button
                       key={lesson._id}
                       onClick={() => setSelectedLesson(lesson)}
-                      className={`w-full flex items-center justify-between p-3 sm:p-4 rounded-xl transition-all duration-200 group ${selectedLesson?._id === lesson._id
+                      className={`w-full flex items-center justify-between p-3 sm:p-4 rounded-xl transition-all duration-200 group ${
+                        selectedLesson?._id === lesson._id
                           ? "bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-500 shadow-md"
                           : "hover:bg-gray-50 border-2 border-transparent hover:border-gray-200"
-                        }`}
+                      }`}
                     >
                       <div className="flex items-center flex-1 min-w-0 gap-2 sm:gap-3">
-                        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-xs sm:text-sm ${selectedLesson?._id === lesson._id
-                            ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white"
-                            : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
-                          }`}>
+                        <div
+                          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-xs sm:text-sm ${
+                            selectedLesson?._id === lesson._id
+                              ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white"
+                              : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
+                          }`}
+                        >
                           {lessons.length - index}
                         </div>
-                        <span className={`font-medium text-left truncate text-sm sm:text-base ${selectedLesson?._id === lesson._id
-                            ? "text-gray-900"
-                            : "text-gray-700"
-                          }`}>
+                        <span
+                          className={`font-medium text-left truncate text-sm sm:text-base ${
+                            selectedLesson?._id === lesson._id
+                              ? "text-gray-900"
+                              : "text-gray-700"
+                          }`}
+                        >
                           {lesson.title}
                         </span>
                       </div>
@@ -571,7 +727,9 @@ const CourseDetailPage = () => {
                     <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
                       <PlayCircleIcon className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
                     </div>
-                    <p className="text-gray-500 text-sm sm:text-base">No lessons available yet.</p>
+                    <p className="text-gray-500 text-sm sm:text-base">
+                      No lessons available yet.
+                    </p>
                   </div>
                 )}
               </div>
@@ -579,9 +737,6 @@ const CourseDetailPage = () => {
           </div>
         </div>
       </div>
-
-      {/* css styling */}
-
 
       <style>{`
         .prose-html h1,
@@ -641,7 +796,6 @@ const CourseDetailPage = () => {
         }
       `}</style>
 
-      {/* Custom Scrollbar Styles */}
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 6px;

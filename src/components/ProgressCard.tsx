@@ -1,5 +1,3 @@
- // src/components/ProgressCard.tsx
-
 import React from "react";
 import { Link } from "react-router-dom";
 import type { Enrollment } from "../services/enrollmentService";
@@ -18,7 +16,6 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ enrollment }) => {
         isInactive ? "opacity-60 grayscale" : ""
       }`}
     >
-      {/* Course Image */}
       <div className="relative">
         <img
           src={course.imageUrl || "https://via.placeholder.com/400x200"}
@@ -26,7 +23,6 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ enrollment }) => {
           className="w-full h-48 object-cover"
         />
 
-        {/* Status Badge */}
         {isInactive && (
           <span className="absolute top-3 right-3 bg-gradient-to-r from-red-500 to-rose-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
             Inactive
@@ -34,13 +30,11 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ enrollment }) => {
         )}
       </div>
 
-      {/* Card Body */}
       <div className="p-5 space-y-4">
         <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
           {course.title}
         </h3>
 
-        {/* Progress Section */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-medium text-gray-600">Progress</span>
@@ -49,7 +43,6 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ enrollment }) => {
             </span>
           </div>
 
-          {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
             <div
               className={`h-2.5 rounded-full transition-all duration-500 ${
@@ -62,7 +55,6 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ enrollment }) => {
           </div>
         </div>
 
-        {/* Action Button */}
         <Link
           to={isInactive ? "#" : `/courses/${course._id}`}
           state={{ isEnrolled: true }}

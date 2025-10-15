@@ -1,5 +1,3 @@
- // src/pages/EditCoursePage.tsx
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -95,11 +93,22 @@ const EditCoursePage = () => {
             </div>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-gray-700 font-medium text-base">Loading course details</p>
+            <p className="text-gray-700 font-medium text-base">
+              Loading course details
+            </p>
             <div className="flex gap-1.5">
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              ></div>
             </div>
           </div>
         </div>
@@ -134,7 +143,6 @@ const EditCoursePage = () => {
             onChange={handleChange}
           />
 
-          {/* Description */}
           <div>
             <label
               htmlFor="description"
@@ -164,13 +172,13 @@ const EditCoursePage = () => {
             onChange={handleChange}
           />
 
-          {/* Existing Image */}
           <div>
             <label
               htmlFor="image"
               className="block text-sm font-semibold text-gray-700 mb-2"
             >
-              Update Course Image <span className="text-gray-400">(optional)</span>
+              Update Course Image{" "}
+              <span className="text-gray-400">(optional)</span>
             </label>
 
             {existingImageUrl && (

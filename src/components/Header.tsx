@@ -15,16 +15,18 @@ const Navbar = () => {
 
   const baseLinks = [
     { name: "Home", path: "/" },
-    // Show Courses only for Students and non-logged-in users (not for Instructors or Admins)
+
     ...(user?.role !== "Instructor" && user?.role !== "Admin"
-      ? [{ name: "Courses", path: "/courses" }] 
-      : []
-    ),
+      ? [{ name: "Courses", path: "/courses" }]
+      : []),
   ];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (avatarRef.current && !avatarRef.current.contains(event.target as Node)) {
+      if (
+        avatarRef.current &&
+        !avatarRef.current.contains(event.target as Node)
+      ) {
         setAvatarMenuOpen(false);
       }
     };
@@ -47,10 +49,8 @@ const Navbar = () => {
 
   return (
     <>
-      {/* ===== NAVBAR ===== */}
       <header className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-lg border-b border-gray-100 shadow-sm">
         <nav className="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
-          {/* Logo */}
           <Link to="/" className="flex items-center space-x-2.5 group">
             <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
               <span className="text-white font-bold text-lg">L</span>
@@ -60,7 +60,6 @@ const Navbar = () => {
             </span>
           </Link>
 
-          {/* ===== DESKTOP MENU ===== */}
           <ul className="hidden md:flex items-center gap-2">
             {baseLinks.map((link) => (
               <li key={link.name}>
@@ -77,7 +76,6 @@ const Navbar = () => {
               </li>
             ))}
 
-            {/* Instructor link */}
             {user?.role === "Instructor" && (
               <li>
                 <Link
@@ -93,7 +91,6 @@ const Navbar = () => {
               </li>
             )}
 
-            {/* ===== AUTH BUTTONS ===== */}
             {!user && (
               <>
                 <li>
@@ -115,7 +112,6 @@ const Navbar = () => {
               </>
             )}
 
-            {/* ===== AVATAR MENU ===== */}
             {user && (
               <li className="relative ml-4" ref={avatarRef}>
                 <button
@@ -159,7 +155,6 @@ const Navbar = () => {
             )}
           </ul>
 
-          {/* ===== MOBILE TOGGLE ===== */}
           <button
             className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -168,7 +163,6 @@ const Navbar = () => {
           </button>
         </nav>
 
-        {/* ===== MOBILE MENU ===== */}
         {menuOpen && (
           <div className="md:hidden bg-white border-t border-gray-100 animate-fadeIn">
             <ul className="flex flex-col py-2">
@@ -188,7 +182,6 @@ const Navbar = () => {
                 </li>
               ))}
 
-              {/* My Courses link for instructors in mobile */}
               {user?.role === "Instructor" && (
                 <li>
                   <Link
@@ -257,7 +250,6 @@ const Navbar = () => {
         )}
       </header>
 
-      {/* ===== LOGOUT MODAL ===== */}
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] animate-fadeIn">
           <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm text-center animate-slideUp">

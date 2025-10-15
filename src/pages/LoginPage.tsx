@@ -1,36 +1,10 @@
- // src/pages/LoginPage.tsx
+// src/pages/LoginPage.tsx
 
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { loginUser } from "../services/authService";
 import { Mail, Lock, BookOpen, ArrowRight } from "lucide-react";
-
-// Button Spinner Component (for inline use)
-const ButtonSpinner = () => {
-  return (
-    <svg
-      className="animate-spin h-4 w-4 text-white"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      ></circle>
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      ></path>
-    </svg>
-  );
-};
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -54,11 +28,10 @@ const LoginPage = () => {
       const { token, ...userData } = await loginUser(formData);
       login(userData, token);
 
-      // Redirect based on role
-      if (userData.role === 'Admin') {
-        navigate('/admin/dashboard');
+      if (userData.role === "Admin") {
+        navigate("/admin/dashboard");
       } else {
-        navigate('/dashboard');
+        navigate("/dashboard");
       }
     } catch (err: any) {
       setError(err.message || "Login failed. Please try again.");
@@ -70,7 +43,6 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-4">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-2xl shadow-lg">
@@ -85,7 +57,6 @@ const LoginPage = () => {
           </p>
         </div>
 
-        {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
@@ -94,7 +65,6 @@ const LoginPage = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email Input */}
             <div>
               <label
                 htmlFor="email"
@@ -121,7 +91,6 @@ const LoginPage = () => {
               </div>
             </div>
 
-            {/* Password Input */}
             <div>
               <label
                 htmlFor="password"
@@ -148,32 +117,12 @@ const LoginPage = () => {
               </div>
             </div>
 
-            {/* Forgot Password Link */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-700"
-                >
-                  Remember me
-                </label>
-              </div>
-            </div>
-
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
               className="group relative w-full flex justify-center items-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
             >
-        
-                {isLoading ? (
+              {isLoading ? (
                 <div className="flex items-center gap-3">
                   <div className="relative w-4 h-4">
                     <div className="w-4 h-4 border-2 border-white/30 rounded-full"></div>
@@ -190,7 +139,6 @@ const LoginPage = () => {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
@@ -202,7 +150,6 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Register Link */}
           <div className="text-center">
             <Link
               to="/register"
@@ -214,7 +161,6 @@ const LoginPage = () => {
           </div>
         </div>
 
-        {/* Back to Home */}
         <div className="text-center">
           <Link
             to="/"
