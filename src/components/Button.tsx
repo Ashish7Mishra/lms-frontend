@@ -2,7 +2,7 @@
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "danger" | "outline"; // optional style variants
+  variant?: "primary" | "secondary" | "danger" | "outline"; 
 }
 
 const Button: React.FC<ButtonProps> = ({

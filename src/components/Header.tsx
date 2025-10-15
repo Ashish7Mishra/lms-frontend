@@ -15,7 +15,8 @@ const Navbar = () => {
 
   const baseLinks = [
     { name: "Home", path: "/" },
-    ...(user?.role !== "Instructor" 
+    // Show Courses only for Students and non-logged-in users (not for Instructors or Admins)
+    ...(user?.role !== "Instructor" && user?.role !== "Admin"
       ? [{ name: "Courses", path: "/courses" }] 
       : []
     ),

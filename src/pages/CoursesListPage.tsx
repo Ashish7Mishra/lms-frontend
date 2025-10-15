@@ -186,7 +186,7 @@ const CoursesListPage = () => {
             {/* Enhanced Pagination */}
             {totalPages > 1 && (
               <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 mt-12 px-4">
-                {/* Previous Button */}
+
                 <button
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1}

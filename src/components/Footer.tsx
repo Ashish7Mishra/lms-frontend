@@ -7,8 +7,14 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
 const Footer = () => {
+  const { user } = useAuth();
+
+  // Check if user is Admin or Instructor
+  const shouldHideCourseLink = user?.role === 'Admin' || user?.role === 'Instructor';
+
   return (
     <footer className="bg-white text-gray-700 border-t border-gray-100 mt-auto">
       {/* ===== Top Section ===== */}
@@ -40,11 +46,13 @@ const Footer = () => {
                 Home
               </a>
             </li>
-            <li>
-              <a href="/courses" className="text-gray-600 hover:text-blue-600 transition-colors">
-                Courses
-              </a>
-            </li>
+            {!shouldHideCourseLink && (
+              <li>
+                <a href="/courses" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Courses
+                </a>
+              </li>
+            )}
             <li>
               <a href="/about" className="text-gray-600 hover:text-blue-600 transition-colors">
                 About Us

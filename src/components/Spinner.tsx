@@ -6,7 +6,6 @@ interface SpinnerProps {
   text?: string;
 }
 
-// Main fancy spinner (matches CoursesListPage design)
 export const PageSpinner: React.FC<SpinnerProps> = ({ text = "Loading..." }) => (
   <div className="flex justify-center items-center min-h-[60vh]">
     <div className="flex flex-col items-center gap-6">
