@@ -110,13 +110,13 @@ const CourseDetailPage = () => {
       if (youtubeMatch) {
         return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
       }
-      
+
       const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
       if (vimeoMatch) {
         return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
       }
     }
-    
+
     return url;
   };
 
@@ -238,7 +238,7 @@ const CourseDetailPage = () => {
               {course.title}
             </h1>
             <p className="text-gray-700 text-sm sm:text-base lg:text-lg leading-relaxed mb-3 sm:mb-4">{course.description}</p>
-            
+
             {/* Instructor and Badge */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-2 bg-white px-3 sm:px-4 py-2 rounded-full shadow-sm border border-gray-200 w-full sm:w-auto">
@@ -246,7 +246,7 @@ const CourseDetailPage = () => {
                 <span className="text-xs sm:text-sm font-medium text-gray-600">Instructor:</span>
                 <span className="text-xs sm:text-sm font-semibold text-gray-900 truncate">{course.instructor.name}</span>
               </div>
-              
+
               {isInstructorOwner && (
                 <span className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold shadow-md">
                   ✨ Your Course
@@ -273,7 +273,7 @@ const CourseDetailPage = () => {
                   <span className="text-xs font-bold text-blue-600">{Math.round(progressPercentage)}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                  <div 
+                  <div
                     className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-500"
                     style={{ width: `${progressPercentage}%` }}
                   ></div>
@@ -285,63 +285,7 @@ const CourseDetailPage = () => {
         </div>
       </div>
 
-      <style>{`
-        .prose-html h1,
-        .prose-html h2,
-        .prose-html h3,
-        .prose-html h4,
-        .prose-html h5,
-        .prose-html h6 {
-          margin-top: 1rem;
-          margin-bottom: 0.75rem;
-          font-weight: 600;
-        }
-        .prose-html p {
-          margin-bottom: 0.75rem;
-          line-height: 1.6;
-        }
-        .prose-html ul,
-        .prose-html ol {
-          margin-bottom: 0.75rem;
-          padding-left: 1.5rem;
-        }
-        .prose-html li {
-          margin-bottom: 0.25rem;
-        }
-        .prose-html a {
-          color: #2563eb;
-          text-decoration: underline;
-        }
-        .prose-html a:hover {
-          color: #1d4ed8;
-        }
-        .prose-html code {
-          background-color: #f3f4f6;
-          padding: 0.25rem 0.5rem;
-          border-radius: 0.25rem;
-          font-family: monospace;
-          font-size: 0.875rem;
-        }
-        .prose-html pre {
-          background-color: #f3f4f6;
-          padding: 1rem;
-          border-radius: 0.5rem;
-          overflow-x: auto;
-          margin-bottom: 0.75rem;
-        }
-        .prose-html blockquote {
-          border-left: 4px solid #d1d5db;
-          padding-left: 1rem;
-          font-style: italic;
-          margin: 0.75rem 0;
-        }
-        .prose-html strong {
-          font-weight: 700;
-        }
-        .prose-html em {
-          font-style: italic;
-        }
-      `}</style>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Enhanced Video Section */}
@@ -385,11 +329,10 @@ const CourseDetailPage = () => {
                       {selectedLesson.title}
                     </h2>
                     {isEnrolledStudent && (
-                      <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold flex-shrink-0 ${
-                        selectedLesson.isCompleted 
-                          ? 'bg-green-100 text-green-700' 
+                      <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold flex-shrink-0 ${selectedLesson.isCompleted
+                          ? 'bg-green-100 text-green-700'
                           : 'bg-gray-100 text-gray-600'
-                      }`}>
+                        }`}>
                         {selectedLesson.isCompleted ? (
                           <>
                             <CheckCircleIcon className="w-4 h-4" />
@@ -404,14 +347,12 @@ const CourseDetailPage = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   {/* Enhanced Description with View More */}
-                  <div className={`text-gray-700 mb-4 sm:mb-6 transition-all duration-300 ${
-                    showFullDescription ? 'max-h-none' : 'max-h-[200px] overflow-hidden relative'
-                  }`}>
-                    <div className={`prose prose-sm max-w-none prose-html ${
-                      !showFullDescription ? 'mask-gradient' : ''
+                  <div className={`text-gray-700 mb-4 sm:mb-6 transition-all duration-300 ${showFullDescription ? 'max-h-none' : 'max-h-[200px] overflow-hidden relative'
                     }`}>
+                    <div className={`prose prose-sm max-w-none prose-html ${!showFullDescription ? 'mask-gradient' : ''
+                      }`}>
                       {selectedLesson.content.includes('<') && selectedLesson.content.includes('>') ? (
                         <div
                           className="space-y-2 text-sm sm:text-base"
@@ -425,19 +366,19 @@ const CourseDetailPage = () => {
                       ) : (
                         <ReactMarkdown
                           components={{
-                            h1: ({...props}) => <h1 className="text-xl sm:text-2xl font-bold mt-4 mb-2" {...props} />,
-                            h2: ({...props}) => <h2 className="text-lg sm:text-xl font-bold mt-3 mb-2" {...props} />,
-                            h3: ({...props}) => <h3 className="text-base sm:text-lg font-bold mt-2 mb-1" {...props} />,
-                            p: ({...props}) => <p className="mb-2 text-sm sm:text-base" {...props} />,
-                            ul: ({...props}) => <ul className="list-disc list-inside mb-2 text-sm sm:text-base" {...props} />,
-                            ol: ({...props}) => <ol className="list-decimal list-inside mb-2 text-sm sm:text-base" {...props} />,
-                            li: ({...props}) => <li className="ml-2" {...props} />,
-                            strong: ({...props}) => <strong className="font-bold" {...props} />,
-                            em: ({...props}) => <em className="italic" {...props} />,
-                            code: ({...props}) => <code className="bg-gray-100 px-2 py-1 rounded text-xs sm:text-sm font-mono" {...props} />,
-                            pre: ({...props}) => <pre className="bg-gray-100 p-3 rounded mb-2 overflow-auto text-xs sm:text-sm" {...props} />,
-                            blockquote: ({...props}) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2 text-sm sm:text-base" {...props} />,
-                            a: ({...props}) => <a className="text-blue-600 underline hover:text-blue-800 break-words" {...props} />,
+                            h1: ({ ...props }) => <h1 className="text-xl sm:text-2xl font-bold mt-4 mb-2" {...props} />,
+                            h2: ({ ...props }) => <h2 className="text-lg sm:text-xl font-bold mt-3 mb-2" {...props} />,
+                            h3: ({ ...props }) => <h3 className="text-base sm:text-lg font-bold mt-2 mb-1" {...props} />,
+                            p: ({ ...props }) => <p className="mb-2 text-sm sm:text-base" {...props} />,
+                            ul: ({ ...props }) => <ul className="list-disc list-inside mb-2 text-sm sm:text-base" {...props} />,
+                            ol: ({ ...props }) => <ol className="list-decimal list-inside mb-2 text-sm sm:text-base" {...props} />,
+                            li: ({ ...props }) => <li className="ml-2" {...props} />,
+                            strong: ({ ...props }) => <strong className="font-bold" {...props} />,
+                            em: ({ ...props }) => <em className="italic" {...props} />,
+                            code: ({ ...props }) => <code className="bg-gray-100 px-2 py-1 rounded text-xs sm:text-sm font-mono" {...props} />,
+                            pre: ({ ...props }) => <pre className="bg-gray-100 p-3 rounded mb-2 overflow-auto text-xs sm:text-sm" {...props} />,
+                            blockquote: ({ ...props }) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2 text-sm sm:text-base" {...props} />,
+                            a: ({ ...props }) => <a className="text-blue-600 underline hover:text-blue-800 break-words" {...props} />,
                           }}
                         >
                           {selectedLesson.content}
@@ -479,11 +420,10 @@ const CourseDetailPage = () => {
                     <button
                       onClick={handleMarkComplete}
                       disabled={selectedLesson.isCompleted || isMarking}
-                      className={`w-full py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-xl disabled:cursor-not-allowed ${
-                        selectedLesson.isCompleted
+                      className={`w-full py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-xl disabled:cursor-not-allowed ${selectedLesson.isCompleted
                           ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
                           : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700 active:scale-[0.98]"
-                      }`}
+                        }`}
                     >
                       {isMarking ? (
                         <span className="flex items-center justify-center gap-2">
@@ -516,7 +456,7 @@ const CourseDetailPage = () => {
         {/* Enhanced Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 overflow-hidden lg:sticky lg:top-6">
-            {/* Action Buttons Section */}
+
             <div className="p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-white border-b border-gray-100">
               {(() => {
                 if (isInstructorOwner) {
@@ -595,25 +535,22 @@ const CourseDetailPage = () => {
                     <button
                       key={lesson._id}
                       onClick={() => setSelectedLesson(lesson)}
-                      className={`w-full flex items-center justify-between p-3 sm:p-4 rounded-xl transition-all duration-200 group ${
-                        selectedLesson?._id === lesson._id
+                      className={`w-full flex items-center justify-between p-3 sm:p-4 rounded-xl transition-all duration-200 group ${selectedLesson?._id === lesson._id
                           ? "bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-500 shadow-md"
                           : "hover:bg-gray-50 border-2 border-transparent hover:border-gray-200"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center flex-1 min-w-0 gap-2 sm:gap-3">
-                        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-xs sm:text-sm ${
-                          selectedLesson?._id === lesson._id
+                        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-xs sm:text-sm ${selectedLesson?._id === lesson._id
                             ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white"
                             : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
-                        }`}>
+                          }`}>
                           {lessons.length - index}
                         </div>
-                        <span className={`font-medium text-left truncate text-sm sm:text-base ${
-                          selectedLesson?._id === lesson._id
+                        <span className={`font-medium text-left truncate text-sm sm:text-base ${selectedLesson?._id === lesson._id
                             ? "text-gray-900"
                             : "text-gray-700"
-                        }`}>
+                          }`}>
                           {lesson.title}
                         </span>
                       </div>
@@ -644,6 +581,67 @@ const CourseDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* css styling */}
+
+
+      <style>{`
+        .prose-html h1,
+        .prose-html h2,
+        .prose-html h3,
+        .prose-html h4,
+        .prose-html h5,
+        .prose-html h6 {
+          margin-top: 1rem;
+          margin-bottom: 0.75rem;
+          font-weight: 600;
+        }
+        .prose-html p {
+          margin-bottom: 0.75rem;
+          line-height: 1.6;
+        }
+        .prose-html ul,
+        .prose-html ol {
+          margin-bottom: 0.75rem;
+          padding-left: 1.5rem;
+        }
+        .prose-html li {
+          margin-bottom: 0.25rem;
+        }
+        .prose-html a {
+          color: #2563eb;
+          text-decoration: underline;
+        }
+        .prose-html a:hover {
+          color: #1d4ed8;
+        }
+        .prose-html code {
+          background-color: #f3f4f6;
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          font-family: monospace;
+          font-size: 0.875rem;
+        }
+        .prose-html pre {
+          background-color: #f3f4f6;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          overflow-x: auto;
+          margin-bottom: 0.75rem;
+        }
+        .prose-html blockquote {
+          border-left: 4px solid #d1d5db;
+          padding-left: 1rem;
+          font-style: italic;
+          margin: 0.75rem 0;
+        }
+        .prose-html strong {
+          font-weight: 700;
+        }
+        .prose-html em {
+          font-style: italic;
+        }
+      `}</style>
 
       {/* Custom Scrollbar Styles */}
       <style>{`

@@ -27,7 +27,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [previewMode, setPreviewMode] = useState(false);
   const [contentFormat, setContentFormat] = useState<'markdown' | 'html' | 'plain'>('markdown');
-  const [showFullDescription, setShowFullDescription] = useState(false);
+  // const [showFullDescription, setShowFullDescription] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -187,7 +187,7 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, isLoading, 
         />
       );
     } else {
-      // Plain text
+
       return (
         <div className="whitespace-pre-wrap text-gray-800">
           {formData.content}

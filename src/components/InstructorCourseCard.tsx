@@ -47,9 +47,9 @@ const InstructorCourseCard: React.FC<InstructorCourseCardProps> = ({
 
         {/* Buttons Section */}
         <div className="flex flex-col gap-2.5 mt-auto">
-          {/* First Row */}
+
           <div className="grid grid-cols-2 gap-2.5">
-            {/* Edit Button */}
+
             <Link
               to={`/instructor/courses/${course._id}/edit`}
               className={`inline-flex items-center justify-center bg-blue-500 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-all ${
@@ -70,9 +70,8 @@ const InstructorCourseCard: React.FC<InstructorCourseCardProps> = ({
             </Link>
           </div>
 
-          {/* Second Row */}
           <div className="grid grid-cols-2 gap-2.5">
-            {/* Preview Button */}
+
             <Link
               to={`/courses/${course._id}`}
               className={`inline-flex items-center justify-center bg-yellow-500 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-yellow-600 transition-all ${
