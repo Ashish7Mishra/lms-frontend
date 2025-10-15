@@ -191,184 +191,218 @@ const DashboardPage = () => {
     );
   };
 
-  const renderInstructorDashboard = () => {
-    if (isLoading) {
-      return (
-        <div className="flex justify-center items-center py-20">
-          <div className="flex flex-col items-center gap-6">
-            <div className="relative">
-              <div className="w-20 h-20 border-4 border-gray-200 rounded-full"></div>
-              <div className="absolute top-0 left-0 w-20 h-20 border-4 border-blue-600 rounded-full border-t-transparent border-r-transparent animate-spin"></div>
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
-              </div>
+ // Replace the renderInstructorDashboard function in your DashboardPage.tsx
+// Starting from line 175 (approximately)
+
+const renderInstructorDashboard = () => {
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative">
+            <div className="w-20 h-20 border-4 border-gray-200 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-20 h-20 border-4 border-blue-600 rounded-full border-t-transparent border-r-transparent animate-spin"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
             </div>
-            <div className="flex flex-col items-center gap-2">
-              <p className="text-gray-700 font-medium text-base">Loading dashboard</p>
-              <div className="flex gap-1.5">
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-              </div>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-gray-700 font-medium text-base">Loading dashboard</p>
+            <div className="flex gap-1.5">
+              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+              <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
             </div>
           </div>
         </div>
-      );
-    }
-    if (error) {
-      return <p className="text-center text-red-500 py-20">Error: {error}</p>;
-    }
-    return (
-      <div className="space-y-10">
-        {/* Analytics Section */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-6 rounded-2xl shadow-lg text-white transform hover:scale-105 transition-all">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-semibold opacity-90 uppercase tracking-wide">Total Courses</h3>
-                <p className="text-5xl font-extrabold mt-3">{myCourses.length}</p>
-              </div>
-              <BookOpen className="w-14 h-14 opacity-80" />
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-6 rounded-2xl shadow-lg text-white transform hover:scale-105 transition-all">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-semibold opacity-90 uppercase tracking-wide">Total Students</h3>
-                <p className="text-5xl font-extrabold mt-3">
-                  {myCourses.reduce((sum, c) => sum + (c.enrolledCount || 0), 0)}
-                </p>
-              </div>
-              <Users className="w-14 h-14 opacity-80" />
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-6 rounded-2xl shadow-lg text-white transform hover:scale-105 transition-all">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-semibold opacity-90 uppercase tracking-wide">Active Courses</h3>
-                <p className="text-5xl font-extrabold mt-3">{myCourses.filter(c => c.isActive).length}</p>
-              </div>
-              <Activity className="w-14 h-14 opacity-80" />
-            </div>
-          </div>
-        </section>
-
-        {/* Quick Actions */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Link
-            to="/instructor/courses/create"
-            className="relative flex items-center justify-center py-5 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all group overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 group-hover:scale-110 transition-transform duration-500"></div>
-            <PlusCircle className="w-6 h-6 mr-3 relative z-10" />
-            <span className="relative z-10 text-lg">Create New Course</span>
-          </Link>
-
-          <Link
-            to="/instructor/my-courses"
-            className="relative flex items-center justify-center py-5 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all group overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-indigo-600 group-hover:scale-110 transition-transform duration-500"></div>
-            <LayoutDashboard className="w-6 h-6 mr-3 relative z-10" />
-            <span className="relative z-10 text-lg">Manage Courses</span>
-          </Link>
-
-          <button
-            disabled
-            className="relative flex items-center justify-center py-5 rounded-xl font-semibold text-white shadow-md cursor-not-allowed opacity-75"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-400 to-gray-500"></div>
-            <Activity className="w-6 h-6 mr-3 relative z-10" />
-            <span className="relative z-10 text-lg">Analytics (Soon)</span>
-          </button>
-        </section>
-
-        {/* Recently Created Courses */}
-        <section className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-8">
-            Your Courses
-          </h2>
-
-          {myCourses.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {myCourses.slice(0, 6).map((course) => (
-                <div
-                  key={course._id}
-                  className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col group"
-                >
-                  <div className="relative overflow-hidden">
-                    {course.imageUrl ? (
-                      <img
-                        src={course.imageUrl}
-                        alt={course.title}
-                        className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className={`w-full h-48 bg-gradient-to-br ${getCategoryGradient(course.category)} flex items-center justify-center group-hover:scale-110 transition-transform duration-500`}>
-                        <BookOpen className="w-20 h-20 text-white opacity-90" strokeWidth={1.5} />
-                      </div>
-                    )}
-                    <span className={`absolute top-3 left-3 text-xs font-semibold text-white py-1.5 px-3 rounded-full shadow-lg backdrop-blur-sm ${
-                      course.category === "Web" ? "bg-blue-500/90" :
-                      course.category === "Design" ? "bg-purple-500/90" :
-                      course.category === "Data" ? "bg-sky-500/90" :
-                      course.category === "Marketing" ? "bg-emerald-500/90" :
-                      "bg-indigo-500/90"
-                    }`}>
-                      {course.category || 'General'}
-                    </span>
-                  </div>
-
-                  <div className="p-5 flex flex-col flex-grow">
-                    <h3 className="text-lg font-bold text-gray-800 line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">
-                      {course.title}
-                    </h3>
-                    <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-grow">
-                      {course.description || 'No description available.'}
-                    </p>
-
-                    <div className="mb-4 text-sm font-semibold text-gray-700 bg-gray-100 py-2 px-3 rounded-lg inline-flex items-center gap-2 self-start">
-                      <Users className="w-4 h-4 text-blue-600" />
-                      {course.enrolledCount || 0} Students
-                    </div>
-
-                    <div className="flex gap-2 mt-auto">
-                      <Link
-                        to={`/instructor/courses/${course._id}/manage`}
-                        className="flex-1 bg-gradient-to-r from-indigo-600 to-blue-600 text-white text-sm font-semibold py-2.5 px-4 rounded-lg hover:opacity-90 transition text-center shadow-md"
-                      >
-                        Manage
-                      </Link>
-                      <button
-                        onClick={() => handleViewStudents(course)}
-                        className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-semibold py-2.5 px-4 rounded-lg hover:opacity-90 transition flex items-center justify-center gap-2 shadow-md"
-                      >
-                        <Users className="w-4 h-4" />
-                        View
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12 text-gray-600">
-              <div className="text-6xl mb-4">🎓</div>
-              <p className="text-lg mb-6">You haven't created any courses yet.</p>
-              <Link
-                to="/instructor/courses/create"
-                className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-8 rounded-xl hover:opacity-90 transform hover:scale-105 transition-all shadow-lg"
-              >
-                Create Your First Course
-              </Link>
-            </div>
-          )}
-        </section>
       </div>
     );
-  };
+  }
+  if (error) {
+    return <p className="text-center text-red-500 py-20">Error: {error}</p>;
+  }
+  return (
+    <div className="space-y-10">
+      {/* Analytics Section */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-6 rounded-2xl shadow-lg text-white transform hover:scale-105 transition-all">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold opacity-90 uppercase tracking-wide">Total Courses</h3>
+              <p className="text-5xl font-extrabold mt-3">{myCourses.length}</p>
+            </div>
+            <BookOpen className="w-14 h-14 opacity-80" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-6 rounded-2xl shadow-lg text-white transform hover:scale-105 transition-all">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold opacity-90 uppercase tracking-wide">Total Students</h3>
+              <p className="text-5xl font-extrabold mt-3">
+                {myCourses.reduce((sum, c) => sum + (c.enrolledCount || 0), 0)}
+              </p>
+            </div>
+            <Users className="w-14 h-14 opacity-80" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-6 rounded-2xl shadow-lg text-white transform hover:scale-105 transition-all">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold opacity-90 uppercase tracking-wide">Active Courses</h3>
+              <p className="text-5xl font-extrabold mt-3">{myCourses.filter(c => c.isActive).length}</p>
+            </div>
+            <Activity className="w-14 h-14 opacity-80" />
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Actions */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Link
+          to="/instructor/courses/create"
+          className="relative flex items-center justify-center py-5 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all group overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 group-hover:scale-110 transition-transform duration-500"></div>
+          <PlusCircle className="w-6 h-6 mr-3 relative z-10" />
+          <span className="relative z-10 text-lg">Create New Course</span>
+        </Link>
+
+        <Link
+          to="/instructor/my-courses"
+          className="relative flex items-center justify-center py-5 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all group overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-indigo-600 group-hover:scale-110 transition-transform duration-500"></div>
+          <LayoutDashboard className="w-6 h-6 mr-3 relative z-10" />
+          <span className="relative z-10 text-lg">Manage Courses</span>
+        </Link>
+
+        <button
+          disabled
+          className="relative flex items-center justify-center py-5 rounded-xl font-semibold text-white shadow-md cursor-not-allowed opacity-75"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-400 to-gray-500"></div>
+          <Activity className="w-6 h-6 mr-3 relative z-10" />
+          <span className="relative z-10 text-lg">Analytics (Soon)</span>
+        </button>
+      </section>
+
+      {/* Recently Created Courses */}
+      <section className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-8">
+          Your Courses
+        </h2>
+
+        {myCourses.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {myCourses.slice(0, 6).map((course) => (
+              <div
+                key={course._id}
+                className={`bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col group ${
+                  !course.isActive ? 'opacity-60 grayscale' : ''
+                }`}
+              >
+                <div className="relative overflow-hidden">
+                  {course.imageUrl ? (
+                    <img
+                      src={course.imageUrl}
+                      alt={course.title}
+                      className={`w-full h-48 object-cover transition-transform duration-500 ${
+                        course.isActive ? 'group-hover:scale-110' : ''
+                      }`}
+                    />
+                  ) : (
+                    <div className={`w-full h-48 bg-gradient-to-br ${getCategoryGradient(course.category)} flex items-center justify-center transition-transform duration-500 ${
+                      course.isActive ? 'group-hover:scale-110' : ''
+                    }`}>
+                      <BookOpen className="w-20 h-20 text-white opacity-90" strokeWidth={1.5} />
+                    </div>
+                  )}
+                  <span className={`absolute top-3 left-3 text-xs font-semibold text-white py-1.5 px-3 rounded-full shadow-lg backdrop-blur-sm ${
+                    course.category === "Web" ? "bg-blue-500/90" :
+                    course.category === "Design" ? "bg-purple-500/90" :
+                    course.category === "Data" ? "bg-sky-500/90" :
+                    course.category === "Marketing" ? "bg-emerald-500/90" :
+                    "bg-indigo-500/90"
+                  }`}>
+                    {course.category || 'General'}
+                  </span>
+                  
+                  {/* Inactive Badge */}
+                  {!course.isActive && (
+                    <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold py-1.5 px-3 rounded-full shadow-lg">
+                      INACTIVE
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-5 flex flex-col flex-grow">
+                  <h3 className={`text-lg font-bold text-gray-800 line-clamp-2 mb-2 transition-colors ${
+                    course.isActive ? 'group-hover:text-blue-600' : 'text-gray-600'
+                  }`}>
+                    {course.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-grow">
+                    {course.description || 'No description available.'}
+                  </p>
+
+                  <div className="mb-4 text-sm font-semibold text-gray-700 bg-gray-100 py-2 px-3 rounded-lg inline-flex items-center gap-2 self-start">
+                    <Users className="w-4 h-4 text-blue-600" />
+                    {course.enrolledCount || 0} Students
+                  </div>
+
+                  {!course.isActive && (
+                    <div className="mb-3 text-xs font-medium text-red-600 bg-red-50 py-2 px-3 rounded-lg flex items-center gap-2">
+                      <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
+                      This course is currently deactivated
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 mt-auto">
+                    <Link
+                      to={`/instructor/courses/${course._id}/manage`}
+                      className={`flex-1 text-white text-sm font-semibold py-2.5 px-4 rounded-lg transition text-center shadow-md ${
+                        course.isActive
+                          ? 'bg-gradient-to-r from-indigo-600 to-blue-600 hover:opacity-90'
+                          : 'bg-gray-400 cursor-not-allowed pointer-events-none'
+                      }`}
+                    >
+                      Manage
+                    </Link>
+                    <button
+                      onClick={() => course.isActive && handleViewStudents(course)}
+                      disabled={!course.isActive}
+                      className={`flex-1 text-white text-sm font-semibold py-2.5 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md ${
+                        course.isActive
+                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90'
+                          : 'bg-gray-400 cursor-not-allowed'
+                      }`}
+                    >
+                      <Users className="w-4 h-4" />
+                      View
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-gray-600">
+            <div className="text-6xl mb-4">🎓</div>
+            <p className="text-lg mb-6">You haven't created any courses yet.</p>
+            <Link
+              to="/instructor/courses/create"
+              className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-8 rounded-xl hover:opacity-90 transform hover:scale-105 transition-all shadow-lg"
+            >
+              Create Your First Course
+            </Link>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">

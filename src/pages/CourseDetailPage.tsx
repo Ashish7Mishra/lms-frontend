@@ -179,8 +179,8 @@ const CourseDetailPage = () => {
     );
   if (error)
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg max-w-md">
+      <div className="flex justify-center items-center min-h-[60vh] px-4">
+        <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg max-w-md w-full">
           <p className="text-red-700 font-semibold">Error Loading Course</p>
           <p className="text-red-600 mt-2">{error}</p>
         </div>
@@ -188,7 +188,7 @@ const CourseDetailPage = () => {
     );
   if (!course)
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
+      <div className="flex justify-center items-center min-h-[60vh] px-4">
         <div className="text-center">
           <p className="text-gray-600 text-lg">Course not found.</p>
           <Link to="/courses" className="mt-4 inline-block text-blue-600 hover:text-blue-800 font-medium">
@@ -206,12 +206,12 @@ const CourseDetailPage = () => {
 
   if (!course.isActive && !isInstructorOwner) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="text-center max-w-lg bg-white rounded-2xl shadow-xl p-12">
+      <div className="flex justify-center items-center min-h-[60vh] px-4">
+        <div className="text-center max-w-lg bg-white rounded-2xl shadow-xl p-8 sm:p-12 w-full">
           <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <LockClosedIcon className="w-10 h-10 text-gray-400" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-3">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
             Course Unavailable
           </h1>
           <p className="text-gray-600 mb-8">
@@ -229,26 +229,26 @@ const CourseDetailPage = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
       {/* Enhanced Header with Gradient Background */}
-      <div className="mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-8 shadow-sm border border-blue-100">
-        <div className="flex items-start justify-between flex-wrap gap-4">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-3 leading-tight">
+      <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-sm border border-blue-100">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+          <div className="flex-1 min-w-0 w-full">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 mb-2 sm:mb-3 leading-tight break-words">
               {course.title}
             </h1>
-            <p className="text-gray-700 text-lg leading-relaxed mb-4">{course.description}</p>
+            <p className="text-gray-700 text-sm sm:text-base lg:text-lg leading-relaxed mb-3 sm:mb-4">{course.description}</p>
             
             {/* Instructor and Badge */}
-            <div className="flex items-center flex-wrap gap-4">
-              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-200">
-                <AcademicCapIcon className="w-5 h-5 text-blue-600" />
-                <span className="text-sm font-medium text-gray-600">Instructor:</span>
-                <span className="text-sm font-semibold text-gray-900">{course.instructor.name}</span>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+              <div className="flex items-center gap-2 bg-white px-3 sm:px-4 py-2 rounded-full shadow-sm border border-gray-200 w-full sm:w-auto">
+                <AcademicCapIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-medium text-gray-600">Instructor:</span>
+                <span className="text-xs sm:text-sm font-semibold text-gray-900 truncate">{course.instructor.name}</span>
               </div>
               
               {isInstructorOwner && (
-                <span className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md">
+                <span className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold shadow-md">
                   ✨ Your Course
                 </span>
               )}
@@ -256,9 +256,9 @@ const CourseDetailPage = () => {
           </div>
 
           {/* Course Stats */}
-          <div className="flex flex-col gap-3 bg-white rounded-xl p-4 shadow-sm border border-gray-200 min-w-[200px]">
+          <div className="flex flex-col gap-3 bg-white rounded-xl p-4 shadow-sm border border-gray-200 w-full sm:w-auto sm:min-w-[200px]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                 <ClockIcon className="w-5 h-5 text-blue-600" />
               </div>
               <div>
@@ -343,47 +343,49 @@ const CourseDetailPage = () => {
         }
       `}</style>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Enhanced Video Section */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
             {selectedLesson ? (
               <>
-                <div className="aspect-video bg-gradient-to-br from-gray-900 to-gray-800 relative">
-                  {canWatchVideo ? (
-                    renderVideoPlayer(selectedLesson)
-                  ) : (
-                    <>
-                      <img
-                        src={course.imageUrl}
-                        alt={course.title}
-                        className="w-full h-full object-cover opacity-30"
-                      />
-                      <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6 bg-gradient-to-t from-black/80 to-black/40">
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 max-w-md border border-white/20">
-                          <LockClosedIcon className="w-16 h-16 text-white mb-4 mx-auto" />
-                          <h3 className="text-2xl font-bold text-white mb-3">
-                            Content Locked
-                          </h3>
-                          <p className="text-gray-200 text-base leading-relaxed">
-                            {isAuthenticated
-                              ? "Enroll in this course to unlock all video lessons and start learning."
-                              : "Please log in and enroll to access this exclusive content."}
-                          </p>
+                <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-800">
+                    {canWatchVideo ? (
+                      renderVideoPlayer(selectedLesson)
+                    ) : (
+                      <>
+                        <img
+                          src={course.imageUrl}
+                          alt={course.title}
+                          className="w-full h-full object-cover opacity-30"
+                        />
+                        <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 sm:p-6 bg-gradient-to-t from-black/80 to-black/40">
+                          <div className="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 sm:p-8 max-w-md w-full border border-white/20">
+                            <LockClosedIcon className="w-12 h-12 sm:w-16 sm:h-16 text-white mb-3 sm:mb-4 mx-auto" />
+                            <h3 className="text-lg sm:text-2xl font-bold text-white mb-2 sm:mb-3">
+                              Content Locked
+                            </h3>
+                            <p className="text-gray-200 text-sm sm:text-base leading-relaxed">
+                              {isAuthenticated
+                                ? "Enroll in this course to unlock all video lessons and start learning."
+                                : "Please log in and enroll to access this exclusive content."}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </>
-                  )}
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 {/* Enhanced Lesson Details */}
-                <div className="p-6 sm:p-8">
-                  <div className="flex items-start justify-between mb-4">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 flex-1">
+                <div className="p-4 sm:p-6 lg:p-8">
+                  <div className="flex flex-col sm:flex-row items-start justify-between mb-3 sm:mb-4 gap-3">
+                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 flex-1 break-words">
                       {selectedLesson.title}
                     </h2>
                     {isEnrolledStudent && (
-                      <div className={`ml-4 flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold ${
+                      <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold flex-shrink-0 ${
                         selectedLesson.isCompleted 
                           ? 'bg-green-100 text-green-700' 
                           : 'bg-gray-100 text-gray-600'
@@ -404,7 +406,7 @@ const CourseDetailPage = () => {
                   </div>
                   
                   {/* Enhanced Description with View More */}
-                  <div className={`text-gray-700 mb-6 transition-all duration-300 ${
+                  <div className={`text-gray-700 mb-4 sm:mb-6 transition-all duration-300 ${
                     showFullDescription ? 'max-h-none' : 'max-h-[200px] overflow-hidden relative'
                   }`}>
                     <div className={`prose prose-sm max-w-none prose-html ${
@@ -412,7 +414,7 @@ const CourseDetailPage = () => {
                     }`}>
                       {selectedLesson.content.includes('<') && selectedLesson.content.includes('>') ? (
                         <div
-                          className="space-y-2"
+                          className="space-y-2 text-sm sm:text-base"
                           dangerouslySetInnerHTML={{
                             __html: DOMPurify.sanitize(selectedLesson.content, {
                               ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'b', 'i', 'u', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre', 'span', 'div', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
@@ -423,19 +425,19 @@ const CourseDetailPage = () => {
                       ) : (
                         <ReactMarkdown
                           components={{
-                            h1: ({...props}) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
-                            h2: ({...props}) => <h2 className="text-xl font-bold mt-3 mb-2" {...props} />,
-                            h3: ({...props}) => <h3 className="text-lg font-bold mt-2 mb-1" {...props} />,
-                            p: ({...props}) => <p className="mb-2" {...props} />,
-                            ul: ({...props}) => <ul className="list-disc list-inside mb-2" {...props} />,
-                            ol: ({...props}) => <ol className="list-decimal list-inside mb-2" {...props} />,
+                            h1: ({...props}) => <h1 className="text-xl sm:text-2xl font-bold mt-4 mb-2" {...props} />,
+                            h2: ({...props}) => <h2 className="text-lg sm:text-xl font-bold mt-3 mb-2" {...props} />,
+                            h3: ({...props}) => <h3 className="text-base sm:text-lg font-bold mt-2 mb-1" {...props} />,
+                            p: ({...props}) => <p className="mb-2 text-sm sm:text-base" {...props} />,
+                            ul: ({...props}) => <ul className="list-disc list-inside mb-2 text-sm sm:text-base" {...props} />,
+                            ol: ({...props}) => <ol className="list-decimal list-inside mb-2 text-sm sm:text-base" {...props} />,
                             li: ({...props}) => <li className="ml-2" {...props} />,
                             strong: ({...props}) => <strong className="font-bold" {...props} />,
                             em: ({...props}) => <em className="italic" {...props} />,
-                            code: ({...props}) => <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono" {...props} />,
-                            pre: ({...props}) => <pre className="bg-gray-100 p-3 rounded mb-2 overflow-auto" {...props} />,
-                            blockquote: ({...props}) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2" {...props} />,
-                            a: ({...props}) => <a className="text-blue-600 underline hover:text-blue-800" {...props} />,
+                            code: ({...props}) => <code className="bg-gray-100 px-2 py-1 rounded text-xs sm:text-sm font-mono" {...props} />,
+                            pre: ({...props}) => <pre className="bg-gray-100 p-3 rounded mb-2 overflow-auto text-xs sm:text-sm" {...props} />,
+                            blockquote: ({...props}) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-2 text-sm sm:text-base" {...props} />,
+                            a: ({...props}) => <a className="text-blue-600 underline hover:text-blue-800 break-words" {...props} />,
                           }}
                         >
                           {selectedLesson.content}
@@ -452,7 +454,7 @@ const CourseDetailPage = () => {
                     <button
                       type="button"
                       onClick={() => setShowFullDescription(!showFullDescription)}
-                      className="mb-6 text-blue-600 hover:text-blue-800 font-semibold text-sm flex items-center gap-2 transition-all duration-200 hover:gap-3 group"
+                      className="mb-4 sm:mb-6 text-blue-600 hover:text-blue-800 font-semibold text-sm flex items-center gap-2 transition-all duration-200 hover:gap-3 group"
                     >
                       {showFullDescription ? (
                         <>
@@ -477,7 +479,7 @@ const CourseDetailPage = () => {
                     <button
                       onClick={handleMarkComplete}
                       disabled={selectedLesson.isCompleted || isMarking}
-                      className={`w-full py-4 rounded-xl font-bold text-base transition-all duration-300 shadow-lg hover:shadow-xl disabled:cursor-not-allowed ${
+                      className={`w-full py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-xl disabled:cursor-not-allowed ${
                         selectedLesson.isCompleted
                           ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
                           : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700 active:scale-[0.98]"
@@ -490,7 +492,7 @@ const CourseDetailPage = () => {
                         </span>
                       ) : selectedLesson.isCompleted ? (
                         <span className="flex items-center justify-center gap-2">
-                          <CheckCircleIcon className="w-6 h-6" />
+                          <CheckCircleIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                           Lesson Completed
                         </span>
                       ) : (
@@ -501,11 +503,11 @@ const CourseDetailPage = () => {
                 </div>
               </>
             ) : (
-              <div className="p-12 text-center">
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <PlayCircleIcon className="w-10 h-10 text-gray-400" />
+              <div className="p-8 sm:p-12 text-center">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <PlayCircleIcon className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
                 </div>
-                <p className="text-gray-500 text-lg">This course has no lessons yet.</p>
+                <p className="text-gray-500 text-base sm:text-lg">This course has no lessons yet.</p>
               </div>
             )}
           </div>
@@ -513,18 +515,18 @@ const CourseDetailPage = () => {
 
         {/* Enhanced Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden sticky top-6">
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 overflow-hidden lg:sticky lg:top-6">
             {/* Action Buttons Section */}
-            <div className="p-6 bg-gradient-to-br from-gray-50 to-white border-b border-gray-100">
+            <div className="p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-white border-b border-gray-100">
               {(() => {
                 if (isInstructorOwner) {
                   return (
                     <Link
                       to={`/instructor/courses/${course._id}/students`}
-                      className="block w-full text-center bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-4 rounded-xl hover:from-purple-600 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-[0.98]"
+                      className="block w-full text-center bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-3 sm:py-4 rounded-xl hover:from-purple-600 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-[0.98] text-sm sm:text-base"
                     >
                       <span className="flex items-center justify-center gap-2">
-                        <UserGroupIcon className="w-5 h-5" />
+                        <UserGroupIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                         View Enrolled Students
                       </span>
                     </Link>
@@ -535,7 +537,7 @@ const CourseDetailPage = () => {
                   return (
                     <Link
                       to="/login"
-                      className="block w-full text-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-4 rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-[0.98]"
+                      className="block w-full text-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-[0.98] text-sm sm:text-base"
                     >
                       Login to Enroll
                     </Link>
@@ -544,8 +546,8 @@ const CourseDetailPage = () => {
 
                 if (course.enrollment) {
                   return (
-                    <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 text-center rounded-xl font-bold flex items-center justify-center gap-2 border-2 border-green-200">
-                      <CheckCircleIcon className="h-6 w-6" />
+                    <div className="p-3 sm:p-4 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 text-center rounded-xl font-bold flex items-center justify-center gap-2 border-2 border-green-200 text-sm sm:text-base">
+                      <CheckCircleIcon className="h-5 w-5 sm:h-6 sm:w-6" />
                       You're Enrolled!
                     </div>
                   );
@@ -557,7 +559,7 @@ const CourseDetailPage = () => {
                       <button
                         onClick={handleEnroll}
                         disabled={isEnrolling}
-                        className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-4 rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-[0.98]"
+                        className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-[0.98] text-sm sm:text-base"
                       >
                         {isEnrolling ? (
                           <span className="flex items-center justify-center gap-2">
@@ -569,7 +571,7 @@ const CourseDetailPage = () => {
                         )}
                       </button>
                       {enrollmentError && (
-                        <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-200">
+                        <div className="p-3 bg-red-50 text-red-600 text-xs sm:text-sm rounded-lg border border-red-200">
                           {enrollmentError}
                         </div>
                       )}
@@ -582,32 +584,32 @@ const CourseDetailPage = () => {
             </div>
 
             {/* Lessons List Section */}
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full"></div>
+            <div className="p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
+                <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full"></div>
                 Course Lessons
               </h3>
-              <div className="max-h-[600px] overflow-y-auto pr-2 space-y-2 custom-scrollbar">
+              <div className="max-h-[400px] sm:max-h-[600px] overflow-y-auto pr-2 space-y-2 custom-scrollbar">
                 {lessons.length > 0 ? (
                   lessons.map((lesson, index) => (
                     <button
                       key={lesson._id}
                       onClick={() => setSelectedLesson(lesson)}
-                      className={`w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 group ${
+                      className={`w-full flex items-center justify-between p-3 sm:p-4 rounded-xl transition-all duration-200 group ${
                         selectedLesson?._id === lesson._id
                           ? "bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-500 shadow-md"
                           : "hover:bg-gray-50 border-2 border-transparent hover:border-gray-200"
                       }`}
                     >
-                      <div className="flex items-center flex-1 min-w-0 gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-sm ${
+                      <div className="flex items-center flex-1 min-w-0 gap-2 sm:gap-3">
+                        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-xs sm:text-sm ${
                           selectedLesson?._id === lesson._id
                             ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white"
                             : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
                         }`}>
                           {lessons.length - index}
                         </div>
-                        <span className={`font-medium text-left truncate ${
+                        <span className={`font-medium text-left truncate text-sm sm:text-base ${
                           selectedLesson?._id === lesson._id
                             ? "text-gray-900"
                             : "text-gray-700"
@@ -618,23 +620,23 @@ const CourseDetailPage = () => {
                       {isEnrolledStudent &&
                         (lesson.isCompleted ? (
                           <CheckCircleIcon
-                            className="h-6 w-6 text-green-500 flex-shrink-0 ml-2"
+                            className="h-5 w-5 sm:h-6 sm:w-6 text-green-500 flex-shrink-0 ml-2"
                             title="Completed"
                           />
                         ) : (
                           <div
-                            className="h-6 w-6 border-2 border-gray-300 rounded-full flex-shrink-0 ml-2 group-hover:border-gray-400"
+                            className="h-5 w-5 sm:h-6 sm:w-6 border-2 border-gray-300 rounded-full flex-shrink-0 ml-2 group-hover:border-gray-400"
                             title="Not Completed"
                           ></div>
                         ))}
                     </button>
                   ))
                 ) : (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <PlayCircleIcon className="w-8 h-8 text-gray-400" />
+                  <div className="text-center py-8 sm:py-12">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <PlayCircleIcon className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
                     </div>
-                    <p className="text-gray-500">No lessons available yet.</p>
+                    <p className="text-gray-500 text-sm sm:text-base">No lessons available yet.</p>
                   </div>
                 )}
               </div>
