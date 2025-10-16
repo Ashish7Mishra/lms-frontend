@@ -38,7 +38,7 @@ const AdminLayout = () => {
               L
             </div>
             <div>
-              <h1 className="text-lg font-bold">LMS Admin</h1>
+              <h1 className="text-lg font-bold">Learnify</h1>
               <p className="text-xs text-blue-200">Management Portal</p>
             </div>
           </div>
@@ -99,6 +99,14 @@ const AdminLayout = () => {
               <BookOpen size={20} />
               <span className="font-medium">Courses</span>
             </NavLink>
+            <div className="pt-2 mt-2 border-t border-white border-opacity-20">
+     <button
+       onClick={handleLogout}
+       className="w-full px-5 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-2xl hover:from-red-600 hover:to-pink-600 transition-all duration-300 font-medium shadow-lg"
+     >
+       Logout
+     </button>
+   </div>
           </nav>
         </div>
       </div>
@@ -110,7 +118,7 @@ const AdminLayout = () => {
               L
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">LMS Admin</h2>
+              <h2 className="text-2xl font-bold text-white">Learnify</h2>
               <p className="text-sm text-blue-300">Management Portal</p>
             </div>
           </div>
